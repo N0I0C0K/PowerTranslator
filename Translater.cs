@@ -31,18 +31,11 @@ namespace Translater
         public List<Result> Query(Query query)
         {
             List<Result> results = new List<Result>();
-            Result infoResult = new Result()
-            {
-                Title = queryMetaData.QueryCount.ToString(),
-                SubTitle = string.Format("{0} {1}", queryTimes.ToString(), this.queryContent)
-            };
-            results.Add(infoResult);
 
             //if two are equal, it's the true query.
             if (query.RawQuery == queryContent)
             {
                 queryTimes++;
-                infoResult.SubTitle = string.Format("{0} {1}", queryTimes.ToString(), this.queryContent);
                 Log.Info(string.Format("catch a query {0}", queryContent), typeof(Translater));
                 try
                 {
@@ -57,6 +50,7 @@ namespace Translater
                         SubTitle = translateResponse.trans_result[0].src,
                         Action = e =>
                         {
+                            Clipboard.SetDataObject(translateResponse.trans_result[0].dst);
                             return false;
                         }
                     });
@@ -82,14 +76,19 @@ namespace Translater
             //else the user is continue typing.
             else
             {
+                Result infoResult = new Result()
+                {
+                    Title = query.Search,
+                    SubTitle = "Waiting for translation"
+                };
+                results.Add(infoResult);
                 queryContent = query.RawQuery;
-                infoResult.SubTitle = string.Format("{0} {1}", queryTimes.ToString(), this.queryContent);
                 Task task = Task.Factory.StartNew(
                 (queryRaw) =>
                 {
                     if (queryRaw != null)
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                         Log.Info(string.Format("{0} == {1}", queryRaw.ToString(), this.queryContent), typeof(Translater));
                         if (queryRaw.ToString() == this.queryContent)
                         {
@@ -97,18 +96,19 @@ namespace Translater
                         }
                     }
                 }, state: queryContent);
-                results.Add(new Result()
-                {
-                    Title = task.Id.ToString(),
-                    SubTitle = task.Status.ToString(),
-                    Action = e =>
-                    {
-                        Clipboard.SetDataObject(task.Status.ToString());
-                        changeQuery(this.queryContent, true);
-                        return true;
-                    }
-                });
+                // results.Add(new Result()
+                // {
+                //     Title = task.Id.ToString(),
+                //     SubTitle = task.Status.ToString(),
+                //     Action = e =>
+                //     {
+                //         Clipboard.SetDataObject(task.Status.ToString());
+                //         changeQuery(this.queryContent, true);
+                //         return true;
+                //     }
+                // });
             }
+            // infoResult.SubTitle = string.Format("{0} {1}", queryTimes.ToString(), this.queryContent);
             return results;
         }
         public void Init(PluginInitContext context)
@@ -125,7 +125,7 @@ namespace Translater
                     {
                         try
                         {
-                            this.publicAPI.ChangeQuery(this.queryContent, true);
+                            this.publicAPI.ChangeQuery(_query, _force);
                         }
                         catch (System.Exception ex)
                         {
