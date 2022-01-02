@@ -31,7 +31,8 @@ namespace Translater
         public List<Result> Query(Query query)
         {
             List<Result> results = new List<Result>();
-
+            if (query.Search.Length == 0)
+                return results;
             //if two are equal, it's the true query.
             if (query.RawQuery == queryContent)
             {
@@ -47,7 +48,7 @@ namespace Translater
                     results.Add(new Result()
                     {
                         Title = translateResponse.trans_result[0].dst,
-                        SubTitle = translateResponse.trans_result[0].src,
+                        SubTitle = $"{translateResponse.trans_result[0].src} (选择后复制)",
                         Action = e =>
                         {
                             Clipboard.SetDataObject(translateResponse.trans_result[0].dst);
