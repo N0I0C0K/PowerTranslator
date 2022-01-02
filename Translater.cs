@@ -1,6 +1,11 @@
+using System;
+using System.Collections.Generic;
 using Wox.Plugin;
 using Wox.Plugin.Logger;
+using System.Windows;
 using Translater.utils;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Translater
 {
@@ -23,7 +28,6 @@ namespace Translater
         /// </summary>
         public int queryTimes = 0;
         public Action<string, bool> changeQuery;
-        public SynchronizationContext mainThreadContext;
         public List<Result> Query(Query query)
         {
             List<Result> results = new List<Result>();
@@ -70,7 +74,7 @@ namespace Translater
                     });
                     Task task = Task.Factory.StartNew(() =>
                     {
-                        Thread.Sleep(500);
+                        Thread.Sleep(1000);
                         changeQuery(this.queryContent, true);
                     });
                 }
@@ -112,27 +116,22 @@ namespace Translater
             Log.Info("translater init", typeof(Translater));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
-            this.mainThreadContext = SynchronizationContext.Current;
             this.changeQuery = (_query, _force) =>
             {
                 Log.Info($"{_query} == {this.queryContent} true, start change query", typeof(Translater));
                 try
                 {
-                    this.mainThreadContext!.Send((s) =>
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
                         try
                         {
-                            publicAPI.ChangeQuery(this.queryContent, true);
+                            this.publicAPI.ChangeQuery(this.queryContent, true);
                         }
-                        catch (Exception ex)
+                        catch (System.Exception ex)
                         {
-                            Log.Exception("Error to change query", ex, typeof(Translater));
+                            Log.Exception("Error in invoke", ex, typeof(Translater));
                         }
-                        finally
-                        {
-                            Log.Info("end change query", typeof(Translater));
-                        }
-                    }, null);
+                    });
                 }
                 catch (Exception ex)
                 {
