@@ -25,8 +25,8 @@ namespace Translater.utils
 
     public class Utils
     {
-        public static string appid = "20211228001040502";
-        public static string secretKey = "Htvq0G7dc2M2MIjHzTYH";
+        public static string appid = Config.BaiDuAPIKey.appid;
+        public static string secretKey = Config.BaiDuAPIKey.secretKey;
         public static string GETHttp(string url)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);

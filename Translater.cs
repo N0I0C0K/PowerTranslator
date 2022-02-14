@@ -15,7 +15,7 @@ namespace Translater
         public string Name { get; } = "Translater";
 
         // Localized description
-        public string Description { get; } = "Test";
+        public string Description { get; } = "";
 
         /// <summary>
         /// save the last query.
@@ -97,19 +97,7 @@ namespace Translater
                         }
                     }
                 }, state: queryContent);
-                // results.Add(new Result()
-                // {
-                //     Title = task.Id.ToString(),
-                //     SubTitle = task.Status.ToString(),
-                //     Action = e =>
-                //     {
-                //         Clipboard.SetDataObject(task.Status.ToString());
-                //         changeQuery(this.queryContent, true);
-                //         return true;
-                //     }
-                // });
             }
-            // infoResult.SubTitle = string.Format("{0} {1}", queryTimes.ToString(), this.queryContent);
             return results;
         }
         public void Init(PluginInitContext context)
