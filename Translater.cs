@@ -18,12 +18,26 @@ namespace Translater
         /// <summary>
         /// save the truely query time.
         /// </summary>
-        public YoudaoTranslater youdaoTranslater;
+        private YoudaoTranslater? youdaoTranslater;
         private string queryPre = "";
         private int lastQueryTime = 0;
+        private object initLock = new Object();
         public List<Result> Query(Query query)
         {
             List<Result> results = new List<Result>();
+            if (this.youdaoTranslater == null)
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    this.initTranslater();
+                });
+                results.Add(new Result()
+                {
+                    Title = "Initializing....",
+                    SubTitle = "[Initialize translation components]"
+                });
+                return results;
+            }
             var queryTime = DateTime.Now;
 
             if (query.Search.Length == 0)
@@ -101,12 +115,30 @@ namespace Translater
             }
             return results;
         }
+        private bool initTranslater()
+        {
+            lock (this.initLock)
+            {
+                if (this.youdaoTranslater != null)
+                    return true;
+                try
+                {
+                    youdaoTranslater = new YoudaoTranslater();
+                    return true;
+                }
+                catch (Exception err)
+                {
+                    Log.Warn(err.Message, typeof(Translater));
+                    return false;
+                }
+            }
+        }
         public void Init(PluginInitContext context)
         {
             Log.Info("translater init", typeof(Translater));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
-            youdaoTranslater = new YoudaoTranslater();
+            this.initTranslater();
         }
     }
 }
