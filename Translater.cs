@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
 using Wox.Plugin;
 using Wox.Plugin.Logger;
-using System.Windows;
-using Translater.utils;
-using System.Threading;
-using System.Threading.Tasks;
+using Translater.Youdao;
+using System.Text.Json;
 
 namespace Translater
 {
@@ -16,87 +12,92 @@ namespace Translater
 
         // Localized description
         public string Description { get; } = "";
-
-        /// <summary>
-        /// save the last query.
-        /// </summary>
-        public string queryContent = "";
-        public PluginMetadata queryMetaData = null;
-        public IPublicAPI publicAPI = null;
+        public PluginMetadata? queryMetaData = null;
+        public IPublicAPI? publicAPI = null;
+        public int queryCount = 0;
         /// <summary>
         /// save the truely query time.
         /// </summary>
-        public int queryTimes = 0;
-        public Action<string, bool> changeQuery;
+        public YoudaoTranslater youdaoTranslater;
+        private string queryPre = "";
+        private int lastQueryTime = 0;
         public List<Result> Query(Query query)
         {
             List<Result> results = new List<Result>();
+            var queryTime = DateTime.Now;
+
             if (query.Search.Length == 0)
                 return results;
-            //if two are equal, it's the true query.
-            if (query.RawQuery == queryContent)
+            string src = query.Search;
+            if (query.RawQuery == this.queryPre && queryTime.Millisecond - lastQueryTime > 100)
             {
-                queryTimes++;
-                Log.Info(string.Format("catch a query {0}", queryContent), typeof(Translater));
+                queryCount++;
                 try
                 {
-                    TranslateResponse translateResponse = Utils.TranslateZhToEn(query.Search);
-                    if (translateResponse.error_code != 52000)
+                    var translateRes = youdaoTranslater.translate(src);
+                    if (translateRes != null && translateRes.errorCode == 0)
                     {
-                        throw new Exception(string.Format("Error in translate, error code:{0}", translateResponse.error_code));
-                    }
-                    results.Add(new Result()
-                    {
-                        Title = translateResponse.trans_result[0].dst,
-                        SubTitle = $"{translateResponse.trans_result[0].src} (选择后复制)",
-                        Action = e =>
+                        results.Add(new Result()
                         {
-                            Clipboard.SetDataObject(translateResponse.trans_result[0].dst);
-                            return false;
+                            Title = translateRes.translateResult[0][0].tgt,
+                            SubTitle = translateRes.type,
+                            Action = e =>
+                            {
+                                Clipboard.SetDataObject(translateRes.translateResult[0][0].tgt);
+                                return true;
+                            }
+                        });
+                        if (translateRes.smartResult != null)
+                        {
+                            translateRes.smartResult?.entries.each((s) =>
+                            {
+                                string t = s.Replace("\r\n", " ").TrimStart();
+                                if (string.IsNullOrEmpty(t))
+                                    return;
+                                results.Add(new Result()
+                                {
+                                    Title = t,
+                                    SubTitle = "[smart result]"
+                                });
+                            });
                         }
-                    });
+                    }
+                    else
+                    {
+                        results.Add(new Result()
+                        {
+                            Title = query.Search,
+                            SubTitle = $"can not translate {src}."
+                        });
+                    }
                 }
-                catch (System.Exception ex)
+                catch (Exception err)
                 {
                     results.Add(new Result()
                     {
-                        Title = ex.Message,
-                        SubTitle = ex.ToString(),
-                        Action = e =>
-                        {
-                            return false;
-                        }
+                        Title = "some error happen!",
+                        SubTitle = err.Message
                     });
-                    Task task = Task.Factory.StartNew(() =>
-                    {
-                        Thread.Sleep(1000);
-                        changeQuery(this.queryContent, true);
-                    });
+                    Log.Error(err.ToString(), typeof(Translater));
                 }
+
             }
-            //else the user is continue typing.
             else
             {
-                Result infoResult = new Result()
+                this.queryPre = query.RawQuery;
+                this.lastQueryTime = queryTime.Millisecond;
+                results.Add(new Result()
                 {
                     Title = query.Search,
-                    SubTitle = "Waiting for translation"
-                };
-                results.Add(infoResult);
-                queryContent = query.RawQuery;
-                Task task = Task.Factory.StartNew(
-                (queryRaw) =>
+                    SubTitle = "...."
+                });
+                Task.Factory.StartNew(() =>
                 {
-                    if (queryRaw != null)
-                    {
-                        Thread.Sleep(1000);
-                        Log.Info(string.Format("{0} == {1}", queryRaw.ToString(), this.queryContent), typeof(Translater));
-                        if (queryRaw.ToString() == this.queryContent)
-                        {
-                            changeQuery(this.queryContent, true);
-                        }
-                    }
-                }, state: queryContent);
+                    Thread.Sleep(400);
+                    Log.Info($"rawquery:{query.RawQuery}, queryPre:{this.queryPre}", typeof(Translater));
+                    if (query.RawQuery == this.queryPre)
+                        publicAPI!.ChangeQuery(queryPre, true);
+                });
             }
             return results;
         }
@@ -105,28 +106,7 @@ namespace Translater
             Log.Info("translater init", typeof(Translater));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
-            this.changeQuery = (_query, _force) =>
-            {
-                Log.Info($"{_query} == {this.queryContent} true, start change query", typeof(Translater));
-                try
-                {
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        try
-                        {
-                            this.publicAPI.ChangeQuery(_query, _force);
-                        }
-                        catch (System.Exception ex)
-                        {
-                            Log.Exception("Error in invoke", ex, typeof(Translater));
-                        }
-                    });
-                }
-                catch (Exception ex)
-                {
-                    Log.Exception("Error in send mainContext", ex, typeof(Translater));
-                }
-            };
+            youdaoTranslater = new YoudaoTranslater();
         }
     }
 }
