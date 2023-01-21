@@ -8,27 +8,12 @@
 
 ## Install
 
-1. 找到`"{User}\AppData\Local\Microsoft\PowerToys\PowerToys Run\settings.json"`
-2. 在`plugins`字段下添加
-
-```json
-{
-  "Id": "HBB9510CD0D2481F853690A07E6DC426",
-  "Name": "Translater",
-  "Description": "a simple translate plugin",
-  "Author": "N0I0C0K",
-  "Disabled": false,
-  "IsGlobal": false,
-  "ActionKeyword": "^",
-  "WeightBoost": 0,
-  "IconPathDark": "Translater\\Images\\translater.dark.png",
-  "IconPathLight": "Translater\\Images\\translater.light.png",
-  "AdditionalOptions": []
-}
-```
-
-3. 下载 Translater.zip
-4. 解压到`{安装目录}\modules\launcher\Plugins\`
+1. 关闭 PowerToys
+2. 下载 Translater.zip
+3. 解压到`{安装目录}\modules\launcher\Plugins\`
+   如图所示
+   ![file](Images/file.png)
+4. 启动 PowerToys
 
 ## Usage
 
