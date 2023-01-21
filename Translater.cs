@@ -11,7 +11,7 @@ namespace Translater
         public string Name { get; } = "Translater";
 
         // Localized description
-        public string Description { get; } = "";
+        public string Description { get; } = "A simple translater plugin [By N0I0C0K]";
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
         public int queryCount = 0;
