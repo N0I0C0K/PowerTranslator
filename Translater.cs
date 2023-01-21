@@ -7,10 +7,7 @@ namespace Translater
 {
     public class Translater : IPlugin
     {
-        // Localized name
         public string Name { get; } = "Translater";
-
-        // Localized description
         public string Description { get; } = "A simple translater plugin [By N0I0C0K]";
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
