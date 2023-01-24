@@ -13,6 +13,7 @@ namespace Translater
         public int queryCount = 0;
         private string queryPre = "";
         private TranslateHelper? translateHelper = null;
+        private bool isDebug = false;
         private int lastQueryTime = 0; public List<Result> Query(Query query)
         {
             List<Result> results = new List<Result>();
@@ -42,7 +43,7 @@ namespace Translater
                 return results;
             }
 
-            if (query.RawQuery == this.queryPre && queryTime.Millisecond - lastQueryTime > 100)
+            if (query.RawQuery == this.queryPre && queryTime.Millisecond - lastQueryTime > 200)
             {
                 string src = query.Search;
                 queryCount++;
@@ -63,6 +64,19 @@ namespace Translater
                     Log.Info($"rawquery:{query.RawQuery}, queryPre:{this.queryPre}", typeof(Translater));
                     if (query.RawQuery == this.queryPre)
                         publicAPI!.ChangeQuery(queryPre, true);
+                });
+            }
+            if (isDebug)
+            {
+                results.Add(new Result
+                {
+                    Title = queryCount.ToString(),
+                    SubTitle = queryPre
+                });
+                results.Add(new Result
+                {
+                    Title = query.Search,
+                    SubTitle = $"[{query.RawQuery}]"
                 });
             }
             return results;

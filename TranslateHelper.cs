@@ -40,6 +40,8 @@ namespace Translater
         {
             try
             {
+                if (raw.Length == 0)
+                    return;
                 var target = ParseRawSrc(raw);
                 string src = target.src;
                 string toLan = target.toLan;

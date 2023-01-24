@@ -26,7 +26,6 @@ namespace Translater.Youdao
             public Entry? smartResult { get; set; }
         }
 
-
         private HttpClient client;
         private Random random;
         private MD5 md5;
@@ -103,7 +102,7 @@ namespace Translater.Youdao
             }
             catch (JsonException)
             {
-                throw new Exception($"不能找到数据=>{contentStr}");
+                throw new Exception($"can not find data in response content({contentStr}), http state code:{res.StatusCode}");
             }
         }
     }
