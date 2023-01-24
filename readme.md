@@ -26,7 +26,25 @@
   ![en->zh](Images/command.gif)
 
 - 快速翻译剪贴板
+
   - 当剪贴板内有文字, 直接键入触发关键字`^`, 即可快速翻译剪贴板内的内容
+
+    ![clipboard](Images/clipboard.gif)
+
+- 指定翻译目标语言
+  - 使用 `^[words]->[Target language]`, 例如: `^你好->ja` 表示把你好翻译为日文
+    ![Specified language](Images/target%20lan.gif)
+
+常用语言代码
+|语言|代码|备注|
+|---------|------|-|
+|汉语(简体) | zh-CHS | 汉语简体
+|汉语(繁体) | zh-CHT| 漢語翻譯
+|日语 |ja| 日本語
+|英语 |en| English
+|韩语 |ko| 한국어
+|法语 |fr| En français
+|俄语 |ru| русск
 
 ## Issue
 

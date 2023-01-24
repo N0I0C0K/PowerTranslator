@@ -6,6 +6,11 @@ namespace Translater
 {
     public class TranslateHelper
     {
+        public struct TranslateTarget
+        {
+            public string src;
+            public string toLan;
+        }
         public const string toLanSplit = "->";
         public bool inited => this.youdaoTranslater != null;
         private object initLock = new Object();
@@ -14,15 +19,31 @@ namespace Translater
         {
             this.initTranslater();
         }
-        public void TranslateAppendResult(string src, Query query, List<Result> results, string translateFrom = "user input")
+        public TranslateTarget ParseRawSrc(string src)
+        {
+            if (src.Contains(toLanSplit))
+            {
+                var srcArr = src.Split(toLanSplit);
+                return new TranslateTarget
+                {
+                    src = srcArr.First().TrimEnd().TrimStart(),
+                    toLan = srcArr.Last().TrimEnd().TrimStart()
+                };
+            }
+            return new TranslateTarget
+            {
+                src = src,
+                toLan = "AUTO"
+            };
+        }
+        public void TranslateAppendResult(string raw, Query query, List<Result> results, string translateFrom = "user input")
         {
             try
             {
-                if (src.Contains(toLanSplit))
-                {
-
-                }
-                var translateRes = youdaoTranslater.translate(src);
+                var target = ParseRawSrc(raw);
+                string src = target.src;
+                string toLan = target.toLan;
+                var translateRes = youdaoTranslater!.translate(src, toLan);
                 if (translateRes != null && translateRes.errorCode == 0)
                 {
                     results.Add(new Result()
@@ -55,7 +76,7 @@ namespace Translater
                     results.Add(new Result()
                     {
                         Title = query.Search,
-                        SubTitle = $"can not translate {src}."
+                        SubTitle = $"can not translate {src} to {toLan}"
                     });
                 }
             }
