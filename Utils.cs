@@ -39,5 +39,26 @@ namespace Translater.Utils
                 return string.Empty;
             }
         }
+
+        public static void each<T>(this IEnumerable<T> src, Action<T> action)
+        {
+            foreach (var item in src)
+            {
+                action(item);
+            }
+        }
+        public static string addQueryParameters(this string src, object obj)
+        {
+            return $"{src}?{obj.toFormDataBodyString()}";
+        }
+        public static string toFormDataBodyString(this object src)
+        {
+            var res = new List<string>();
+            foreach (var key in src.GetType().GetProperties())
+            {
+                res.Add($"{key.Name}={src.GetType().GetProperty(key.Name)?.GetValue(src)}");
+            }
+            return string.Join("&", res);
+        }
     }
 }
