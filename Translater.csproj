@@ -3,7 +3,8 @@
     <TargetFramework>net7.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
+
+    <UseWPF>true</UseWPF>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
@@ -16,5 +17,9 @@
     <Reference Include="Wox.Infrastructure">
       <HintPath>Wox.Infrastructure.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.PowerToys.Settings.UI.Library">
+      <HintPath>PowerToys.Settings.UI.Lib.dll</HintPath>
+    </Reference>
+    
   </ItemGroup>
 </Project>

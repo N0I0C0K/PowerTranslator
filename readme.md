@@ -17,11 +17,16 @@
 
 ## Usage
 
-- `alt+space`打开 PowerToysRun, 输入`^[你要翻译的地方]`
-- `Enter`复制翻译结果到剪贴板
+- 指定翻译文本
 
-演示翻译 command
-![en->zh](Images/command.gif)
+  - `alt+space`打开 PowerToysRun, 输入`^[你要翻译的地方]`
+  - `Enter`复制翻译结果到剪贴板
+
+  演示翻译 command
+  ![en->zh](Images/command.gif)
+
+- 快速翻译剪贴板
+  - 当剪贴板内有文字, 直接键入触发关键字`^`, 即可快速翻译剪贴板内的内容
 
 ## Issue
 
