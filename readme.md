@@ -17,6 +17,7 @@
 
 ## Usage
 
+- 默认触发键为`^`.(当前默认触发键会和 Everything 插件冲突, 可以参考下面的方式修改触发)
 - 指定翻译文本
 
   - `alt+space`打开 PowerToysRun, 输入`^[你要翻译的地方]`
@@ -45,6 +46,13 @@
 |韩语 |ko| 한국어
 |法语 |fr| En français
 |俄语 |ru| русск
+
+## Setting
+
+- 修改默认触发键
+  ![change active key](Images/change_active.png)
+- 建议勾选`启动时清楚上一查询`, 可以解决剪贴板快速翻译不能触发的问题
+  ![auto clean](Images/auto_clean.png)
 
 ## Issue
 
