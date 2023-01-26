@@ -49,7 +49,7 @@
 
 ## Setting
 
-- 修改默认触发键
+- 修改默认触发键 (如果需要修改,建议修改为" ` ", 同时建议检查一下有无冲突)
   ![change active key](Images/change_active.png)
 - 建议勾选`启动时清楚上一查询`, 可以解决剪贴板快速翻译不能触发的问题
   ![auto clean](Images/auto_clean.png)
