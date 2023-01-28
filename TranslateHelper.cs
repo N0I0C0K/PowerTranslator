@@ -68,7 +68,13 @@ namespace Translater
                             results.Add(new Result()
                             {
                                 Title = t,
-                                SubTitle = "[smart result]"
+                                SubTitle = "[smart result]",
+                                Action = e =>
+                                {
+                                    Utils.UtilsFun.SetClipboardText(t);
+                                    return true;
+                                }
+
                             });
                         });
                     }

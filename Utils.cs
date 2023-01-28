@@ -18,7 +18,10 @@ namespace Translater.Utils
         {
             Clipboard.SetDataObject(s);
         }
-
+        public static long GetUtcTimeNow()
+        {
+            return DateTimeOffset.Now.ToUnixTimeMilliseconds();
+        }
         public static string? GetClipboardText()
         {
             try

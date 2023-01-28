@@ -1,20 +1,31 @@
 using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Microsoft.PowerToys.Settings.UI.Library;
+using Translater.Utils;
+using ManagedCommon;
 
 namespace Translater
 {
     public class Translater : IPlugin
     {
-        public string Name { get; } = "Translater";
-        public string Description { get; } = "A simple translater plugin [By N0I0C0K]";
+        public string Name => "Translater";
+        public string Description => "A simple translater plugin, based on Youdao Translation";
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
+        private string iconPath = "Images/translater.dark.png";
         public int queryCount = 0;
-        private string queryPre = "";
         private TranslateHelper? translateHelper = null;
         private bool isDebug = false;
-        private int lastQueryTime = 0; public List<Result> Query(Query query)
+        private string queryPre = "";
+        private long lastQueryTime = 0;
+        private object preQueryLock = new Object();
+        private void LogInfo(string info)
+        {
+            if (!isDebug)
+                return;
+            Log.Info(info, typeof(Translater));
+        }
+        public List<Result> Query(Query query)
         {
             List<Result> results = new List<Result>();
             if (!translateHelper!.inited)
@@ -23,15 +34,19 @@ namespace Translater
                 {
                     translateHelper.initTranslater();
                 });
-                results.Add(new Result()
+                results.Add(new Result
                 {
                     Title = "Initializing....",
-                    SubTitle = "[Initialize translation components]"
+                    SubTitle = "[Initialize translation components]",
+                    IcoPath = iconPath
                 });
                 return results;
             }
 
-            var queryTime = DateTime.Now;
+            var queryTime = UtilsFun.GetUtcTimeNow();
+
+            LogInfo($"{query.RawQuery} | {this.queryPre} | {this.lastQueryTime} | {queryTime}");
+
             if (query.Search.Length == 0)
             {
                 string? clipboardText = Utils.UtilsFun.GetClipboardText();
@@ -40,37 +55,50 @@ namespace Translater
                     // Translate content from the clipboard
                     translateHelper!.TranslateAppendResult(clipboardText!, query, results, "clipboard");
                 }
+                results.each(tar =>
+                {
+                    tar.IcoPath = iconPath;
+                });
                 return results;
             }
 
-            if (query.RawQuery == this.queryPre && queryTime.Millisecond - lastQueryTime > 200)
+            if (query.RawQuery == this.queryPre && queryTime - this.lastQueryTime > 400)
             {
                 string src = query.Search;
                 queryCount++;
                 translateHelper!.TranslateAppendResult(src, query, results);
+                results.each(tar =>
+                {
+                    tar.IcoPath = iconPath;
+                });
             }
             else
             {
-                this.queryPre = query.RawQuery;
-                this.lastQueryTime = queryTime.Millisecond;
+                lock (preQueryLock)
+                {
+                    this.queryPre = query.RawQuery;
+                    this.lastQueryTime = queryTime;
+                }
                 results.Add(new Result()
                 {
                     Title = query.Search,
-                    SubTitle = "...."
+                    SubTitle = "....",
+                    IcoPath = iconPath
                 });
-                Task.Factory.StartNew(() =>
+                Task.Delay(600).ContinueWith((task) =>
                 {
-                    Thread.Sleep(400);
-                    Log.Info($"rawquery:{query.RawQuery}, queryPre:{this.queryPre}", typeof(Translater));
                     if (query.RawQuery == this.queryPre)
-                        publicAPI!.ChangeQuery(queryPre, true);
+                    {
+                        LogInfo($"change query to {query.RawQuery}({this.queryPre})");
+                        publicAPI!.ChangeQuery(query.RawQuery, true);
+                    }
                 });
             }
             if (isDebug)
             {
                 results.Add(new Result
                 {
-                    Title = queryCount.ToString(),
+                    Title = $"{this.queryMetaData!.QueryCount},{queryCount}",
                     SubTitle = queryPre
                 });
                 results.Add(new Result
@@ -87,6 +115,19 @@ namespace Translater
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
             translateHelper = new TranslateHelper();
+            publicAPI.ThemeChanged += this.UpdateIconPath;
+        }
+
+        private void UpdateIconPath(Theme pre, Theme now)
+        {
+            if (now == Theme.Light || now == Theme.HighContrastWhite)
+            {
+                iconPath = "Images/translater.light.png";
+            }
+            else
+            {
+                iconPath = "Images/translater.dark.png";
+            }
         }
 
         private List<PluginAdditionalOption> GetAdditionalOptions()
