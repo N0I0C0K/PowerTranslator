@@ -37,7 +37,6 @@ namespace Translater.Youdao
             client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
             client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
 
-            var time = DateTime.Now;
 
             var res = client.GetAsync("https://rlogs.youdao.com/rlog.php".addQueryParameters(new
             {
@@ -46,7 +45,7 @@ namespace Translater.Youdao
                 _ncoo = "214748364.7",
                 nssn = "NULL",
                 _nver = "1.2.0",
-                _ntms = time.Millisecond.ToString(),
+                _ntms = UtilsFun.GetUtcTimeNow().ToString(),
                 _nhrf = "newweb_translate_text"
             })).GetAwaiter().GetResult();
             client.DefaultRequestHeaders.Add("cookies", res.Headers.GetValues("Set-Cookie").First());
@@ -68,8 +67,7 @@ namespace Translater.Youdao
 
         public TranslateResponse? translate(string src, string toLan = "AUTO", string fromLan = "AUTO")
         {
-            var time = DateTime.Now;
-            var ts = time.Millisecond.ToString();
+            var ts = UtilsFun.GetUtcTimeNow().ToString();
             var salt = $"{ts}{random.Next(0, 9)}";
             var bv = md5Encrypt(this.userAgent);
             var sign = md5Encrypt($"fanyideskweb{src}{salt}Ygy_4c=r#e#4EX^NUGUc5");
