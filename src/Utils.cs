@@ -1,5 +1,6 @@
 using Wox.Plugin.Logger;
 using System.Windows;
+using System.Text.Json;
 
 namespace Translater.Utils
 {
@@ -13,6 +14,18 @@ namespace Translater.Utils
         public static bool WhetherTranslate(string? s)
         {
             return s != null && s.Length > 0 && !s.Contains("\\") && !s.Contains("/");
+        }
+        public static T? ParseJson<T>(string src)
+        {
+            try
+            {
+                var res = JsonSerializer.Deserialize<T>(src);
+                return res;
+            }
+            catch (JsonException)
+            {
+                return default(T);
+            }
         }
         public static void SetClipboardText(string s)
         {
