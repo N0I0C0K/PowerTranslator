@@ -36,27 +36,24 @@ namespace Translater
                 toLan = "AUTO"
             };
         }
-        public void TranslateAppendResult(string raw, Query query, List<Result> results, string translateFrom = "user input")
+        public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input")
         {
+            var res = new List<ResultItem>();
+            if (raw.Length == 0)
+                return res;
+            var target = ParseRawSrc(raw);
+            string src = target.src;
+            string toLan = target.toLan;
+
             try
             {
-                if (raw.Length == 0)
-                    return;
-                var target = ParseRawSrc(raw);
-                string src = target.src;
-                string toLan = target.toLan;
                 var translateRes = youdaoTranslater!.translate(src, toLan);
                 if (translateRes != null && translateRes.errorCode == 0)
                 {
-                    results.Add(new Result()
+                    res.Add(new ResultItem
                     {
-                        Title = translateRes.translateResult[0][0].tgt,
-                        SubTitle = $"{src} [{translateRes.type}] [Translate form {translateFrom}]",
-                        Action = e =>
-                        {
-                            Utils.UtilsFun.SetClipboardText(translateRes.translateResult[0][0].tgt);
-                            return true;
-                        }
+                        Title = translateRes.translateResult![0][0].tgt,
+                        SubTitle = $"{src} [{translateRes.type}] [Translate form {translateFrom}]"
                     });
                     if (translateRes.smartResult != null)
                     {
@@ -65,38 +62,33 @@ namespace Translater
                             string t = s.Replace("\r\n", " ").TrimStart();
                             if (string.IsNullOrEmpty(t))
                                 return;
-                            results.Add(new Result()
+                            res.Add(new ResultItem
                             {
                                 Title = t,
-                                SubTitle = "[smart result]",
-                                Action = e =>
-                                {
-                                    Utils.UtilsFun.SetClipboardText(t);
-                                    return true;
-                                }
-
+                                SubTitle = "[smart result]"
                             });
                         });
                     }
                 }
                 else
                 {
-                    results.Add(new Result()
+                    res.Add(new ResultItem
                     {
-                        Title = query.Search,
+                        Title = raw,
                         SubTitle = $"can not translate {src} to {toLan}"
                     });
                 }
             }
             catch (Exception err)
             {
-                results.Add(new Result()
+                res.Add(new ResultItem
                 {
                     Title = "some error happen!",
                     SubTitle = err.Message
                 });
                 Log.Error(err.ToString(), typeof(Translater));
             }
+            return res;
         }
 
         public bool initTranslater()

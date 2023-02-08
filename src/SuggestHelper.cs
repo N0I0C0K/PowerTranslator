@@ -16,29 +16,56 @@ namespace Translater.Suggest
             public SuggestItem[]? data { get; set; }
 
         }
+        private IPublicAPI api;
         private HttpClient client;
-        public SuggestHelper()
+        public SuggestHelper(IPublicAPI api)
         {
             client = new HttpClient();
+            this.api = api;
         }
-        public void QuerySuggest(string query, List<Result> results)
+        public List<ResultItem> QuerySuggest(string query)
         {
+
             var data = new { kw = query };
-            var res = client.PostAsync("https://fanyi.baidu.com/sug",
-                                        new StringContent(data.toFormDataBodyString(),
-                                        new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")))
-                                        .GetAwaiter()
-                                        .GetResult();
-            var sug = UtilsFun.ParseJson<SuggestInterface>(res.Content.ReadAsStringAsync().GetAwaiter().GetResult());
-            if (sug == null || sug.data == null || sug.data.Length == 0)
-                return;
-            foreach (var item in sug.data)
+            try
             {
-                results.Add(new Result
+                var res = client.PostAsync("https://fanyi.baidu.com/sug",
+                                            new StringContent(data.toFormDataBodyString(),
+                                            new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")))
+                                            .GetAwaiter()
+                                            .GetResult();
+                var sug = UtilsFun.ParseJson<SuggestInterface>(res.Content.ReadAsStringAsync().GetAwaiter().GetResult());
+                if (sug == null || sug.data == null || sug.data.Length == 0)
                 {
-                    Title = item.k,
-                    SubTitle = item.v
-                });
+                    return new List<ResultItem>
+                    {
+                        new ResultItem{
+                            Title = "...",
+                            SubTitle = $"no suggest for {query}"
+                        }
+                    };
+
+                }
+                var result = new List<ResultItem>();
+                foreach (var item in sug.data)
+                {
+                    result.Add(new ResultItem
+                    {
+                        Title = item.k,
+                        SubTitle = $"{item.v} [suggest]"
+                    });
+
+                }
+                return result;
+            }
+            catch (Exception err)
+            {
+                return new List<ResultItem>{
+                    new ResultItem{
+                        Title = "some err happen in suggest",
+                        SubTitle = err.Message
+                    }
+                };
             }
         }
     }

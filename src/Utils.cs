@@ -35,6 +35,15 @@ namespace Translater.Utils
         {
             return DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
+        public static long GetNowTicks()
+        {
+            return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
+        }
+        public static string ToFormateTime(this long ticks)
+        {
+            var time = new DateTime(ticks * TimeSpan.TicksPerMillisecond);
+            return String.Format("{0:yyyy/MM/dd hh:mm:ss}:{1}", time, time.Millisecond);
+        }
         public static string? GetClipboardText()
         {
             try
@@ -75,6 +84,24 @@ namespace Translater.Utils
                 res.Add($"{key.Name}={src.GetType().GetProperty(key.Name)?.GetValue(src)}");
             }
             return string.Join("&", res);
+        }
+        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath)
+        {
+            return src.Select((item, idx) =>
+            {
+                return new Wox.Plugin.Result
+                {
+                    Title = item.Title,
+                    SubTitle = item.SubTitle,
+                    Action = item.Action != null ? item.Action :
+                    (e) =>
+                    {
+                        UtilsFun.SetClipboardText(item.Title);
+                        return true;
+                    },
+                    IcoPath = iconPath
+                };
+            }).ToList();
         }
     }
 }

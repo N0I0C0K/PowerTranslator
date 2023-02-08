@@ -7,23 +7,32 @@ using System.Windows.Controls;
 
 namespace Translater
 {
-    public class Translater : IPlugin, IDisposable
+    public class ResultItem
+    {
+        public string Title { get; set; } = default!;
+        public string SubTitle { get; set; } = default!;
+        public Func<ActionContext, bool>? Action { get; set; }
+    }
+
+    public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin
     {
         public string Name => "Translater";
         public string Description => "A simple translater plugin, based on Youdao Translation";
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
-        public const int delayQueryMillSecond = 1000;
+        public const int delayQueryMillSecond = 500;
         private string iconPath = "Images/translater.dark.png";
         public int queryCount = 0;
         private TranslateHelper? translateHelper = null;
         private Suggest.SuggestHelper? suggestHelper;
-        private bool isDebug = true;
+        private bool isDebug = false;
         private string queryPre = "";
         private long lastQueryTime = 0;
         private string queryPreReal = "";
         private long lastQueryTimeReal = 0;
+        private long lastTranslateTime = 0;
         private object preQueryLock = new Object();
+        private bool delayedExecution = false;
         private void LogInfo(string info)
         {
             if (!isDebug)
@@ -32,28 +41,29 @@ namespace Translater
         }
         public List<Result> Query(Query query)
         {
-            List<Result> results = new List<Result>();
-
+            if (delayedExecution)
+                return new List<Result>();
             if (!translateHelper!.inited)
             {
                 Task.Factory.StartNew(() =>
                 {
                     translateHelper.initTranslater();
                 });
-                results.Add(new Result
-                {
-                    Title = "Initializing....",
-                    SubTitle = "[Initialize translation components]",
-                    IcoPath = iconPath
-                });
-                return results;
+                return new List<Result>(){
+                    new Result
+                    {
+                        Title = "Initializing....",
+                        SubTitle = "[Initialize translation components]",
+                        IcoPath = iconPath
+                    }
+                };
             }
 
-            var queryTime = UtilsFun.GetUtcTimeNow();
+            var queryTime = UtilsFun.GetNowTicks();
             var querySearch = query.Search;
+            var results = new List<ResultItem>();
 
-
-            LogInfo($"{query.RawQuery} | {this.queryPre} | {this.lastQueryTime} | {queryTime}");
+            //LogInfo($"{query.RawQuery} | {this.queryPre} | now: {queryTime.ToFormateTime()} | pre: {this.lastQueryTime.ToFormateTime()}");
 
             if (querySearch.Length == 0)
             {
@@ -61,62 +71,64 @@ namespace Translater
                 if (Utils.UtilsFun.WhetherTranslate(clipboardText))
                 {
                     // Translate content from the clipboard
-                    translateHelper!.TranslateAppendResult(clipboardText!, query, results, "clipboard");
+                    results.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
                 }
-                results.each(tar =>
-                {
-                    tar.IcoPath = iconPath;
-                });
-                return results;
+                return results.ToResultList(this.iconPath);
             }
 
-            if (query.RawQuery == this.queryPre && queryTime - this.lastQueryTime > 400)
+            if (query.RawQuery == this.queryPre && queryTime - this.lastQueryTime > 300)
             {
-                string src = querySearch;
+                LogInfo($"translate {querySearch}");
                 queryCount++;
-                translateHelper!.TranslateAppendResult(src, query, results);
-                results.each(tar =>
+                this.lastTranslateTime = queryTime;
+                this.lastQueryTime = queryTime;
+
+                var task = Task.Run(() =>
                 {
-                    tar.IcoPath = iconPath;
+                    return this.suggestHelper!.QuerySuggest(querySearch);
                 });
+
+                results.AddRange(translateHelper!.QueryTranslate(querySearch));
+                //results.AddRange(task.GetAwaiter().GetResult());
             }
             else
             {
-                lock (preQueryLock)
-                {
-                    this.queryPre = query.RawQuery;
-                    this.lastQueryTime = queryTime;
-                }
-                results.Add(new Result()
+                results.Add(new ResultItem
                 {
                     Title = querySearch,
                     SubTitle = "....",
-                    IcoPath = iconPath
+                    Action = (e) => { return false; }
                 });
-                if (false && querySearch != this.queryPreReal)
+                if (true || querySearch != this.queryPreReal)
                 {
+                    lock (preQueryLock)
+                    {
+                        this.queryPre = query.RawQuery;
+                        this.lastQueryTime = queryTime;
+                    }
                     Task.Delay(delayQueryMillSecond).ContinueWith((task) =>
                     {
-                        if (query.RawQuery == this.queryPre)
+                        var time_now = UtilsFun.GetNowTicks();
+                        if (query.RawQuery == this.queryPre
+                            && this.lastTranslateTime < queryTime)
                         {
-                            LogInfo($"change query to {query.RawQuery}({this.queryPre})");
-                            publicAPI!.ChangeQuery(query.RawQuery, true);
+                            LogInfo($"change query to {query.RawQuery}({this.queryPre}), {queryTime.ToFormateTime()}");
+                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                            {
+                                publicAPI!.ChangeQuery(query.RawQuery, true);
+                            });
                         }
                     });
                 }
             }
-
-            //add suggest
-            this.suggestHelper?.QuerySuggest(querySearch, results);
-
             if (isDebug)
             {
-                results.Add(new Result
+                results.Add(new ResultItem
                 {
                     Title = $"{this.queryMetaData!.QueryCount},{queryCount}",
                     SubTitle = queryPre
                 });
-                results.Add(new Result
+                results.Add(new ResultItem
                 {
                     Title = querySearch,
                     SubTitle = $"[{query.RawQuery}]"
@@ -126,7 +138,7 @@ namespace Translater
             this.queryPreReal = querySearch;
             this.lastQueryTimeReal = queryTime;
 
-            return results;
+            return results.ToResultList(this.iconPath);
         }
         public void Init(PluginInitContext context)
         {
@@ -134,7 +146,7 @@ namespace Translater
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
             translateHelper = new TranslateHelper();
-            suggestHelper = new Suggest.SuggestHelper();
+            suggestHelper = new Suggest.SuggestHelper(publicAPI);
             publicAPI.ThemeChanged += this.UpdateIconPath;
         }
 
@@ -176,6 +188,60 @@ namespace Translater
         public void UpdateSettings(PowerLauncherPluginSettings settings)
         {
             throw new NotImplementedException();
+        }
+
+        public List<Result> Query(Query query, bool delayedExecution)
+        {
+            this.delayedExecution = delayedExecution;
+            var querySearch = query.Search;
+            if (!translateHelper!.inited)
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    translateHelper.initTranslater();
+                });
+                return new List<Result>(){
+                    new Result
+                    {
+                        Title = "Initializing....",
+                        SubTitle = "[Initialize translation components]",
+                        IcoPath = iconPath
+                    }
+                };
+            }
+
+            var res = new List<ResultItem>();
+            if (querySearch.Length == 0)
+            {
+                string? clipboardText = Utils.UtilsFun.GetClipboardText();
+                if (Utils.UtilsFun.WhetherTranslate(clipboardText))
+                {
+                    // Translate content from the clipboard
+                    res.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
+                }
+                return res.ToResultList(this.iconPath);
+            }
+
+            var suggestTask = Task.Run(() =>
+            {
+                return this.suggestHelper!.QuerySuggest(querySearch);
+            });
+            res.AddRange(this.translateHelper!.QueryTranslate(query.Search));
+            res.AddRange(suggestTask.GetAwaiter().GetResult());
+            if (isDebug)
+            {
+                res.Add(new ResultItem
+                {
+                    Title = $"{this.queryMetaData!.QueryCount},{++queryCount}",
+                    SubTitle = queryPre
+                });
+                res.Add(new ResultItem
+                {
+                    Title = querySearch,
+                    SubTitle = $"[{query.RawQuery}]"
+                });
+            }
+            return res.ToResultList(this.iconPath);
         }
     }
 }
