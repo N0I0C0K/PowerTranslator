@@ -53,8 +53,6 @@ namespace Translater.Utils
                 {
                     if (Clipboard.ContainsText())
                         res = Clipboard.GetText();
-                    else
-                        Log.Error("can not find any text in clipboard", typeof(UtilsFun));
                 });
                 return res;
             }

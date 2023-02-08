@@ -14,10 +14,11 @@ namespace Translater
         public Func<ActionContext, bool>? Action { get; set; }
     }
 
-    public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin
+    public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider
     {
         public string Name => "Translater";
         public string Description => "A simple translater plugin, based on Youdao Translation";
+        public IEnumerable<PluginAdditionalOption> AdditionalOptions => GetAdditionalOptions();
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
         public const int delayQueryMillSecond = 500;
@@ -33,6 +34,7 @@ namespace Translater
         private long lastTranslateTime = 0;
         private object preQueryLock = new Object();
         private bool delayedExecution = false;
+        private bool enable_suggest = true;
         private void LogInfo(string info)
         {
             if (!isDebug)
@@ -140,56 +142,6 @@ namespace Translater
 
             return results.ToResultList(this.iconPath);
         }
-        public void Init(PluginInitContext context)
-        {
-            Log.Info("translater init", typeof(Translater));
-            queryMetaData = context.CurrentPluginMetadata;
-            publicAPI = context.API;
-            translateHelper = new TranslateHelper();
-            suggestHelper = new Suggest.SuggestHelper(publicAPI);
-            publicAPI.ThemeChanged += this.UpdateIconPath;
-        }
-
-        private void UpdateIconPath(Theme pre, Theme now)
-        {
-            if (now == Theme.Light || now == Theme.HighContrastWhite)
-            {
-                iconPath = "Images/translater.light.png";
-            }
-            else
-            {
-                iconPath = "Images/translater.dark.png";
-            }
-        }
-
-        private List<PluginAdditionalOption> GetAdditionalOptions()
-        {
-            return new List<PluginAdditionalOption>
-            {
-                new PluginAdditionalOption{
-                    Key = "enable_suggest",
-                    DisplayDescription = "Enable search suggestions",
-                    Value = false
-                },
-
-            };
-        }
-
-        public void Dispose()
-        {
-            this.publicAPI!.ThemeChanged -= this.UpdateIconPath;
-        }
-
-        public Control CreateSettingPanel()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateSettings(PowerLauncherPluginSettings settings)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<Result> Query(Query query, bool delayedExecution)
         {
             this.delayedExecution = delayedExecution;
@@ -222,12 +174,18 @@ namespace Translater
                 return res.ToResultList(this.iconPath);
             }
 
-            var suggestTask = Task.Run(() =>
+            Task<List<ResultItem>>? suggestTask = null;
+            if (enable_suggest)
             {
-                return this.suggestHelper!.QuerySuggest(querySearch);
-            });
+                suggestTask = Task.Run(() =>
+                {
+                    return this.suggestHelper!.QuerySuggest(querySearch);
+                });
+            }
+
             res.AddRange(this.translateHelper!.QueryTranslate(query.Search));
-            res.AddRange(suggestTask.GetAwaiter().GetResult());
+            if (suggestTask != null)
+                res.AddRange(suggestTask.GetAwaiter().GetResult());
             if (isDebug)
             {
                 res.Add(new ResultItem
@@ -242,6 +200,62 @@ namespace Translater
                 });
             }
             return res.ToResultList(this.iconPath);
+        }
+
+        public void Init(PluginInitContext context)
+        {
+            Log.Info("translater init", typeof(Translater));
+            queryMetaData = context.CurrentPluginMetadata;
+            publicAPI = context.API;
+            translateHelper = new TranslateHelper();
+            suggestHelper = new Suggest.SuggestHelper(publicAPI);
+            publicAPI.ThemeChanged += this.UpdateIconPath;
+        }
+
+        private void UpdateIconPath(Theme pre, Theme now)
+        {
+            if (now == Theme.Light || now == Theme.HighContrastWhite)
+            {
+                iconPath = "Images/translater.light.png";
+            }
+            else
+            {
+                iconPath = "Images/translater.dark.png";
+            }
+        }
+
+        public static List<PluginAdditionalOption> GetAdditionalOptions()
+        {
+            return new List<PluginAdditionalOption>
+            {
+                new PluginAdditionalOption{
+                    Key = "EnableSuggest",
+                    DisplayLabel = "Enable search suggest",
+                    Value = true,
+                },
+            };
+        }
+
+        public void Dispose()
+        {
+            this.publicAPI!.ThemeChanged -= this.UpdateIconPath;
+        }
+
+        public Control CreateSettingPanel()
+        {
+            throw new NotImplementedException();
+        }
+        public void UpdateSettings(PowerLauncherPluginSettings settings)
+        {
+            var GetSetting = (string key) =>
+            {
+                var target = settings.AdditionalOptions.FirstOrDefault((set) =>
+                {
+                    return set.Key == key;
+                });
+                return target?.Value ?? true;
+            };
+            this.enable_suggest = GetSetting("EnableSuggest");
         }
     }
 }
