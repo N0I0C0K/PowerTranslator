@@ -35,8 +35,15 @@
     ![clipboard](Images/clipboard.gif)
 
 - 指定翻译目标语言
+
   - 使用 `^[words]->[Target language]`, 例如: `^你好->ja` 表示把你好翻译为日文
     ![Specified language](Images/target%20lan.gif)
+
+- 搜索建议
+  - 根据当前的输入建议搜索内容
+    ![suggest](Images/suggest.gif)
+  - 你可以在设置里取消
+    ![suggest setting](Images/suggest_setting.png)
 
 常用语言代码
 |语言|代码|备注|
@@ -55,6 +62,8 @@
   ![change active key](Images/change_active.png)
 - 建议勾选`启动时清除上一查询`, 可以解决剪贴板快速翻译不能触发的问题
   ![auto clean](Images/auto_clean.png)
+- 建议勾选, 可以优化输入体验
+  ![enable Smooth input](Images/enable%20Smooth%20input.png)
 
 ## Issue
 
