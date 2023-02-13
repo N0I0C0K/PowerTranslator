@@ -32,25 +32,25 @@ namespace Translater.Youdao
         private string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
         public YoudaoTranslater()
         {
+            this.random = new Random();
+            this.md5 = MD5.Create();
+
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", userAgent);
             client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
             client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
 
-
             var res = client.GetAsync("https://rlogs.youdao.com/rlog.php".addQueryParameters(new
             {
                 _npid = "fanyiweb",
-                _ncat = "event",
-                _ncoo = "214748364.7",
+                _ncat = "pageview",
+                _ncoo = (2147483647 / this.random.Next(1, 10)).ToString(),
                 nssn = "NULL",
                 _nver = "1.2.0",
                 _ntms = UtilsFun.GetUtcTimeNow().ToString(),
                 _nhrf = "newweb_translate_text"
             })).GetAwaiter().GetResult();
             client.DefaultRequestHeaders.Add("cookies", res.Headers.GetValues("Set-Cookie").First());
-            this.random = new Random();
-            this.md5 = MD5.Create();
         }
 
         private string md5Encrypt(string src)

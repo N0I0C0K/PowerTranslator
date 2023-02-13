@@ -35,7 +35,7 @@ namespace Translater.Utils
         {
             return DateTimeOffset.Now.ToUnixTimeMilliseconds();
         }
-        public static long GetNowTicks()
+        public static long GetNowTicksMilliseconds()
         {
             return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         }

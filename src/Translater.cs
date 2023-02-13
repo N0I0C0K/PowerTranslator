@@ -61,7 +61,7 @@ namespace Translater
                 };
             }
 
-            var queryTime = UtilsFun.GetNowTicks();
+            var queryTime = UtilsFun.GetNowTicksMilliseconds();
             var querySearch = query.Search;
             var results = new List<ResultItem>();
 
@@ -110,7 +110,7 @@ namespace Translater
                     }
                     Task.Delay(delayQueryMillSecond).ContinueWith((task) =>
                     {
-                        var time_now = UtilsFun.GetNowTicks();
+                        var time_now = UtilsFun.GetNowTicksMilliseconds();
                         if (query.RawQuery == this.queryPre
                             && this.lastTranslateTime < queryTime)
                         {
@@ -151,12 +151,13 @@ namespace Translater
                 Task.Factory.StartNew(() =>
                 {
                     translateHelper.initTranslater();
+                    this.publicAPI?.ChangeQuery(query.RawQuery, true);
                 });
                 return new List<Result>(){
                     new Result
                     {
                         Title = "Initializing....",
-                        SubTitle = "[Initialize translation components]",
+                        SubTitle = "Initialize translation components, please wait.",
                         IcoPath = iconPath
                     }
                 };
@@ -207,7 +208,7 @@ namespace Translater
             Log.Info("translater init", typeof(Translater));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
-            translateHelper = new TranslateHelper();
+            translateHelper = new TranslateHelper(publicAPI);
             suggestHelper = new Suggest.SuggestHelper(publicAPI);
             publicAPI.ThemeChanged += this.UpdateIconPath;
         }

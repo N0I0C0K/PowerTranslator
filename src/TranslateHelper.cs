@@ -15,9 +15,12 @@ namespace Translater
         public bool inited => this.youdaoTranslater != null;
         private object initLock = new Object();
         private Youdao.YoudaoTranslater? youdaoTranslater;
-        public TranslateHelper()
+        private long lastInitTime = 0;
+        private IPublicAPI publicAPI;
+        public TranslateHelper(IPublicAPI publicAPI)
         {
             this.initTranslater();
+            this.publicAPI = publicAPI;
         }
         public TranslateTarget ParseRawSrc(string src)
         {
@@ -59,7 +62,7 @@ namespace Translater
                     {
                         translateRes.smartResult?.entries.each((s) =>
                         {
-                            string t = s.Replace("\r\n", " ").TrimStart();
+                            string t = s.Replace("\r\n", " ").TrimStart().Replace(" ", "");
                             if (string.IsNullOrEmpty(t))
                                 return;
                             res.Add(new ResultItem
@@ -83,8 +86,14 @@ namespace Translater
             {
                 res.Add(new ResultItem
                 {
-                    Title = "some error happen!",
-                    SubTitle = err.Message
+                    Title = "Some error happen!",
+                    SubTitle = $"press enter to get help, msg: {err.Message}",
+                    Action = (ev) =>
+                    {
+                        this.publicAPI.ShowMsg("Copy!", "The URL has been copied, Go to your browser and visit the website for help.");
+                        return true;
+                    }
+
                 });
                 Log.Error(err.ToString(), typeof(Translater));
             }
@@ -97,6 +106,10 @@ namespace Translater
             {
                 if (this.youdaoTranslater != null)
                     return true;
+                var now = UtilsFun.GetUtcTimeNow();
+                if (now - this.lastInitTime < 3000)
+                    return false;
+                this.lastInitTime = now;
                 try
                 {
                     youdaoTranslater = new Youdao.YoudaoTranslater();
