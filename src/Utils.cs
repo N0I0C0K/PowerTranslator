@@ -70,9 +70,14 @@ namespace Translater.Utils
                 action(item);
             }
         }
-        public static string addQueryParameters(this string src, object obj)
+        public static string addQueryParameters(this string src, params object[] objs)
         {
-            return $"{src}?{obj.toFormDataBodyString()}";
+            string tar = string.Join("&", objs.Select((obj) =>
+            {
+                return obj.toFormDataBodyString();
+            }));
+
+            return $"{src}?{tar}";
         }
         public static string toFormDataBodyString(this object src)
         {

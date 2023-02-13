@@ -90,6 +90,7 @@ namespace Translater
                     SubTitle = $"press enter to get help, msg: {err.Message}",
                     Action = (ev) =>
                     {
+                        UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerToysRun.Plugin.Translater/issues?q=");
                         this.publicAPI.ShowMsg("Copy!", "The URL has been copied, Go to your browser and visit the website for help.");
                         return true;
                     }
