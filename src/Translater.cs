@@ -151,8 +151,8 @@ namespace Translater
             {
                 Task.Factory.StartNew(() =>
                 {
-                    translateHelper.initTranslater();
-                    this.publicAPI?.ChangeQuery(query.RawQuery, true);
+                    if (translateHelper.initTranslater())
+                        this.publicAPI?.ChangeQuery(query.RawQuery, true);
                 });
                 return new List<Result>(){
                     new Result

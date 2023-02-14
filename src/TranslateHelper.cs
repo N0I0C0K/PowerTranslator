@@ -133,7 +133,7 @@ namespace Translater
                         {
                             res.Add(new ResultItem
                             {
-                                Title = trs.text!,
+                                Title = trs.text?.Replace(" ", "") ?? "[None]",
                                 SubTitle = trs.tran ?? "[smart result]"
                             });
                         }
