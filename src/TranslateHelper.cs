@@ -16,12 +16,16 @@ namespace Translater
         private object initLock = new Object();
         private Youdao.YoudaoTranslater? youdaoTranslater;
         private Youdao.V2.YoudaoTranslater? youdaoTranslaterV2;
+        private Youdao.Backup.BackUpTranslater? backUpTranslater;
         private long lastInitTime = 0;
         private IPublicAPI publicAPI;
         public TranslateHelper(IPublicAPI publicAPI)
         {
             this.initTranslater();
             this.publicAPI = publicAPI;
+
+            // backup translater, We don't need to initialize it with the others, because it doesn't have an error
+            this.backUpTranslater = new Youdao.Backup.BackUpTranslater();
         }
         public TranslateTarget ParseRawSrc(string src)
         {
@@ -82,8 +86,13 @@ namespace Translater
             return res;
         }
 
+        /// <summary>
+        /// old version of translate. will be removed in the next version
+        /// </summary>
         private bool TranslateV1(List<ResultItem> res, string src, string toLan, string translateFrom)
         {
+            if (youdaoTranslater == null)
+                return false;
             var translateRes = youdaoTranslater!.translate(src, toLan);
             if (translateRes == null || translateRes.errorCode != 0)
                 return false;
@@ -109,6 +118,9 @@ namespace Translater
             return true;
         }
 
+        /// <summary>
+        /// The latest api of Youdao translate
+        /// </summary>
         private bool TranslateV2(List<ResultItem> res, string src, string toLan, string translateFrom)
         {
             if (this.youdaoTranslaterV2 == null)
@@ -166,20 +178,26 @@ namespace Translater
             return true;
         }
 
+        private bool TranslateBackup(List<ResultItem> res, string src, string toLan, string translateFrom)
+        {
+            return false;
+        }
+
         public bool initTranslater()
         {
             lock (this.initLock)
             {
-                if (this.youdaoTranslater != null)
-                    return true;
                 var now = UtilsFun.GetUtcTimeNow();
-                if (now - this.lastInitTime < 3000)
+                // if one of the api is inited, then return true. because we need. Because we want to minimize the number of initializations
+                if (this.youdaoTranslaterV2 != null || this.youdaoTranslater != null)
+                    return true;
+                if (now - this.lastInitTime < 1000 * 20)
                     return false;
                 this.lastInitTime = now;
                 try
                 {
-                    youdaoTranslater = new Youdao.YoudaoTranslater();
-                    youdaoTranslaterV2 = new Youdao.V2.YoudaoTranslater();
+                    youdaoTranslater = youdaoTranslater ?? new Youdao.YoudaoTranslater();
+                    youdaoTranslaterV2 = youdaoTranslaterV2 ?? new Youdao.V2.YoudaoTranslater();
                     return true;
                 }
                 catch (Exception err)
