@@ -134,7 +134,7 @@ namespace Translater
                             res.Add(new ResultItem
                             {
                                 Title = trs.text!,
-                                SubTitle = trs.tran!
+                                SubTitle = trs.tran ?? "[smart result]"
                             });
                         }
                     }

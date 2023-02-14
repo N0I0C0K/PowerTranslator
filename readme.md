@@ -25,8 +25,14 @@
   - `alt+space`打开 PowerToysRun, 输入`^[你要翻译的地方]`
   - `Enter`复制翻译结果到剪贴板
 
-  演示翻译 command
-  ![en->zh](Images/command.gif)
+  演示翻译 `command`
+  ![command](Images/command.gif)
+
+  演示翻译 `命令`
+  ![chinese](Images/%E5%91%BD%E4%BB%A4.gif)
+
+- 中文带有拼音
+  参考上方演示翻译`命令`
 
 - 快速翻译剪贴板
 
