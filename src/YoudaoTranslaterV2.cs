@@ -20,7 +20,7 @@ public class KeyResponse
 
 public class TranslateResponse
 {
-    public struct DictResult
+    public struct TranDictResult
     {
         public struct Ce
         {
@@ -28,22 +28,38 @@ public class TranslateResponse
             {
                 public struct Trs
                 {
-                    public string voice { get; set; }
+                    public string? voice { get; set; }
                     [JsonPropertyName("#text")]
-                    public string text { get; set; }
+                    public string? text { get; set; }
                     [JsonPropertyName("#tran")]
-                    public string tran { get; set; }
+                    public string? tran { get; set; }
                 }
-                public Trs[] trs;
+                public Trs[]? trs { get; set; }
                 public string? phone { get; set; }
                 [JsonPropertyName("return-phrase")]
                 public string return_phrase { get; set; }
             }
-            public string? exam_type { get; set; }
+            public Word? word { get; set; }
+        }
+        public struct Ec
+        {
+            public struct Word
+            {
+                public struct Trs
+                {
+                    public string? pos { get; set; }
+                    public string? tran { get; set; }
+                }
+                public Trs[]? trs { get; set; }
+                public string? usphone { get; set; }
+                [JsonPropertyName("return-phrase")]
+                public string return_phrase { get; set; }
+            }
+            public string[]? exam_type { get; set; }
             public Word? word { get; set; }
         }
         public Ce? ce { get; set; }
-        public Ce? ec { get; set; }
+        public Ec? ec { get; set; }
     }
 
     public struct TranslateResult
@@ -52,12 +68,11 @@ public class TranslateResponse
         public string src { get; set; }
         public string? srcPronounce { get; set; }
         public string? tgtPronounce { get; set; }
-
     }
 
 
     public int code { get; set; }
-    public DictResult? dictResult { get; set; }
+    public TranDictResult? dictResult { get; set; }
     public TranslateResult[][]? translateResult { get; set; }
     public string? type { get; set; }
 
@@ -67,7 +82,6 @@ public class YoudaoTranslater
 {
     private HttpClient client;
     private const string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
-    //private string key = "";
     private Random random;
     private string? secretKey;
     private MD5 md5;
@@ -192,6 +206,8 @@ public class YoudaoTranslater
     }
     private string Decrypt(string src)
     {
+        if (this.encryptKey == null || this.iv == null)
+            throw new Exception("No key was initialized");
         string res;
         using (Aes cryptor = Aes.Create())
         {

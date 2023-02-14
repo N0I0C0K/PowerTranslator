@@ -15,6 +15,7 @@ namespace Translater
         public bool inited => this.youdaoTranslater != null;
         private object initLock = new Object();
         private Youdao.YoudaoTranslater? youdaoTranslater;
+        private Youdao.V2.YoudaoTranslater? youdaoTranslaterV2;
         private long lastInitTime = 0;
         private IPublicAPI publicAPI;
         public TranslateHelper(IPublicAPI publicAPI)
@@ -47,31 +48,11 @@ namespace Translater
             var target = ParseRawSrc(raw);
             string src = target.src;
             string toLan = target.toLan;
-
             try
             {
-                var translateRes = youdaoTranslater!.translate(src, toLan);
-                if (translateRes != null && translateRes.errorCode == 0)
+                if (TranslateV2(res, src, toLan, translateFrom) || TranslateV1(res, src, toLan, translateFrom))
                 {
-                    res.Add(new ResultItem
-                    {
-                        Title = translateRes.translateResult![0][0].tgt,
-                        SubTitle = $"{src} [{translateRes.type}] [Translate form {translateFrom}]"
-                    });
-                    if (translateRes.smartResult != null)
-                    {
-                        translateRes.smartResult?.entries.each((s) =>
-                        {
-                            string t = s.Replace("\r\n", " ").TrimStart().Replace(" ", "");
-                            if (string.IsNullOrEmpty(t))
-                                return;
-                            res.Add(new ResultItem
-                            {
-                                Title = t,
-                                SubTitle = "[smart result]"
-                            });
-                        });
-                    }
+
                 }
                 else
                 {
@@ -101,6 +82,90 @@ namespace Translater
             return res;
         }
 
+        private bool TranslateV1(List<ResultItem> res, string src, string toLan, string translateFrom)
+        {
+            var translateRes = youdaoTranslater!.translate(src, toLan);
+            if (translateRes == null || translateRes.errorCode != 0)
+                return false;
+            res.Add(new ResultItem
+            {
+                Title = translateRes.translateResult![0][0].tgt,
+                SubTitle = $"{src} [{translateRes.type}] [Translate form {translateFrom}]"
+            });
+            if (translateRes.smartResult != null)
+            {
+                translateRes.smartResult?.entries.each((s) =>
+                {
+                    string t = s.Replace("\r\n", " ").TrimStart().Replace(" ", "");
+                    if (string.IsNullOrEmpty(t))
+                        return;
+                    res.Add(new ResultItem
+                    {
+                        Title = t,
+                        SubTitle = "[smart result]"
+                    });
+                });
+            }
+            return true;
+        }
+
+        private bool TranslateV2(List<ResultItem> res, string src, string toLan, string translateFrom)
+        {
+            if (this.youdaoTranslaterV2 == null)
+                return false;
+            var translateRes = this.youdaoTranslaterV2.Translate(src, toLan);
+            if (translateRes == null || translateRes.code != 0)
+                return false;
+            var tres = translateRes.translateResult![0][0];
+            res.Add(new ResultItem
+            {
+                Title = tres.tgt,
+                SubTitle = $"{src}{$"({tres.srcPronounce})" ?? ""} [{translateRes.type}] [Translate form {translateFrom}] v2"
+            });
+            if (translateRes.dictResult != null)
+            {
+                if (translateRes.dictResult?.ce != null)
+                {
+                    var ce = translateRes.dictResult?.ce;
+                    if (ce?.word?.trs != null)
+                    {
+                        foreach (var trs in ce?.word?.trs!)
+                        {
+                            res.Add(new ResultItem
+                            {
+                                Title = trs.text!,
+                                SubTitle = trs.tran!
+                            });
+                        }
+                    }
+                }
+                else if (translateRes.dictResult?.ec != null)
+                {
+                    var ec = translateRes.dictResult?.ec;
+                    if (ec?.word?.trs != null)
+                    {
+                        foreach (var trs in ec?.word?.trs!)
+                        {
+                            res.Add(new ResultItem
+                            {
+                                Title = $"{trs.tran?.Replace(" ", "")}",
+                                SubTitle = trs.pos ?? "-"
+                            });
+                        }
+                    }
+                    if (ec?.exam_type != null)
+                    {
+                        res.Add(new ResultItem
+                        {
+                            Title = String.Join(" | ", ec?.exam_type!),
+                            SubTitle = "exam"
+                        });
+                    }
+                }
+            }
+            return true;
+        }
+
         public bool initTranslater()
         {
             lock (this.initLock)
@@ -114,6 +179,7 @@ namespace Translater
                 try
                 {
                     youdaoTranslater = new Youdao.YoudaoTranslater();
+                    youdaoTranslaterV2 = new Youdao.V2.YoudaoTranslater();
                     return true;
                 }
                 catch (Exception err)

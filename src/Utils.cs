@@ -99,7 +99,7 @@ namespace Translater.Utils
                     Action = item.Action != null ? item.Action :
                     (e) =>
                     {
-                        UtilsFun.SetClipboardText(item.Title);
+                        UtilsFun.SetClipboardText(item.CopyTgt ?? item.Title);
                         return true;
                     },
                     IcoPath = iconPath

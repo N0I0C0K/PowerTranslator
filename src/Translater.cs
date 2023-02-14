@@ -12,6 +12,7 @@ namespace Translater
         public string Title { get; set; } = default!;
         public string SubTitle { get; set; } = default!;
         public Func<ActionContext, bool>? Action { get; set; }
+        public string? CopyTgt { get; set; }
     }
 
     public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider
