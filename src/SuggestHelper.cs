@@ -36,16 +36,7 @@ namespace Translater.Suggest
                                             .GetResult();
                 var sug = UtilsFun.ParseJson<SuggestInterface>(res.Content.ReadAsStringAsync().GetAwaiter().GetResult());
                 if (sug == null || sug.data == null || sug.data.Length == 0)
-                {
-                    return new List<ResultItem>
-                    {
-                        new ResultItem{
-                            Title = "...",
-                            SubTitle = $"no suggest for {query}"
-                        }
-                    };
-
-                }
+                    return new List<ResultItem>();
                 var result = new List<ResultItem>();
                 foreach (var item in sug.data)
                 {

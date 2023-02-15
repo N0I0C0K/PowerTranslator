@@ -10,7 +10,6 @@ public class TranslateResult
     public struct Basic
     {
         public string[]? exam_type { get; set; }
-        [JsonPropertyName("us-phonetic")]
         public string? phonetic { get; set; }
         public string[] explains { get; set; }
     }
@@ -23,6 +22,7 @@ public class TranslateResult
     public string errorCode { get; set; } = "1";
     [JsonPropertyName("l")]
     public string? tranType { get; set; }
+    public string[]? translation { get; set; }
     public string? query { get; set; }
     public Basic? basic { get; set; }
     public Web[]? web { get; set; }
