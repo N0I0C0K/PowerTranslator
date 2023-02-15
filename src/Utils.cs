@@ -15,6 +15,10 @@ namespace Translater.Utils
         {
             return s != null && s.Length > 0 && !s.Contains("\\") && !s.Contains("/");
         }
+        public static string ToEnPunctuation(this string src)
+        {
+            return src.Replace('，', ',').Replace('；', ';').Replace('（', '(').Replace('）', ')');
+        }
         public static T? ParseJson<T>(string src)
         {
             try

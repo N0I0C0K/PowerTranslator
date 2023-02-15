@@ -158,7 +158,7 @@ public class TranslateHelper
                     {
                         res.Add(new ResultItem
                         {
-                            Title = trs.text?.Replace(" ", "") ?? "[None]",
+                            Title = trs.text ?? "[None]",
                             SubTitle = trs.tran ?? "[smart result]"
                         });
                     }
@@ -173,7 +173,7 @@ public class TranslateHelper
                     {
                         res.Add(new ResultItem
                         {
-                            Title = $"{trs.tran?.Replace(" ", "")}",
+                            Title = trs.tran ?? "[None]",
                             SubTitle = trs.pos ?? "-"
                         });
                     }
