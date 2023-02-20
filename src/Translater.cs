@@ -212,7 +212,7 @@ namespace Translater
             var query_res = res.ToResultList(this.iconPath);
             if (suggestItem != null && query_res.Count > 0)
             {
-                query_res.FirstOrDefault()!.ToolTipData = new ToolTipData(suggestItem!.Title, "test");
+                query_res.FirstOrDefault()!.QueryTextDisplay = suggestItem!.Title;
             }
             return query_res;
         }

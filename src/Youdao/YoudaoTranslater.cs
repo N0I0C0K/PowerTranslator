@@ -22,8 +22,10 @@ public class TranslateResponse : ITranslateResult
     public string? type { get; set; }
     public Entry? smartResult { get; set; }
 
-    public override IEnumerable<ResultItem> Transform()
+    public override IEnumerable<ResultItem>? Transform()
     {
+        if (this.errorCode != 0)
+            return null;
         List<ResultItem> res = new List<ResultItem>();
         res.Add(new ResultItem
         {
@@ -62,6 +64,7 @@ public class YoudaoTranslater : ITranslater
         this.md5 = MD5.Create();
 
         client = new HttpClient();
+        client.Timeout = TimeSpan.FromSeconds(3);
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
         client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
@@ -77,6 +80,7 @@ public class YoudaoTranslater : ITranslater
             _nhrf = "newweb_translate_text"
         })).GetAwaiter().GetResult();
         client.DefaultRequestHeaders.Add("cookies", res.Headers.GetValues("Set-Cookie").First());
+
     }
 
     private string md5Encrypt(string src)

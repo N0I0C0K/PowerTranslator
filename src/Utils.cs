@@ -119,5 +119,16 @@ namespace Translater.Utils
                 };
             }).ToList();
         }
+
+        public static T? FirstNotNoneCast<S, T>(this IEnumerable<S> src, Func<S, T?> func)
+        {
+            foreach (var item in src)
+            {
+                var t = func(item);
+                if (t != null)
+                    return t;
+            }
+            return default(T);
+        }
     }
 }

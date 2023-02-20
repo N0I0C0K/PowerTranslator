@@ -1,21 +1,18 @@
-# Translater
+<div align="center">
+<h1>Translater</h1>
+<p>一个用于<a href=https://github.com/microsoft/PowerToys>PowerToys Run</a>的翻译插件, 快速, 稳定.</p>
+
+![release](https://badgen.net/github/release/N0I0C0K/PowerToysRun.Plugin.Translater) ![issue](https://badgen.net/github/issues/N0I0C0K/PowerToysRun.Plugin.Translater) ![star](https://badgen.net/github/stars/N0I0C0K/PowerToysRun.Plugin.Translater?color=green)
 
 [English](./readme_en.md)
 
-## about
+</div>
+
+## About
 
 一个用于[PowerToysRun](https://github.com/microsoft/PowerToys)的插件.
 
-现已更新到有道翻译, **支持有道翻译的全部语言翻译**
-
-## Install
-
-1. 关闭 PowerToys
-2. 下载 [Translater.zip](https://github.com/N0I0C0K/PowerToysRun.Plugin.Translater/releases)
-3. 解压到`{安装目录}\modules\launcher\Plugins\`
-   如图所示
-   ![file](Images/file.png)
-4. 启动 PowerToys
+现已更新到有道翻译, **支持有道翻译的全部语言翻译**.
 
 ## Usage
 
@@ -61,6 +58,15 @@
 |韩语 |ko| 한국어
 |法语 |fr| En français
 |俄语 |ru| русск
+
+## Install
+
+1. 关闭 PowerToys
+2. 下载 [Translater.zip](https://github.com/N0I0C0K/PowerToysRun.Plugin.Translater/releases)
+3. 解压到`{安装目录}\modules\launcher\Plugins\`
+   如图所示
+   ![file](Images/file.png)
+4. 启动 PowerToys
 
 ## Setting
 

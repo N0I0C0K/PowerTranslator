@@ -76,8 +76,10 @@ public class TranslateResponse : ITranslateResult
     public TranslateResult[][]? translateResult { get; set; }
     public string? type { get; set; }
 
-    public override IEnumerable<ResultItem> Transform()
+    public override IEnumerable<ResultItem>? Transform()
     {
+        if (this.code != 0)
+            return null;
         List<ResultItem> res = new List<ResultItem>();
         var tres = this.translateResult![0][0];
         res.Add(new ResultItem
@@ -148,11 +150,13 @@ public class YoudaoTranslater : ITranslater
         this.md5 = MD5.Create();
 
         client = new HttpClient();
+        client.Timeout = TimeSpan.FromSeconds(3);
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
         client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
 
         SetCookies();
+
 
         var res = this.client.GetAsync("https://dict.youdao.com/webtranslate/key".addQueryParameters(new
         {

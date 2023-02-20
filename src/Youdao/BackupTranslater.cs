@@ -27,8 +27,10 @@ public class TranslateResult : ITranslateResult
     public Basic? basic { get; set; }
     public Web[]? web { get; set; }
 
-    public override IEnumerable<ResultItem> Transform()
+    public override IEnumerable<ResultItem>? Transform()
     {
+        if (this.errorCode != "0")
+            return null;
         List<ResultItem> res = new List<ResultItem>();
         res.Add(new ResultItem
         {
@@ -57,6 +59,7 @@ public class BackUpTranslater : ITranslater
     public BackUpTranslater()
     {
         client = new HttpClient();
+        client.Timeout = TimeSpan.FromMilliseconds(500);
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
         client.DefaultRequestHeaders.Add("Referer", "https://ai.youdao.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://ai.youdao.com");
