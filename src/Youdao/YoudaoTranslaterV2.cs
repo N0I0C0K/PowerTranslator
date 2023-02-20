@@ -18,7 +18,7 @@ public class KeyResponse
     public Data? data { get; set; }
 }
 
-public class TranslateResponse
+public class TranslateResponse : ITranslateResult
 {
     public struct TranDictResult
     {
@@ -76,20 +76,74 @@ public class TranslateResponse
     public TranslateResult[][]? translateResult { get; set; }
     public string? type { get; set; }
 
+    public override IEnumerable<ResultItem> Transform()
+    {
+        List<ResultItem> res = new List<ResultItem>();
+        var tres = this.translateResult![0][0];
+        res.Add(new ResultItem
+        {
+            Title = tres.tgt,
+            SubTitle = $"{tres.src}({tres.srcPronounce ?? "-"}) [{this.type}] v2"
+        });
+        if (this.dictResult != null)
+        {
+            if (this.dictResult?.ce != null)
+            {
+                var ce = this.dictResult?.ce;
+                if (ce?.word?.trs != null)
+                {
+                    foreach (var trs in ce?.word?.trs!)
+                    {
+                        res.Add(new ResultItem
+                        {
+                            Title = trs.text ?? "[None]",
+                            SubTitle = trs.tran ?? "[smart result]"
+                        });
+                    }
+                }
+            }
+            else if (this.dictResult?.ec != null)
+            {
+                var ec = this.dictResult?.ec;
+                if (ec?.word?.trs != null)
+                {
+                    foreach (var trs in ec?.word?.trs!)
+                    {
+                        res.Add(new ResultItem
+                        {
+                            Title = trs.tran ?? "[None]",
+                            SubTitle = trs.pos ?? "-"
+                        });
+                    }
+                }
+                if (ec?.exam_type != null)
+                {
+                    res.Add(new ResultItem
+                    {
+                        Title = String.Join(" | ", ec?.exam_type!),
+                        SubTitle = "exam"
+                    });
+                }
+            }
+        }
+        return res;
+    }
 }
 
-public class YoudaoTranslater
+public class YoudaoTranslater : ITranslater
 {
     private HttpClient client;
-    private const string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
     private Random random;
     private string? secretKey;
     private MD5 md5;
     private byte[]? encryptKey;
     private byte[]? iv;
+    private string userAgent;
 
     public YoudaoTranslater()
     {
+        this.userAgent = UtilsFun.GetRandomUserAgent();
+
         this.random = new Random();
         this.md5 = MD5.Create();
 
@@ -132,7 +186,7 @@ public class YoudaoTranslater
     }
 
 
-    public TranslateResponse? Translate(string src, string toLan = "auto", string fromLan = "auto")
+    public override TranslateResponse? Translate(string src, string toLan = "auto", string fromLan = "auto")
     {
         var data = new
         {

@@ -5,33 +5,59 @@ using System.Text.Json;
 using Translater.Utils;
 
 namespace Translater.Youdao;
-
-public class YoudaoTranslater
+public class TranslateResponse : ITranslateResult
 {
-    public class TranslateResponse
+    public struct ResStruct
     {
-        public struct ResStruct
-        {
-            public string tgt { get; set; }
-            public string src { get; set; }
-        }
-        public struct Entry
-        {
-            public string[] entries { get; set; }
-            public int type { get; set; }
-        }
-        public int errorCode { get; set; }
-        public ResStruct[][]? translateResult { get; set; }
-        public string? type { get; set; }
-        public Entry? smartResult { get; set; }
+        public string tgt { get; set; }
+        public string src { get; set; }
     }
+    public struct Entry
+    {
+        public string[] entries { get; set; }
+        public int type { get; set; }
+    }
+    public int errorCode { get; set; }
+    public ResStruct[][]? translateResult { get; set; }
+    public string? type { get; set; }
+    public Entry? smartResult { get; set; }
+
+    public override IEnumerable<ResultItem> Transform()
+    {
+        List<ResultItem> res = new List<ResultItem>();
+        res.Add(new ResultItem
+        {
+            Title = this.translateResult![0][0].tgt,
+            SubTitle = $"{this.translateResult![0][0].src} [{this.type}]"
+        });
+        if (this.smartResult != null)
+        {
+            this.smartResult?.entries.each((s) =>
+            {
+                string t = s.Replace("\r\n", " ").TrimStart().Replace(" ", "");
+                if (string.IsNullOrEmpty(t))
+                    return;
+                res.Add(new ResultItem
+                {
+                    Title = t,
+                    SubTitle = "[smart result]"
+                });
+            });
+        }
+        return res;
+    }
+}
+
+public class YoudaoTranslater : ITranslater
+{
 
     private HttpClient client;
     private Random random;
     private MD5 md5;
-    private string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
+    private string userAgent;
     public YoudaoTranslater()
     {
+        this.userAgent = UtilsFun.GetRandomUserAgent();
         this.random = new Random();
         this.md5 = MD5.Create();
 
@@ -65,7 +91,7 @@ public class YoudaoTranslater
         return resStr.ToString();
     }
 
-    public TranslateResponse? translate(string src, string toLan = "AUTO", string fromLan = "AUTO")
+    public override TranslateResponse? Translate(string src, string toLan = "AUTO", string fromLan = "AUTO")
     {
         var ts = UtilsFun.GetUtcTimeNow().ToString();
         var salt = $"{ts}{random.Next(0, 9)}";

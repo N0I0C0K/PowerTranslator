@@ -5,7 +5,7 @@ using Translater.Utils;
 
 namespace Translater.Youdao.Backup;
 
-public class TranslateResult
+public class TranslateResult : ITranslateResult
 {
     public struct Basic
     {
@@ -27,9 +27,30 @@ public class TranslateResult
     public Basic? basic { get; set; }
     public Web[]? web { get; set; }
 
+    public override IEnumerable<ResultItem> Transform()
+    {
+        List<ResultItem> res = new List<ResultItem>();
+        res.Add(new ResultItem
+        {
+            Title = String.Join(",", this.translation!),
+            SubTitle = $"{this.query}({this.basic?.phonetic ?? "-"}) [{this.tranType}] backup"
+        });
+        if (this.web != null)
+        {
+            foreach (var web in this.web)
+            {
+                res.Add(new ResultItem
+                {
+                    Title = String.Join(" | ", web.value),
+                    SubTitle = $"{web.key} [smart result]"
+                });
+            }
+        }
+        return res;
+    }
 }
 
-public class BackUpTranslater
+public class BackUpTranslater : ITranslater
 {
     private HttpClient client;
     private const string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
@@ -41,7 +62,7 @@ public class BackUpTranslater
         client.DefaultRequestHeaders.Add("Origin", "https://ai.youdao.com");
     }
 
-    public TranslateResult? Translate(string src, string fromLan = "Auto", string toLan = "Auto")
+    public override TranslateResult? Translate(string src, string fromLan = "Auto", string toLan = "Auto")
     {
         var data = new
         {

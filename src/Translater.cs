@@ -186,8 +186,16 @@ namespace Translater
             }
 
             res.AddRange(this.translateHelper!.QueryTranslate(query.Search));
+            ResultItem? suggestItem = null;
             if (suggestTask != null)
-                res.AddRange(suggestTask.GetAwaiter().GetResult());
+            {
+                var suggest = suggestTask.GetAwaiter().GetResult();
+                res.AddRange(suggest);
+                suggestItem = suggest.FirstOrDefault((it) =>
+                {
+                    return it.Title.ToLower() != querySearch.ToLower();
+                });
+            }
             if (isDebug)
             {
                 res.Add(new ResultItem
@@ -201,7 +209,12 @@ namespace Translater
                     SubTitle = $"[{query.RawQuery}]"
                 });
             }
-            return res.ToResultList(this.iconPath);
+            var query_res = res.ToResultList(this.iconPath);
+            if (suggestItem != null && query_res.Count > 0)
+            {
+                query_res.FirstOrDefault()!.ToolTipData = new ToolTipData(suggestItem!.Title, "test");
+            }
+            return query_res;
         }
 
         public void Init(PluginInitContext context)

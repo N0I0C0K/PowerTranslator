@@ -27,8 +27,10 @@ public class TranslateHelper
     private Youdao.Backup.BackUpTranslater? backUpTranslater;
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
+    private List<Youdao.ITranslater> translaters;
     public TranslateHelper(IPublicAPI publicAPI)
     {
+        this.translaters = new List<Youdao.ITranslater>();
         this.initTranslater();
         this.publicAPI = publicAPI;
 
@@ -106,7 +108,7 @@ public class TranslateHelper
     {
         if (youdaoTranslater == null)
             return false;
-        var translateRes = youdaoTranslater!.translate(src, toLan);
+        var translateRes = youdaoTranslater!.Translate(src, toLan);
         if (translateRes == null || translateRes.errorCode != 0)
             return false;
         res.Add(new ResultItem
