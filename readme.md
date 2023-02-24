@@ -2,7 +2,7 @@
 <h1>Translater</h1>
 <p>一个用于<a href=https://github.com/microsoft/PowerToys>PowerToys Run</a>的翻译插件, 快速, 稳定.</p>
 
-![release](https://badgen.net/github/release/N0I0C0K/PowerToysRun.Plugin.Translater) ![issue](https://badgen.net/github/issues/N0I0C0K/PowerToysRun.Plugin.Translater) ![star](https://badgen.net/github/stars/N0I0C0K/PowerToysRun.Plugin.Translater?color=green)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/N0I0C0K/PowerToysRun.Plugin.Translater?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/N0I0C0K/PowerToysRun.Plugin.Translater?color=ffb900&style=flat-square) ![GitHub all releases](https://img.shields.io/github/downloads/N0I0C0K/PowerToysRun.Plugin.Translater/total?style=flat-square) ![GitHub](https://img.shields.io/github/license/N0I0C0K/PowerToysRun.Plugin.Translater?style=flat-square)
 
 [English](./readme_en.md)
 
@@ -41,23 +41,22 @@
 
   - 使用 `^[words]->[Target language]`, 例如: `^你好->ja` 表示把你好翻译为日文
     ![Specified language](Images/target%20lan.gif)
+    常用语言代码
+    |语言|代码|备注|
+    |---------|------|-|
+    |汉语(简体) | zh-CHS | 汉语简体
+    |汉语(繁体) | zh-CHT| 漢語翻譯
+    |日语 |ja| 日本語
+    |英语 |en| English
+    |韩语 |ko| 한국어
+    |法语 |fr| En français
+    |俄语 |ru| русск
 
 - 搜索建议
   - 根据当前的输入建议搜索内容
     ![suggest](Images/suggest.gif)
   - 你可以在设置里取消
     ![suggest setting](Images/suggest_setting.png)
-
-常用语言代码
-|语言|代码|备注|
-|---------|------|-|
-|汉语(简体) | zh-CHS | 汉语简体
-|汉语(繁体) | zh-CHT| 漢語翻譯
-|日语 |ja| 日本語
-|英语 |en| English
-|韩语 |ko| 한국어
-|法语 |fr| En français
-|俄语 |ru| русск
 
 ## Install
 
@@ -70,11 +69,11 @@
 
 ## Setting
 
-- 修改默认触发键 (如果需要修改,建议修改为" ` ", 同时建议检查一下有无冲突)
+- 如果触发按键冲突, 修改默认触发键 (建议修改为" ` ", 同时建议检查一下有无冲突)
   ![change active key](Images/change_active.png)
 - 建议勾选`启动时清除上一查询`, 可以解决剪贴板快速翻译不能触发的问题
   ![auto clean](Images/auto_clean.png)
-- 建议勾选, 可以优化输入体验
+- 建议勾选`输入平滑`, 可以优化输入体验
   ![enable Smooth input](Images/enable%20Smooth%20input.png)
 
 ## Issue
