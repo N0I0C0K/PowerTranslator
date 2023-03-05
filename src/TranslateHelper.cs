@@ -1,6 +1,7 @@
 using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Translater.Utils;
+using System.Windows.Media;
 
 namespace Translater;
 
@@ -96,6 +97,32 @@ public class TranslateHelper
             });
         }
         return res;
+    }
+
+    public void Read(string txt)
+    {
+        Task.Factory.StartNew(() =>
+        {
+            MediaPlayer player = new MediaPlayer();
+            player.Stop();
+            player.Volume = 1;
+            player.Open(new Uri($"https://dict.youdao.com/dictvoice?audio={txt}&le=zh"));
+            TimeSpan tt = TimeSpan.Zero;
+            player.Play();
+            uint waitTime = 0;
+            while (tt == player.Position)
+            {
+                if (waitTime > 3 * 100)
+                    return;
+                Thread.Sleep(100);
+                waitTime += 100;
+            }
+            while (tt != player.Position)
+            {
+                tt = player.Position;
+                Thread.Sleep(300);
+            }
+        });
     }
 
     public bool initTranslater()

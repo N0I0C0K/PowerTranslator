@@ -15,7 +15,7 @@ namespace Translater
         public string? CopyTgt { get; set; }
     }
 
-    public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider
+    public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu
     {
         public string Name => "Translater";
         public string Description => "A simple translater plugin, based on Youdao Translation";
@@ -36,6 +36,7 @@ namespace Translater
         private object preQueryLock = new Object();
         private bool delayedExecution = false;
         private bool enable_suggest = true;
+        private bool enable_read = true;
         private void LogInfo(string info)
         {
             if (!isDebug)
@@ -248,6 +249,11 @@ namespace Translater
                     DisplayLabel = "Enable search suggest",
                     Value = true,
                 },
+                new PluginAdditionalOption{
+                    Key = "EnableRead",
+                    DisplayLabel = "Enable reading aloud",
+                    Value = true,
+                }
             };
         }
 
@@ -255,7 +261,6 @@ namespace Translater
         {
             this.publicAPI!.ThemeChanged -= this.UpdateIconPath;
         }
-
         public Control CreateSettingPanel()
         {
             throw new NotImplementedException();
@@ -271,6 +276,25 @@ namespace Translater
                 return target?.Value ?? true;
             };
             this.enable_suggest = GetSetting("EnableSuggest");
+            this.enable_read = GetSetting("EnableRead");
+        }
+
+        public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
+        {
+            return new List<ContextMenuResult>
+            {
+                new ContextMenuResult
+                {
+                    Title = "Read",
+                    Action = context=>{
+                        this.translateHelper?.Read(selectedResult.Title);
+                        return true;
+                    },
+                    Glyph = "\uE8C8",
+                    AcceleratorKey = System.Windows.Input.Key.Return,
+                    AcceleratorModifiers = System.Windows.Input.ModifierKeys.Control
+                }
+            };
         }
     }
 }
