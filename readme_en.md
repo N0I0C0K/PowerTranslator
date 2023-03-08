@@ -1,4 +1,4 @@
-# PowerTrans
+# PowerTranslator
 
 [中文](./readme.md)
 
@@ -11,7 +11,7 @@ Based on Youdao Translation, it supports the mutual translation of multiple lang
 ## Install
 
 1. Close PowerToys
-2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTrans/releases)
+2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
 3. Extract to`{Installation directory}\modules\launcher\Plugins\`
    As shown in the picture
    ![file](Images/file.png)

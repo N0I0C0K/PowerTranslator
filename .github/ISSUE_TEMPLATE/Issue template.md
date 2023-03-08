@@ -12,7 +12,7 @@ assignees: N0I0C0K
 
 你可以
 
-- 在[Issue 页面](https://github.com/N0I0C0K/PowerTrans/issues?q=) 查看是否有相同的问题.
+- 在[Issue 页面](https://github.com/N0I0C0K/PowerTranslator/issues?q=) 查看是否有相同的问题.
 - 重新启动`PowerToys`
 
 如果依旧没有解决, 可以提交 Issue, 注意要比较详细的描述你的问题.

@@ -90,7 +90,7 @@ public class TranslateHelper
                 SubTitle = $"Press enter to get help",
                 Action = (ev) =>
                 {
-                    UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTrans/issues?q=");
+                    UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTranslator/issues?q=");
                     this.publicAPI.ShowMsg("Copy!", "The URL has been copied, Go to your browser and visit the website for help.");
                     return true;
                 }

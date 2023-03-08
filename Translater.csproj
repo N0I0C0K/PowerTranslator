@@ -1,31 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-
-    <UseWPF>true</UseWPF>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
-    
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Wox.Plugin">
-      <HintPath>lib/Wox.Plugin.dll</HintPath>
-    </Reference>
-    <Reference Include="Wox.Infrastructure">
-      <HintPath>lib/Wox.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.PowerToys.Settings.UI.Library">
-      <HintPath>lib/PowerToys.Settings.UI.Lib.dll</HintPath>
-    </Reference>
-    <Reference Include="PowerToys.Common.UI">
-      <HintPath>lib/PowerToys.Common.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="PowerToys.ManagedCommon">
-      <HintPath>lib/PowerToys.ManagedCommon.dll</HintPath>
-    </Reference>
-    
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net7.0-windows</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
+        <AssemblyName>Translator</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Wox.Plugin">
+            <HintPath>lib/Wox.Plugin.dll</HintPath>
+        </Reference>
+        <Reference Include="Wox.Infrastructure">
+            <HintPath>lib/Wox.Infrastructure.dll</HintPath>
+        </Reference>
+        <Reference Include="Microsoft.PowerToys.Settings.UI.Library">
+            <HintPath>lib/PowerToys.Settings.UI.Lib.dll</HintPath>
+        </Reference>
+        <Reference Include="PowerToys.Common.UI">
+            <HintPath>lib/PowerToys.Common.UI.dll</HintPath>
+        </Reference>
+        <Reference Include="PowerToys.ManagedCommon">
+            <HintPath>lib/PowerToys.ManagedCommon.dll</HintPath>
+        </Reference>
+    </ItemGroup>
 </Project>

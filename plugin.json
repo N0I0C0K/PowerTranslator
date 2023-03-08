@@ -2,12 +2,12 @@
   "ID": "HBB9510CD0D2481F853690A07E6DC426",
   "ActionKeyword": "^",
   "IsGlobal": false,
-  "Name": "Translater",
+  "Name": "Translator",
   "Author": "N0I0C0K",
   "Version": "1.0.0",
   "Language": "csharp",
-  "Website": "https://github.com/N0I0C0K/PowerTrans",
-  "ExecuteFileName": "Translater.dll",
+  "Website": "https://github.com/N0I0C0K/PowerTranslator",
+  "ExecuteFileName": "Translator.dll",
   "IcoPathDark": "Images\\translater.dark.png",
   "IcoPathLight": "Images\\translater.light.png"
 }

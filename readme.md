@@ -1,8 +1,8 @@
 <div align="center">
-<h1>PowerTrans</h1>
+<h1>PowerTranslator</h1>
 <p>一个用于<a href=https://github.com/microsoft/PowerToys>PowerToys Run</a>的翻译插件, 快速, 稳定.</p>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/N0I0C0K/PowerTrans?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/N0I0C0K/PowerTrans?color=ffb900&style=flat-square) ![GitHub all releases](https://img.shields.io/github/downloads/N0I0C0K/PowerTrans/total?style=flat-square) ![GitHub](https://img.shields.io/github/license/N0I0C0K/PowerTrans?style=flat-square)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/N0I0C0K/PowerTranslator?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/N0I0C0K/PowerTranslator?color=ffb900&style=flat-square) ![GitHub all releases](https://img.shields.io/github/downloads/N0I0C0K/PowerTranslator/total?style=flat-square) ![GitHub](https://img.shields.io/github/license/N0I0C0K/PowerTranslator?style=flat-square)
 
 [English](./readme_en.md)
 
@@ -61,7 +61,7 @@
 ## Install
 
 1. 关闭 PowerToys
-2. 下载 [Translator.zip](https://github.com/N0I0C0K/PowerTrans/releases)
+2. 下载 [Translater.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
 3. 解压到`{安装目录}\modules\launcher\Plugins\`
    如图所示
    ![file](Images/file.png)
