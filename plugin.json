@@ -6,7 +6,7 @@
   "Author": "N0I0C0K",
   "Version": "1.0.0",
   "Language": "csharp",
-  "Website": "https://github.com/N0I0C0K/PowerToysRun.Plugin.Translater",
+  "Website": "https://github.com/N0I0C0K/PowerTrans",
   "ExecuteFileName": "Translater.dll",
   "IcoPathDark": "Images\\translater.dark.png",
   "IcoPathLight": "Images\\translater.light.png"

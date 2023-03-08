@@ -90,7 +90,7 @@ public class TranslateHelper
                 SubTitle = $"Press enter to get help",
                 Action = (ev) =>
                 {
-                    UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerToysRun.Plugin.Translater/issues?q=");
+                    UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTrans/issues?q=");
                     this.publicAPI.ShowMsg("Copy!", "The URL has been copied, Go to your browser and visit the website for help.");
                     return true;
                 }
@@ -112,7 +112,7 @@ public class TranslateHelper
             uint waitTime = 0;
             while (tt == player.Position)
             {
-                if (waitTime > 3 * 100)
+                if (waitTime > 3 * 1000)
                     return;
                 Thread.Sleep(100);
                 waitTime += 100;

@@ -288,7 +288,7 @@ namespace Translater
                     Title = "Read",
                     Action = context=>{
                         this.translateHelper?.Read(selectedResult.Title);
-                        return true;
+                        return false;
                     },
                     Glyph = "\uE8C8",
                     AcceleratorKey = System.Windows.Input.Key.Return,
