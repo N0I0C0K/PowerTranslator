@@ -17,8 +17,8 @@ namespace Translater
 
     public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu
     {
-        public string Name => "Translater";
-        public string Description => "A simple translater plugin, based on Youdao Translation";
+        public string Name => "Translator";
+        public string Description => "A simple translation plugin, based on Youdao Translation";
         public IEnumerable<PluginAdditionalOption> AdditionalOptions => GetAdditionalOptions();
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
@@ -226,6 +226,7 @@ namespace Translater
             translateHelper = new TranslateHelper(publicAPI);
             suggestHelper = new Suggest.SuggestHelper(publicAPI);
             publicAPI.ThemeChanged += this.UpdateIconPath;
+            UpdateIconPath(Theme.Light, publicAPI.GetCurrentTheme());
         }
 
         private void UpdateIconPath(Theme pre, Theme now)

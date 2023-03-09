@@ -29,6 +29,7 @@ public class TranslateHelper
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
     private List<Youdao.ITranslater?> translaters;
+    private bool isReading = false;
     public TranslateHelper(IPublicAPI publicAPI)
     {
         this.translaters = new List<Youdao.ITranslater?>(3);
@@ -101,26 +102,39 @@ public class TranslateHelper
 
     public void Read(string txt)
     {
+        if (isReading)
+            return;
         Task.Factory.StartNew(() =>
         {
-            MediaPlayer player = new MediaPlayer();
-            player.Stop();
-            player.Volume = 1;
-            player.Open(new Uri($"https://dict.youdao.com/dictvoice?audio={txt}&le=zh"));
-            TimeSpan tt = TimeSpan.Zero;
-            player.Play();
-            uint waitTime = 0;
-            while (tt == player.Position)
+            this.isReading = true;
+            try
             {
-                if (waitTime > 3 * 1000)
-                    return;
-                Thread.Sleep(100);
-                waitTime += 100;
+                var uri = new Uri($"https://dict.youdao.com/dictvoice?audio={Uri.EscapeDataString(txt.removeSpecialCharacter())}&le=zh");
+                uri.fixChinese();
+
+                MediaPlayer player = new MediaPlayer();
+                player.Stop();
+                player.Volume = 1;
+                player.Open(uri);
+                TimeSpan tt = TimeSpan.Zero;
+                player.Play();
+                uint waitTime = 0;
+                while (tt == player.Position)
+                {
+                    if (waitTime > 3 * 1000)
+                        return;
+                    Thread.Sleep(100);
+                    waitTime += 100;
+                }
+                while (tt != player.Position)
+                {
+                    tt = player.Position;
+                    Thread.Sleep(300);
+                }
             }
-            while (tt != player.Position)
+            finally
             {
-                tt = player.Position;
-                Thread.Sleep(300);
+                this.isReading = false;
             }
         });
     }
