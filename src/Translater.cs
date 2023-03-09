@@ -36,7 +36,7 @@ namespace Translater
         private object preQueryLock = new Object();
         private bool delayedExecution = false;
         private bool enable_suggest = true;
-        private bool enable_read = true;
+        private bool enable_auto_read = false;
         private void LogInfo(string info)
         {
             if (!isDebug)
@@ -205,16 +205,19 @@ namespace Translater
                     SubTitle = $"[{query.RawQuery}]"
                 });
             }
-            var query_res = res.ToResultList(this.iconPath);
 
-            if (enable_read)
+            res.Add(new ResultItem
             {
-                res.Add(new ResultItem
-                {
-                    Title = querySearch,
-                    SubTitle = "[query raw]"
-                });
+                Title = querySearch,
+                SubTitle = "[query raw]"
+            });
+
+            if (this.enable_auto_read)
+            {
+                this.translateHelper?.Read(res.FirstOrDefault()?.Title);
             }
+
+            var query_res = res.ToResultList(this.iconPath);
 
             return query_res;
         }
@@ -252,9 +255,9 @@ namespace Translater
                     Value = true,
                 },
                 new PluginAdditionalOption{
-                    Key = "EnableRead",
-                    DisplayLabel = "Enable reading aloud",
-                    Value = true,
+                    Key = "EnableAutoRead",
+                    DisplayLabel = "Automatic reading result",
+                    Value = false,
                 }
             };
         }
@@ -278,7 +281,7 @@ namespace Translater
                 return target?.Value ?? true;
             };
             this.enable_suggest = GetSetting("EnableSuggest");
-            this.enable_read = GetSetting("EnableRead");
+            this.enable_auto_read = GetSetting("EnableAutoRead");
         }
 
         public List<ContextMenuResult> LoadContextMenus(Result selectedResult)

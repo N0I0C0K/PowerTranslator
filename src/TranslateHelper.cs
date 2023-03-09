@@ -100,9 +100,9 @@ public class TranslateHelper
         return res;
     }
 
-    public void Read(string txt)
+    public void Read(string? txt)
     {
-        if (isReading)
+        if (isReading || txt == null || txt.Length == 0)
             return;
         Task.Factory.StartNew(() =>
         {

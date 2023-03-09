@@ -53,15 +53,21 @@
     |俄语 |ru| русск
 
 - 搜索建议
+
   - 根据当前的输入建议搜索内容
     ![suggest](Images/suggest.gif)
-  - 你可以在设置里取消
-    ![suggest setting](Images/suggest_setting.png)
+  - 可以在设置里选择是否启用建议, 对应`Enable search suggest`
+
+- 朗读内容
+  - 支持朗读中文, 英文(快捷键 ctrl+enter)
+    ![read](Images/read.png)
+  - 基于有道 TTS 接口
+  - 支持自动朗读结果功能, **默认关闭**, 可以在设置开启.对应`Automatic reading result`
 
 ## Install
 
 1. 关闭 PowerToys
-2. 下载 [Translater.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
+2. 下载 [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
 3. 解压到`{安装目录}\modules\launcher\Plugins\`
    如图所示
    ![file](Images/file.png)
