@@ -110,12 +110,12 @@ namespace Translater.Utils
                 {
                     Title = item.Title,
                     SubTitle = item.SubTitle,
-                    Action = item.Action != null ? item.Action :
-                    (e) =>
+                    Action = item.Action ??
+                    ((e) =>
                     {
                         UtilsFun.SetClipboardText(item.CopyTgt ?? item.Title);
                         return true;
-                    },
+                    }),
                     IcoPath = iconPath
                 };
             }).ToList();

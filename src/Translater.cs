@@ -187,15 +187,10 @@ namespace Translater
             }
 
             res.AddRange(this.translateHelper!.QueryTranslate(query.Search));
-            ResultItem? suggestItem = null;
             if (suggestTask != null)
             {
                 var suggest = suggestTask.GetAwaiter().GetResult();
                 res.AddRange(suggest);
-                suggestItem = suggest.FirstOrDefault((it) =>
-                {
-                    return it.Title.ToLower() != querySearch.ToLower();
-                });
             }
             if (isDebug)
             {
@@ -211,10 +206,16 @@ namespace Translater
                 });
             }
             var query_res = res.ToResultList(this.iconPath);
-            if (suggestItem != null && query_res.Count > 0)
+
+            if (enable_read)
             {
-                query_res.FirstOrDefault()!.QueryTextDisplay = suggestItem!.Title;
+                res.Add(new ResultItem
+                {
+                    Title = querySearch,
+                    SubTitle = "[query raw]"
+                });
             }
+
             return query_res;
         }
 
@@ -286,15 +287,27 @@ namespace Translater
             {
                 new ContextMenuResult
                 {
+                    Title = "Copy",
+                    Action = context=>{
+                        UtilsFun.SetClipboardText(selectedResult.Title);
+                        return false;
+                    },
+                    Glyph = "\u2B1A",
+                    AcceleratorKey = System.Windows.Input.Key.Return,
+                    AcceleratorModifiers = System.Windows.Input.ModifierKeys.Shift
+                },
+                new ContextMenuResult
+                {
                     Title = "Read",
                     Action = context=>{
                         this.translateHelper?.Read(selectedResult.Title);
                         return false;
                     },
-                    Glyph = "\uE8C8",
+                    Glyph = "\u23F5",
                     AcceleratorKey = System.Windows.Input.Key.Return,
                     AcceleratorModifiers = System.Windows.Input.ModifierKeys.Control
                 }
+
             };
         }
     }
