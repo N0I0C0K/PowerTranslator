@@ -73,6 +73,8 @@
    ![file](Images/file.png)
 4. 启动 PowerToys
 
+[安装-升级 详细教程](./doc/how%20to%20install.md)
+
 ## Setting
 
 - 如果触发按键冲突, 修改默认触发键 (建议修改为" ` ", 同时建议检查一下有无冲突)
