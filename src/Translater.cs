@@ -227,10 +227,14 @@ namespace Translater
             Log.Info("translater init", typeof(Translater));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
-            translateHelper = new TranslateHelper(publicAPI);
+            var translaTask = Task.Factory.StartNew(() =>
+            {
+                translateHelper = new TranslateHelper(publicAPI);
+            });
             suggestHelper = new Suggest.SuggestHelper(publicAPI);
             publicAPI.ThemeChanged += this.UpdateIconPath;
             UpdateIconPath(Theme.Light, publicAPI.GetCurrentTheme());
+            translaTask.Wait();
         }
 
         private void UpdateIconPath(Theme pre, Theme now)
@@ -290,7 +294,7 @@ namespace Translater
             {
                 new ContextMenuResult
                 {
-                    Title = "Copy",
+                    Title = "Copy (Enter)",
                     Action = context=>{
                         UtilsFun.SetClipboardText(selectedResult.Title);
                         return false;
@@ -301,7 +305,7 @@ namespace Translater
                 },
                 new ContextMenuResult
                 {
-                    Title = "Read",
+                    Title = "Read (Ctrl+Enter)",
                     Action = context=>{
                         this.translateHelper?.Read(selectedResult.Title);
                         return false;

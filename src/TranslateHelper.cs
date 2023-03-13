@@ -153,8 +153,12 @@ public class TranslateHelper
             this.lastInitTime = now;
             try
             {
+                var v2Task = Task.Factory.StartNew(() =>
+                {
+                    youdaoTranslaterV2 ??= new Youdao.V2.YoudaoTranslater();
+                });
                 youdaoTranslater ??= new Youdao.YoudaoTranslater();
-                youdaoTranslaterV2 ??= new Youdao.V2.YoudaoTranslater();
+                v2Task.Wait();
                 return true;
             }
             catch (Exception err)
