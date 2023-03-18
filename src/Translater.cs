@@ -25,8 +25,10 @@ namespace Translater
         public const int delayQueryMillSecond = 500;
         private string iconPath = "Images/translater.dark.png";
         public int queryCount = 0;
-        private TranslateHelper? translateHelper = null;
+        private TranslateHelper? translateHelper;
         private Suggest.SuggestHelper? suggestHelper;
+        private History.HistoryHelper? historyHelper;
+
         private bool isDebug = false;
         private string queryPre = "";
         private long lastQueryTime = 0;
@@ -34,6 +36,8 @@ namespace Translater
         private long lastQueryTimeReal = 0;
         private long lastTranslateTime = 0;
         private object preQueryLock = new Object();
+
+        // settings
         private bool delayedExecution = false;
         private bool enable_suggest = true;
         private bool enable_auto_read = false;
@@ -174,6 +178,17 @@ namespace Translater
                     // Translate content from the clipboard
                     res.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
                 }
+                else
+                {
+                    // Query history
+                    res.AddRange(historyHelper!.query());
+                }
+                return res.ToResultList(this.iconPath);
+            }
+            //  Query history
+            if (querySearch == "h")
+            {
+                res.AddRange(historyHelper!.query());
                 return res.ToResultList(this.iconPath);
             }
 
@@ -186,7 +201,7 @@ namespace Translater
                 });
             }
 
-            res.AddRange(this.translateHelper!.QueryTranslate(query.Search));
+            res.AddRange(this.translateHelper!.QueryTranslate(querySearch));
             if (suggestTask != null)
             {
                 var suggest = suggestTask.GetAwaiter().GetResult();
@@ -217,11 +232,13 @@ namespace Translater
                 this.translateHelper?.Read(res.FirstOrDefault()?.Title);
             }
 
+            //add the result to this history
+            historyHelper?.Push(res.First());
+
             var query_res = res.ToResultList(this.iconPath);
 
             return query_res;
         }
-
         public void Init(PluginInitContext context)
         {
             Log.Info("translater init", typeof(Translater));
@@ -232,6 +249,7 @@ namespace Translater
                 translateHelper = new TranslateHelper(publicAPI);
             });
             suggestHelper = new Suggest.SuggestHelper(publicAPI);
+            historyHelper = new History.HistoryHelper();
             publicAPI.ThemeChanged += this.UpdateIconPath;
             UpdateIconPath(Theme.Light, publicAPI.GetCurrentTheme());
             translaTask.Wait();
