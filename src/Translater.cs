@@ -181,14 +181,14 @@ namespace Translater
                 else
                 {
                     // Query history
-                    res.AddRange(historyHelper!.query());
+                    res.AddRange(historyHelper!.query().Reverse());
                 }
                 return res.ToResultList(this.iconPath);
             }
             //  Query history
             if (querySearch == "h")
             {
-                res.AddRange(historyHelper!.query());
+                res.AddRange(historyHelper!.query().Reverse());
                 return res.ToResultList(this.iconPath);
             }
 

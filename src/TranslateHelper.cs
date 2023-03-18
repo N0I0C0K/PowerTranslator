@@ -87,7 +87,7 @@ public class TranslateHelper
         {
             res.Add(new ResultItem
             {
-                Title = "Some error happen!",
+                Title = "result is null, some error happen in translate. check out your network!",
                 SubTitle = $"Press enter to get help",
                 Action = (ev) =>
                 {

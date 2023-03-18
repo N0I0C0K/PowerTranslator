@@ -81,12 +81,14 @@ public class TranslateResponse : ITranslateResult
         if (this.code != 0)
             return null;
         List<ResultItem> res = new List<ResultItem>();
-        var tres = this.translateResult![0][0];
-        res.Add(new ResultItem
+        foreach (var tres in this.translateResult![0])
         {
-            Title = tres.tgt,
-            SubTitle = $"{tres.src}({tres.srcPronounce ?? "-"}) [{this.type}] v2"
-        });
+            res.Add(new ResultItem
+            {
+                Title = tres.tgt,
+                SubTitle = $"{tres.src}({tres.srcPronounce ?? "-"}) [{this.type}] v2"
+            });
+        }
         if (this.dictResult != null)
         {
             if (this.dictResult?.ce != null)
