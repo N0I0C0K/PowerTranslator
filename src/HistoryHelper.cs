@@ -17,7 +17,11 @@ public class HistoryHelper
         {
             if (_t == mark)
             {
-                this.history.Enqueue(item);
+                this.history.Enqueue(new ResultItem
+                {
+                    Title = item.Title,
+                    SubTitle = $"[{string.Format("query at {0:HH:mm:ss}", DateTime.Now)}] {item.SubTitle}",
+                });
                 while (this.history.Count >= MAX_HISTORY_NUM)
                     this.history.Dequeue();
             }

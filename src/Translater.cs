@@ -233,7 +233,12 @@ namespace Translater
             }
 
             //add the result to this history
-            historyHelper?.Push(res.First());
+            var first = res.First();
+            historyHelper?.Push(new ResultItem
+            {
+                Title = first.Title,
+                SubTitle = querySearch
+            });
 
             var query_res = res.ToResultList(this.iconPath);
 
@@ -312,9 +317,9 @@ namespace Translater
             {
                 new ContextMenuResult
                 {
-                    Title = "Copy (Enter)",
+                    Title = "Copy (Enter); Copy Subtitle(shift+Enter)",
                     Action = context=>{
-                        UtilsFun.SetClipboardText(selectedResult.Title);
+                        UtilsFun.SetClipboardText(selectedResult.SubTitle);
                         return false;
                     },
                     Glyph = "\u2B1A",
