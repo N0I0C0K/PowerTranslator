@@ -4,3 +4,4 @@ bin
 lib
 
 .vs/
+src/lib
