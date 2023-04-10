@@ -116,7 +116,7 @@ namespace Translater.Utils
                         UtilsFun.SetClipboardText(item.CopyTgt ?? item.Title);
                         return true;
                     }),
-                    IcoPath = iconPath,
+                    IcoPath = item.iconPath ?? iconPath,
                     ToolTipData = new Wox.Plugin.ToolTipData(item.Title, item.SubTitle)
                 };
             }).ToList();

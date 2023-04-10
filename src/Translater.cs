@@ -13,6 +13,7 @@ namespace Translater
         public string SubTitle { get; set; } = default!;
         public Func<ActionContext, bool>? Action { get; set; }
         public string? CopyTgt { get; set; }
+        public string? iconPath { get; set; }
     }
 
     public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu
@@ -23,7 +24,7 @@ namespace Translater
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
         public const int delayQueryMillSecond = 500;
-        private string iconPath = "Images/translater.dark.png";
+        private string iconPath = "Images/translator.dark.png";
         public int queryCount = 0;
         private TranslateHelper? translateHelper;
         private Suggest.SuggestHelper? suggestHelper;
@@ -259,17 +260,17 @@ namespace Translater
             UpdateIconPath(Theme.Light, publicAPI.GetCurrentTheme());
             translaTask.Wait();
         }
-
         private void UpdateIconPath(Theme pre, Theme now)
         {
             if (now == Theme.Light || now == Theme.HighContrastWhite)
             {
-                iconPath = "Images/translater.light.png";
+                iconPath = "Images/translator.light.png";
             }
             else
             {
-                iconPath = "Images/translater.dark.png";
+                iconPath = "Images/translator.dark.png";
             }
+            this.historyHelper?.UpdateIconPath(now);
         }
 
         public static List<PluginAdditionalOption> GetAdditionalOptions()

@@ -1,4 +1,5 @@
-<Project Sdk="Microsoft.NET.Sdk" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
         <TargetFramework>net7.0-windows</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -8,6 +9,7 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
         <AssemblyName>Translator</AssemblyName>
+        <Platforms>AnyCPU;ARM64</Platforms>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Wox.Plugin">
@@ -25,20 +27,37 @@
         <Reference Include="PowerToys.ManagedCommon">
             <HintPath>lib/PowerToys.ManagedCommon.dll</HintPath>
         </Reference>
-        <None Include="./plugin.json" CopyToOutputDirectory="PreserveNewest" />
-        <None Include="./Images/translater.dark.png" CopyToOutputDirectory="PreserveNewest" Link="Images\translater.dark.png" />
-        <None Include="./Images/translater.light.png" CopyToOutputDirectory="PreserveNewest" Link="Images\translater.light.png" />
+        <None Include="./plugin.json"
+              CopyToOutputDirectory="PreserveNewest" />
+        <None Include="./Images/translator.dark.png"
+              CopyToOutputDirectory="PreserveNewest"
+              Link="Images\translator.dark.png" />
+        <None Include="./Images/translator.light.png"
+              CopyToOutputDirectory="PreserveNewest"
+              Link="Images\translator.light.png" />
+        <None Include="./Images/history.dark.png"
+              CopyToOutputDirectory="PreserveNewest"
+              Link="Images\history.dark.png" />
+        <None Include="./Images/history.light.png"
+              CopyToOutputDirectory="PreserveNewest"
+              Link="Images\history.light.png" />
     </ItemGroup>
-    <Target Name="Movefiles" AfterTargets="Build">
+    <Target Name="Movefiles"
+            AfterTargets="Build">
         <ItemGroup>
             <MySourceFiles Include="./plugin.json" />
             <MySourceFiles Include="$(OutputPath)Translator.dll" />
             <ImagesFile Include="$(OutputPath)Images\*.*" />
         </ItemGroup>
-        <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="./bin/Translator" />
-        <Copy SourceFiles="@(ImagesFile)" DestinationFolder="./bin/Translator/Images" />
+        <Copy SourceFiles="@(MySourceFiles)"
+              DestinationFolder="./bin/Translator" />
+        <Copy SourceFiles="@(ImagesFile)"
+              DestinationFolder="./bin/Translator/Images" />
     </Target>
-    <Target Name="ZipOutput" AfterTargets="Pack">
-        <ZipDirectory SourceDirectory="./bin/Translator" DestinationFile="./bin/Translator.zip" Overwrite="true" />
+    <Target Name="ZipOutput"
+            AfterTargets="Pack">
+        <ZipDirectory SourceDirectory="./bin/Translator"
+                      DestinationFile="./bin/Translator.zip"
+                      Overwrite="true" />
     </Target>
 </Project>
