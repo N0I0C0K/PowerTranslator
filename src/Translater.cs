@@ -258,7 +258,7 @@ namespace Translater
             historyHelper = new History.HistoryHelper();
             publicAPI.ThemeChanged += this.UpdateIconPath;
             UpdateIconPath(Theme.Light, publicAPI.GetCurrentTheme());
-            translaTask.Wait();
+            //translaTask.Wait();
         }
         private void UpdateIconPath(Theme pre, Theme now)
         {

@@ -29,7 +29,8 @@ public class TranslateHelper
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
     private List<Youdao.ITranslater?> translaters;
-    private bool isReading = false;
+    private bool isSpeaking = false;
+    private bool isIniting = false;
     public TranslateHelper(IPublicAPI publicAPI)
     {
         this.translaters = new List<Youdao.ITranslater?>(3);
@@ -102,11 +103,11 @@ public class TranslateHelper
 
     public void Read(string? txt)
     {
-        if (isReading || txt == null || txt.Length == 0)
+        if (isSpeaking || txt == null || txt.Length == 0)
             return;
         Task.Factory.StartNew(() =>
         {
-            this.isReading = true;
+            this.isSpeaking = true;
             try
             {
                 var uri = new Uri($"https://dict.youdao.com/dictvoice?audio={Uri.EscapeDataString(txt.removeSpecialCharacter())}&le=zh");
@@ -134,7 +135,7 @@ public class TranslateHelper
             }
             finally
             {
-                this.isReading = false;
+                this.isSpeaking = false;
             }
         });
     }
@@ -142,15 +143,16 @@ public class TranslateHelper
     public bool initTranslater()
     {
         var now = UtilsFun.GetUtcTimeNow();
-        if (now - this.lastInitTime < 1000 * 30)
+        if (now - this.lastInitTime < 1000 * 30 || this.inited || this.isIniting)
             return false;
         lock (this.initLock)
         {
+            this.isIniting = true;
+            this.lastInitTime = now;
             Log.Info("custom init", typeof(TranslateHelper));
             // if one of the api is inited, then return true. because we need. Because we want to minimize the number of initializations
             if (this.youdaoTranslaterV2 != null || this.youdaoTranslater != null)
                 return true;
-            this.lastInitTime = now;
             try
             {
                 var v2Task = Task.Factory.StartNew(() =>
@@ -172,6 +174,7 @@ public class TranslateHelper
                 this.translaters.Add(youdaoTranslaterV2);
                 this.translaters.Add(youdaoTranslater);
                 this.translaters.Add(backUpTranslater);
+                this.isIniting = false;
                 Log.Info("custom init complete", typeof(TranslateHelper));
             }
         }
