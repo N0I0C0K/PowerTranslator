@@ -13,6 +13,10 @@ public class HistoryHelper
 
     public void Push(ResultItem item)
     {
+        if (item.Title.Length == 0 || item.SubTitle.Length == 0 || item.Title == null || item.SubTitle == null)
+        {
+            return;
+        }
         uint _t = ++mark;
         Task.Delay(1000).ContinueWith((task) =>
         {
