@@ -1,61 +1,98 @@
-# PowerTranslator
+<div align="center">
+<h1>PowerTranslator</h1>
+<p>A translation plugin for <a href=https://github.com/microsoft/PowerToys>PowerToys Run</a>, fast and stable.</p>
+
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/N0I0C0K/PowerTranslator?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/N0I0C0K/PowerTranslator?color=ffb900&style=flat-square) ![GitHub all releases](https://img.shields.io/github/downloads/N0I0C0K/PowerTranslator/total?style=flat-square) ![GitHub](https://img.shields.io/github/license/N0I0C0K/PowerTranslator?style=flat-square)
 
 [中文](./readme.md)
 
-## about
+</div>
 
-A plugin for [PowerToysRun](https://github.com/microsoft/PowerToys).
+## About
 
-Based on Youdao Translation, it supports the mutual translation of multiple languages
+A plugin for [PowerToys Run](https://github.com/microsoft/PowerToys).
 
-## Install
-
-1. Close PowerToys
-2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
-3. Extract to`{Installation directory}\modules\launcher\Plugins\`
-   As shown in the picture
-   ![file](Images/file.png)
-4. Open PowerToys
+The plugin has been updated to use Youdao translation, which supports translation for all languages supported by Youdao translation.
 
 ## Usage
 
-- The default trigger key is`^`.(The current default trigger key conflicts with the Everything plugin. You can change the trigger in the following way.)
-- Designated translation text
+- The default trigger key is `^`. (The current default trigger key conflicts with the Everything plugin. Refer to the following instructions to modify the trigger.)
+- Specify the text to be translated:
 
-  - `alt+space`open PowerToys Run, input `^[what you want to translate]`
-  - `Enter` Copy the translation to the clipboard
+  - Press `alt+space` to open PowerToys Run, and enter `^[text to be translated]`.
+  - Press `Enter` to copy the translation result to the clipboard.
 
-  Demonstration translation command
-  ![en->zh](Images/command.gif)
+  Demo of translating 'command'
+  ![command](Images/command.gif)
 
-- Quick translation of clipboard
+  Demo of translating '命令'
+  ![chinese](Images/%E5%91%BD%E4%BB%A4.gif)
 
-  - When there is text in the clipboard, type the trigger keyword `^` directly to quickly translate the contents of the clipboard
+- Chinese with pinyin:
+  Refer to the above demo for translating '命令'.
+
+- Quickly translate the clipboard:
+
+  - When there is text in the clipboard, simply type the trigger keyword `^` to quickly translate the content in the clipboard.
 
     ![clipboard](Images/clipboard.gif)
 
-- Specify the translation target language
-  - Use `^[words]->[Target language]`, for example: `^你好->ja` To translate 你好 into Japanese
-    ![Specified language](Images/target%20lan.gif)
+- Specify the target language of translation:
 
-Common language code
-|language|code|comment|
-|---------|------|-|
-|汉语(简体) | zh-CHS | 汉语简体
-|汉语(繁体) | zh-CHT| 漢語翻譯
-|日语 |ja| 日本語
-|英语 |en| English
-|韩语 |ko| 한국어
-|法语 |fr| En français
-|俄语 |ru| русск
+  - Use `^[words]->[target language]`, for example, `^你好->ja` means translate '你好' into Japanese.
+    ![Specified language](Images/target%20lan.gif)
+    Common language codes:
+    |Language|Code|Note|
+    |---------|------|-|
+    |Chinese(Simplified) | zh-CHS | Simplified Chinese
+    |Chinese(Traditional) | zh-CHT| Traditional Chinese
+    |Japanese |ja| Japanese
+    |English |en| English
+    |Korean |ko| 한국어
+    |French |fr| En français
+    |Russian |ru| русск
+
+- Search suggestions:
+
+  - Search content according to the current input suggestions.
+    ![suggest](Images/suggest.gif)  
+  - You can choose whether to enable suggestions in the settings, corresponding to `Enable search suggest`.
+
+- Read content:
+
+  - Supports reading Chinese and English (shortcut key ctrl+enter).
+    ![read](Images/read.png)  
+  - Based on Youdao TTS interface.
+  - Supports automatic reading of results function, which is **off by default** and can be turned on in the settings, corresponding to `Automatic reading result`.
+
+- History record:
+
+  - Typing `h` or having no translation target in the clipboard will display translation history.
+    ![his](Images/his.png)
+  - Default **15** records.
+  - **Why doesn't it support customizing the upper limit entry?**
+    Because the official only provides a bool type custom parameter, the current version does not support customizing the upper limit of translation history. I will update it when it is supported later. Or you can download the source code and modify it yourself.
+
+## Install
+
+1. Close PowerToys.
+2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases).
+3. Extract it to `{installation directory}\modules\launcher\Plugins\`.
+   As shown in the figure:
+   ![file](Images/file.png)
+4. Start PowerToys.
+
+[Installation-upgrade detailed tutorial](./doc/how%20to%20install.md)
 
 ## Setting
 
-- Change the default trigger key (if you need to change it, it is recommended to change it to " ` ", and check whether there is any conflict)
+- If there is a trigger key conflict, modify the default trigger key (it is recommended to modify it to "`" and check for conflicts).
   ![change active key](Images/change_active.png)
-- It is recommended to check `clear the previous query on startup`, which can solve the problem that clipboard quick translation cannot be triggered
+- It is recommended to check `Clear previous query at startup`, which can solve the problem that clipboard quick translation cannot be triggered.
   ![auto clean](Images/auto_clean.png)
+- It is recommended to check `Smooth input`, which can optimize the input experience.
+  ![enable Smooth input](Images/enable%20Smooth%20input.png)
 
 ## Issue
 
-If you find an issue that cannot be translated or an unknown error occurs, and you need a new function, please submit the issue.
+If you find translation failure, unknown errors, or need new features, please submit an issue. I will fix or improve it in time.
