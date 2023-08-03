@@ -14,6 +14,11 @@ A plugin for [PowerToys Run](https://github.com/microsoft/PowerToys).
 
 The plugin has been updated to use Youdao translation, which supports translation for all languages supported by Youdao translation.
 
+- [how to use](#usage)
+- [how to install](#install)
+- [settings](#setting)
+- [submit issue](#issue)
+
 ## Usage
 
 - The default trigger key is `^`. (The current default trigger key conflicts with the Everything plugin. Refer to the following instructions to modify the trigger.)
@@ -55,13 +60,13 @@ The plugin has been updated to use Youdao translation, which supports translatio
 - Search suggestions:
 
   - Search content according to the current input suggestions.
-    ![suggest](Images/suggest.gif)  
+    ![suggest](Images/suggest.gif)
   - You can choose whether to enable suggestions in the settings, corresponding to `Enable search suggest`.
 
 - Read content:
 
   - Supports reading Chinese and English (shortcut key ctrl+enter).
-    ![read](Images/read.png)  
+    ![read](Images/read.png)
   - Based on Youdao TTS interface.
   - Supports automatic reading of results function, which is **off by default** and can be turned on in the settings, corresponding to `Automatic reading result`.
 
@@ -77,7 +82,7 @@ The plugin has been updated to use Youdao translation, which supports translatio
 
 1. Close PowerToys.
 2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases).
-3. Extract it to `{installation directory}\modules\launcher\Plugins\`.
+3. Extract it to `{installation directory}\RunPlugin\`.
    As shown in the figure:
    ![file](Images/file.png)
 4. Start PowerToys.

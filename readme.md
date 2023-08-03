@@ -14,6 +14,11 @@
 
 现已更新到有道翻译, **支持有道翻译的全部语言翻译**.
 
+- [如何使用](#usage)
+- [安装](#install)
+- [设置](#setting)
+- [提交问题](#issue)
+
 ## Usage
 
 - 默认触发键为`^`.(当前默认触发键会和 Everything 插件冲突, 可以参考下面的方式修改触发)
@@ -76,7 +81,7 @@
 
 1. 关闭 PowerToys
 2. 下载 [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
-3. 解压到`{安装目录}\modules\launcher\Plugins\`
+3. 解压到`{安装目录}\RunPlugin\`
    如图所示
    ![file](Images/file.png)
 4. 启动 PowerToys

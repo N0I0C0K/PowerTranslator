@@ -1,10 +1,10 @@
 {
-  "ID": "HBB9510CD0D2481F853690A07E6DC426",
-  "ActionKeyword": "^",
+  "ID": "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD",
+  "ActionKeyword": "|",
   "IsGlobal": false,
   "Name": "Translator",
   "Author": "N0I0C0K",
-  "Version": "0.6.0",
+  "Version": "0.7.1",
   "Language": "csharp",
   "Website": "https://github.com/N0I0C0K/PowerTranslator",
   "ExecuteFileName": "Translator.dll",
