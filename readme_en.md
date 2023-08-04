@@ -82,7 +82,7 @@ The plugin has been updated to use Youdao translation, which supports translatio
 
 1. Close PowerToys.
 2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases).
-3. Extract it to `{installation directory}\RunPlugin\`.
+3. Extract it to `{installation directory}\RunPlugins\`.
    As shown in the figure:
    ![file](Images/file.png)
 4. Start PowerToys.
