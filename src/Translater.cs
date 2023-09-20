@@ -14,6 +14,8 @@ namespace Translater
         public Func<ActionContext, bool>? Action { get; set; }
         public string? CopyTgt { get; set; }
         public string? iconPath { get; set; }
+        public string? transType { get; set; }
+        public string? fromApiName { get; set; }
     }
 
     public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu
@@ -153,24 +155,8 @@ namespace Translater
         {
             this.delayedExecution = delayedExecution;
             var querySearch = query.Search;
-            if (!translateHelper!.inited)
-            {
-                Task.Factory.StartNew(() =>
-                {
-                    if (translateHelper.initTranslater())
-                        this.publicAPI?.ChangeQuery(query.RawQuery, true);
-                });
-                return new List<Result>(){
-                    new Result
-                    {
-                        Title = "Initializing....",
-                        SubTitle = "Initialize translation components, please wait.",
-                        IcoPath = iconPath
-                    }
-                };
-            }
-
             var res = new List<ResultItem>();
+            // query from clipboard
             if (querySearch.Length == 0)
             {
                 string? clipboardText = Utils.UtilsFun.GetClipboardText();
@@ -234,12 +220,18 @@ namespace Translater
             }
 
             //add the result to this history
-            var first = res.First();
-            historyHelper?.Push(new ResultItem
+            var first = res.FirstOrDefault((val) =>
             {
-                Title = first.Title,
-                SubTitle = querySearch
+                return val.fromApiName != null;
             });
+            if (first != null)
+            {
+                historyHelper?.Push(new ResultItem
+                {
+                    Title = first.Title,
+                    SubTitle = querySearch
+                });
+            }
 
             var query_res = res.ToResultList(this.iconPath);
 

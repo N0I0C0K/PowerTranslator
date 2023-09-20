@@ -30,7 +30,8 @@ public class TranslateResponse : ITranslateResult
         res.Add(new ResultItem
         {
             Title = this.translateResult![0][0].tgt,
-            SubTitle = $"{this.translateResult![0][0].src} [{this.type}]"
+            SubTitle = $"{this.translateResult![0][0].src}",
+            transType = this.type ?? "Translate"
         });
         if (this.smartResult != null)
         {
@@ -46,6 +47,10 @@ public class TranslateResponse : ITranslateResult
                 });
             });
         }
+        res.each((val) =>
+        {
+            val.fromApiName = "Youdao Old Web Api";
+        });
         return res;
     }
 }

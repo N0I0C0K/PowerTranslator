@@ -48,6 +48,10 @@ public class TranslateResult : ITranslateResult
                 });
             }
         }
+        res.each((val) =>
+        {
+            val.fromApiName = "Backup Youdao Api";
+        });
         return res;
     }
 }

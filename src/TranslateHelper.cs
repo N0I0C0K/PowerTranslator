@@ -2,7 +2,9 @@ using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Translater.Utils;
 using System.Windows.Media;
-
+using Translater.Youdao;
+using Translater.Youdao.V2;
+using Translater.Youdao.Backup;
 namespace Translater;
 
 public class TranslateFailedException : Exception
@@ -21,24 +23,29 @@ public class TranslateHelper
         public string toLan;
     }
     public const string toLanSplit = "->";
-    public bool inited => this.youdaoTranslater != null || this.youdaoTranslaterV2 != null;
+    public bool inited => this.translaters.Count >= 3 && (this.translaters[0] != null || this.translaters[1] != null);
     private object initLock = new Object();
-    private Youdao.YoudaoTranslater? youdaoTranslater;
-    private Youdao.V2.YoudaoTranslater? youdaoTranslaterV2;
-    private Youdao.Backup.BackUpTranslater? backUpTranslater;
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
     private List<Youdao.ITranslater?> translaters;
+    private List<Type> translatorTypes;
     private bool isSpeaking = false;
     private bool isIniting = false;
     public TranslateHelper(IPublicAPI publicAPI)
     {
-        this.translaters = new List<Youdao.ITranslater?>(3);
+        this.translaters = new List<Youdao.ITranslater?>{
+            null, null, null
+        };
+        translatorTypes = new List<Type>{
+            typeof(Youdao.V2.YoudaoTranslater),
+            typeof(Youdao.YoudaoTranslater),
+            typeof(Youdao.Backup.BackUpTranslater)
+        };
         this.initTranslater();
         this.publicAPI = publicAPI;
 
         // backup translater, We don't need to initialize it with the others, because it doesn't have an error
-        this.backUpTranslater = new Youdao.Backup.BackUpTranslater();
+        // this.backUpTranslater = new Youdao.Backup.BackUpTranslater();
     }
     public TranslateTarget ParseRawSrc(string src)
     {
@@ -59,14 +66,17 @@ public class TranslateHelper
     }
     public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input")
     {
+
+
         var res = new List<ResultItem>();
         if (raw.Length == 0)
             return res;
+
         var target = ParseRawSrc(raw);
         string src = target.src;
         string toLan = target.toLan;
         Youdao.ITranslateResult? translateResult = null;
-        translateResult = this.translaters.FirstNotNoneCast<Youdao.ITranslater?, Youdao.ITranslateResult>((it) =>
+        translateResult = this.translaters.FirstNotNoneCast((it) =>
         {
             try
             {
@@ -98,6 +108,24 @@ public class TranslateHelper
                 }
             });
         }
+
+        if (!inited)
+        {
+            if (!this.isIniting)
+            {
+                Task.Factory.StartNew(() =>
+                {
+                    if (this.initTranslater())
+                        this.publicAPI?.ChangeQuery(raw, true);
+                });
+            }
+            res.Add(new ResultItem
+            {
+                Title = "initializing other apis...",
+                SubTitle = "please try later"
+            });
+        }
+
         return res;
     }
 
@@ -150,21 +178,41 @@ public class TranslateHelper
             this.isIniting = true;
             this.lastInitTime = now;
             Log.Info("custom init", typeof(TranslateHelper));
-            // if one of the api is inited, then return true. because we need. Because we want to minimize the number of initializations
-            if (this.youdaoTranslaterV2 != null || this.youdaoTranslater != null)
-                return true;
+            // // if one of the api is inited, then return true. because we need. Because we want to minimize the number of initializations
+            // if (this.youdaoTranslaterV2 != null || this.youdaoTranslater != null)
+            //     return true;
+
+            var actions = translatorTypes.Select((tp, idx) =>
+            {
+                return Task.Factory.StartNew(() =>
+                {
+                    Log.Error($"start init {tp.Name} {idx}", tp);
+                    if (translaters[idx] != null)
+                        return;
+                    try
+                    {
+                        var tran = tp.GetConstructor(Type.EmptyTypes)?.Invoke(null);
+                        this.translaters[idx] = tran as ITranslater;
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error($"Error occurred: {ex.Message}", typeof(Translater));
+                    }
+                });
+            });
+
             try
             {
-                var v2Task = Task.Factory.StartNew(() =>
+                Task.WhenAll(actions).GetAwaiter().GetResult();
+            }
+            catch (AggregateException ex)
+            {
+                // 捕获并处理 Task.WhenAll 返回的聚合异常
+                foreach (Exception innerException in ex.InnerExceptions)
                 {
-                    youdaoTranslaterV2 ??= new Youdao.V2.YoudaoTranslater();
-                });
-                var v1Task = Task.Run(() =>
-                {
-                    youdaoTranslater ??= new Youdao.YoudaoTranslater();
-                });
-                Task.WaitAll(v2Task, v1Task);
-                return true;
+                    Log.Error($"Error occurred during task execution: {innerException.Message}", typeof(Translater));
+                }
+                return false;
             }
             catch (Exception err)
             {
@@ -173,13 +221,10 @@ public class TranslateHelper
             }
             finally
             {
-                this.translaters.Clear();
-                this.translaters.Add(youdaoTranslaterV2);
-                this.translaters.Add(youdaoTranslater);
-                this.translaters.Add(backUpTranslater);
                 this.isIniting = false;
                 Log.Info("custom init complete", typeof(TranslateHelper));
             }
+            return true;
         }
     }
 }

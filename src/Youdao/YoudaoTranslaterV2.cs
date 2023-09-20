@@ -86,7 +86,8 @@ public class TranslateResponse : ITranslateResult
             res.Add(new ResultItem
             {
                 Title = tres.tgt,
-                SubTitle = $"{tres.src}{pron}"
+                SubTitle = $"{tres.src}{pron}",
+                transType = this.type ?? "Translate",
             });
         }
         if (this.dictResult != null)
@@ -101,7 +102,8 @@ public class TranslateResponse : ITranslateResult
                         res.Add(new ResultItem
                         {
                             Title = trs.text ?? "[None]",
-                            SubTitle = trs.tran ?? "[smart result]"
+                            SubTitle = trs.tran ?? "",
+                            transType = "[Smart Result]"
                         });
                     }
                 }
@@ -125,11 +127,16 @@ public class TranslateResponse : ITranslateResult
                     res.Add(new ResultItem
                     {
                         Title = String.Join(" | ", ec?.exam_type!),
-                        SubTitle = "exam"
+                        SubTitle = "exam",
+                        transType = "exam"
                     });
                 }
             }
         }
+        res.each((val) =>
+        {
+            val.fromApiName = "Youdao Web Api";
+        });
         return res;
     }
 }
