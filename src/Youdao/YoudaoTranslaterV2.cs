@@ -70,7 +70,6 @@ public class TranslateResponse : ITranslateResult
         public string? tgtPronounce { get; set; }
     }
 
-
     public int code { get; set; }
     public TranDictResult? dictResult { get; set; }
     public TranslateResult[][]? translateResult { get; set; }
@@ -83,10 +82,11 @@ public class TranslateResponse : ITranslateResult
         List<ResultItem> res = new List<ResultItem>();
         foreach (var tres in this.translateResult![0])
         {
+            string pron = tres.srcPronounce != null ? $"({tres.srcPronounce})" : "";
             res.Add(new ResultItem
             {
                 Title = tres.tgt,
-                SubTitle = $"{tres.src}({tres.srcPronounce ?? "-"}) [{this.type}] v2"
+                SubTitle = $"{tres.src}{pron}"
             });
         }
         if (this.dictResult != null)
@@ -116,7 +116,7 @@ public class TranslateResponse : ITranslateResult
                         res.Add(new ResultItem
                         {
                             Title = trs.tran ?? "[None]",
-                            SubTitle = trs.pos ?? "-"
+                            SubTitle = trs.pos ?? ""
                         });
                     }
                 }
@@ -159,7 +159,6 @@ public class YoudaoTranslater : ITranslater
 
         SetCookies();
 
-
         var res = this.client.GetAsync("https://dict.youdao.com/webtranslate/key".addQueryParameters(new
         {
             keyid = "webfanyi-key-getter"
@@ -190,7 +189,6 @@ public class YoudaoTranslater : ITranslater
         GetKeyByte("ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl", this.encryptKey);
         GetKeyByte("ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4", this.iv);
     }
-
 
     public override TranslateResponse? Translate(string src, string toLan = "auto", string fromLan = "auto")
     {

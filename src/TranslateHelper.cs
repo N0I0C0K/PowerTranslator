@@ -159,8 +159,11 @@ public class TranslateHelper
                 {
                     youdaoTranslaterV2 ??= new Youdao.V2.YoudaoTranslater();
                 });
-                youdaoTranslater ??= new Youdao.YoudaoTranslater();
-                v2Task.Wait();
+                var v1Task = Task.Run(() =>
+                {
+                    youdaoTranslater ??= new Youdao.YoudaoTranslater();
+                });
+                Task.WaitAll(v2Task, v1Task);
                 return true;
             }
             catch (Exception err)
