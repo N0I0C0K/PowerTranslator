@@ -26,7 +26,8 @@ public class HistoryHelper
                 {
                     Title = item.Title,
                     SubTitle = $"{item.SubTitle} [{string.Format("{0:MM/dd HH:mm:ss}", DateTime.Now)}]",
-                    iconPath = this.iconPath
+                    iconPath = this.iconPath,
+                    transType = "[History]"
                 });
                 while (this.history.Count >= MAX_HISTORY_NUM)
                     this.history.Dequeue();

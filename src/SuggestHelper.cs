@@ -43,7 +43,10 @@ public class SuggestHelper
                 result.Add(new ResultItem
                 {
                     Title = item.k,
-                    SubTitle = $"{item.v} [suggest]"
+                    SubTitle = $"{item.v}",
+                    fromApiName = "Baidu",
+                    transType = "[Suggest]"
+
                 });
 
             }
