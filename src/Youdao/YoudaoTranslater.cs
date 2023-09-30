@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using Translater.Utils;
 
-namespace Translater.Youdao;
+namespace Translater.Youdao.old;
 public class TranslateResponse : ITranslateResult
 {
     public struct ResStruct

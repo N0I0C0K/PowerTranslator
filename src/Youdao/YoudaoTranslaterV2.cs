@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Translater.Utils;
+using Wox.Plugin.Logger;
 
 namespace Translater.Youdao.V2;
 
@@ -174,10 +175,14 @@ public class YoudaoTranslater : ITranslater
         var keyRes = JsonSerializer.Deserialize<KeyResponse>(res.Content.ReadAsStringAsync().GetAwaiter().GetResult());
 
         if (keyRes?.code != 0)
+        {
+            Log.Error($"err in get secretKey, {keyRes?.ToString()}", typeof(YoudaoTranslater));
             throw new Exception("err in get secretKey");
+        }
 
         this.secretKey = keyRes.data!.secretKey;
         this.InitEncrypt();
+
     }
 
     private void InitEncrypt()

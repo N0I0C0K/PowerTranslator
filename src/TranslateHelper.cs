@@ -38,7 +38,7 @@ public class TranslateHelper
         };
         translatorTypes = new List<Type>{
             typeof(Youdao.V2.YoudaoTranslater),
-            typeof(Youdao.YoudaoTranslater),
+            typeof(Youdao.old.YoudaoTranslater),
             typeof(Youdao.Backup.BackUpTranslater)
         };
         this.initTranslater();
@@ -186,7 +186,7 @@ public class TranslateHelper
             {
                 return Task.Factory.StartNew(() =>
                 {
-                    Log.Error($"start init {tp.Name} {idx}", tp);
+                    Log.Error($"start init {tp.Namespace} {tp.Name} {idx}", tp);
                     if (translaters[idx] != null)
                         return;
                     try
@@ -196,7 +196,7 @@ public class TranslateHelper
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"Error occurred: {ex.Message}", typeof(Translater));
+                        Log.Error($"{idx} Error occurred: {ex.Message}", typeof(Translater));
                     }
                 });
             });
