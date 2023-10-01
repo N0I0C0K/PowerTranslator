@@ -41,8 +41,8 @@ namespace Translater
         private object preQueryLock = new Object();
 
         // settings
-        private static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese", "English", "Japanese", "Korean", "Russian", "French", "Spanish" };
-        private readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "en", "ja", "ko", "ru", "fr", "es" };
+        private static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese", "English", "Japanese", "Korean", "Russian", "French", "Spanish", "Arabic", "German" };
+        private readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "en", "ja", "ko", "ru", "fr", "es", "ar", "de" };
         private string defaultLanguageKey = "auto";
         private bool delayedExecution = false;
         private bool enable_suggest = true;

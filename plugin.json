@@ -4,7 +4,7 @@
   "IsGlobal": false,
   "Name": "Translator",
   "Author": "N0I0C0K",
-  "Version": "0.8",
+  "Version": "0.9",
   "Language": "csharp",
   "Website": "https://github.com/N0I0C0K/PowerTranslator",
   "ExecuteFileName": "Translator.dll",

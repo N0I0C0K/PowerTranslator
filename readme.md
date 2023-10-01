@@ -90,12 +90,14 @@
 
 ## Setting
 
-- 如果触发按键冲突, 修改默认触发键 (建议修改为" ` ", 同时建议检查一下有无冲突)
+- 如果触发按键冲突, 修改默认触发键 (建议修改为" \` ", 同时建议检查一下有无冲突)。**注意在v0.8之后默认触发按键是`"|"`，无需再次修改**
   ![change active key](Images/change_active.png)
-- `启动时清除上一查询`可以快速触发翻译剪切板, 按需求勾选.
-  ![auto clean](Images/auto_clean.png)
 - 建议勾选`输入平滑`, 可以优化输入体验
   ![enable Smooth input](Images/enable%20Smooth%20input.png)
+- `启动时清除上一查询`可以快速触发翻译剪切板, **按需求勾选.**
+  ![auto clean](Images/auto_clean.png)
+- 切换默认目标翻译语言，默认是`auto`
+  ![languages](Images/languages.png)
 
 ## Issue
 
