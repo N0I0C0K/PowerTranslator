@@ -41,6 +41,9 @@ namespace Translater
         private object preQueryLock = new Object();
 
         // settings
+        private static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese", "English", "Japanese", "Korean", "Russian", "French", "Spanish" };
+        private readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "en", "ja", "ko", "ru", "fr", "es" };
+        private string defaultLanguageKey = "auto";
         private bool delayedExecution = false;
         private bool enable_suggest = true;
         private bool enable_auto_read = false;
@@ -244,7 +247,7 @@ namespace Translater
             publicAPI = context.API;
             var translaTask = Task.Factory.StartNew(() =>
             {
-                translateHelper = new TranslateHelper(publicAPI);
+                translateHelper = new TranslateHelper(publicAPI, this.defaultLanguageKey);
             });
             suggestHelper = new Suggest.SuggestHelper(publicAPI);
             historyHelper = new History.HistoryHelper();
@@ -278,6 +281,13 @@ namespace Translater
                     Key = "EnableAutoRead",
                     DisplayLabel = "Automatic reading result",
                     Value = false,
+                },
+                new PluginAdditionalOption{
+                    Key = "DefaultTargetLanguage",
+                    DisplayLabel = "Default translation target language, Default is auto",
+                    PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Combobox,
+                    ComboBoxOptions = languagesOptions,
+                    ComboBoxValue = 0,
                 }
             };
         }
@@ -302,6 +312,9 @@ namespace Translater
             };
             this.enable_suggest = GetSetting("EnableSuggest");
             this.enable_auto_read = GetSetting("EnableAutoRead");
+            defaultLanguageKey = this.languagesKeys[settings.AdditionalOptions.FirstOrDefault(set => set.Key == "DefaultTargetLanguage")?.ComboBoxValue ?? 0];
+            if (this.translateHelper != null)
+                this.translateHelper.defaultLanguageKey = this.defaultLanguageKey;
         }
 
         public List<ContextMenuResult> LoadContextMenus(Result selectedResult)

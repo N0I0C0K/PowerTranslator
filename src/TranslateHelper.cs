@@ -31,7 +31,8 @@ public class TranslateHelper
     private List<Type> translatorTypes;
     private bool isSpeaking = false;
     private bool isIniting = false;
-    public TranslateHelper(IPublicAPI publicAPI)
+    public string defaultLanguageKey = "auto";
+    public TranslateHelper(IPublicAPI publicAPI, string defaultLanguageKey = "auto")
     {
         this.translaters = new List<Youdao.ITranslater?>{
             null, null, null
@@ -43,6 +44,7 @@ public class TranslateHelper
         };
         this.initTranslater();
         this.publicAPI = publicAPI;
+        this.defaultLanguageKey = defaultLanguageKey;
 
         // backup translater, We don't need to initialize it with the others, because it doesn't have an error
         // this.backUpTranslater = new Youdao.Backup.BackUpTranslater();
@@ -61,7 +63,7 @@ public class TranslateHelper
         return new TranslateTarget
         {
             src = src,
-            toLan = "AUTO"
+            toLan = this.defaultLanguageKey
         };
     }
     public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input")
