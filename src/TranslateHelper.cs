@@ -68,8 +68,6 @@ public class TranslateHelper
     }
     public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input")
     {
-
-
         var res = new List<ResultItem>();
         if (raw.Length == 0)
             return res;
@@ -78,16 +76,26 @@ public class TranslateHelper
         string src = target.src;
         string toLan = target.toLan;
         Youdao.ITranslateResult? translateResult = null;
+        int idx = 0;
         translateResult = this.translaters.FirstNotNoneCast((it) =>
         {
             try
             {
+                if (it == null)
+                {
+
+                    throw new Exception($"{this.translatorTypes[idx].FullName} is null");
+                }
                 return it?.Translate(src, toLan, "auto");
             }
             catch (Exception err)
             {
                 Log.Error(err.Message, typeof(TranslateHelper));
                 return null;
+            }
+            finally
+            {
+                idx++;
             }
         });
         if (translateResult != null)
@@ -101,7 +109,7 @@ public class TranslateHelper
             res.Add(new ResultItem
             {
                 Title = "result is null, some error happen in translate. check out your network!",
-                SubTitle = $"Press enter to get help",
+                SubTitle = "Press enter to get help",
                 Action = (ev) =>
                 {
                     UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTranslator/issues?q=");
@@ -188,7 +196,7 @@ public class TranslateHelper
             {
                 return Task.Factory.StartNew(() =>
                 {
-                    Log.Error($"start init {tp.Namespace} {tp.Name} {idx}", tp);
+                    Log.Info($"start init {tp.Namespace} {tp.Name} {idx}", tp);
                     if (translaters[idx] != null)
                         return;
                     try

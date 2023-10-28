@@ -9,4 +9,5 @@ public abstract class ITranslateResult
 public abstract class ITranslater
 {
     public abstract ITranslateResult? Translate(string src, string toLan, string fromLan);
+    public abstract void Reset();
 }

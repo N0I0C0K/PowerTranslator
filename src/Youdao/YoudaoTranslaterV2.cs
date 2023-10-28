@@ -154,6 +154,7 @@ public class YoudaoTranslater : ITranslater
 
     public YoudaoTranslater()
     {
+
         this.userAgent = UtilsFun.GetRandomUserAgent();
 
         this.random = new Random();
@@ -229,17 +230,6 @@ public class YoudaoTranslater : ITranslater
     }
     private void SetCookies()
     {
-        // var res = client.GetAsync("https://rlogs.youdao.com/rlog.php".addQueryParameters(new
-        // {
-        //     _npid = "fanyiweb",
-        //     _ncat = "pageview",
-        //     _ncoo = (2147483647 / this.random.Next(1, 10)).ToString(),
-        //     nssn = "NULL",
-        //     _nver = "1.2.0",
-        //     _ntms = this.UtcNow().ToString(),
-        //     _nhrf = "newweb_translate_text"
-        // })).GetAwaiter().GetResult();
-        // client.DefaultRequestHeaders.Add("cookies", res.Headers.GetValues("Set-Cookie").First());
         string OUTFOX_SEARCH_USER_ID_NCOO = $"OUTFOX_SEARCH_USER_ID_NCOO={random.Next(100000000, 999999999)}.{random.Next(100000000, 999999999)}";
         string OUTFOX_SEARCH_USER_ID = $"OUTFOX_SEARCH_USER_ID={random.Next(100000000, 999999999)}@{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}";
         client.DefaultRequestHeaders.Add("Cookie", $"{OUTFOX_SEARCH_USER_ID_NCOO};{OUTFOX_SEARCH_USER_ID}");
@@ -299,6 +289,13 @@ public class YoudaoTranslater : ITranslater
             }
         }
         return res;
+    }
+
+    public override void Reset()
+    {
+        string OUTFOX_SEARCH_USER_ID_NCOO = $"OUTFOX_SEARCH_USER_ID_NCOO={random.Next(100000000, 999999999)}.{random.Next(100000000, 999999999)}";
+        string OUTFOX_SEARCH_USER_ID = $"OUTFOX_SEARCH_USER_ID={random.Next(100000000, 999999999)}@{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}";
+        client.DefaultRequestHeaders.Add("Cookie", $"{OUTFOX_SEARCH_USER_ID_NCOO};{OUTFOX_SEARCH_USER_ID}");
     }
 
 }

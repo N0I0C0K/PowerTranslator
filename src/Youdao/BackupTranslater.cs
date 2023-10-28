@@ -69,6 +69,11 @@ public class BackUpTranslater : ITranslater
         client.DefaultRequestHeaders.Add("Origin", "https://ai.youdao.com");
     }
 
+    public override void Reset()
+    {
+
+    }
+
     public override TranslateResult? Translate(string src, string fromLan = "Auto", string toLan = "Auto")
     {
         var data = new
