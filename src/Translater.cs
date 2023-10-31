@@ -21,6 +21,7 @@ namespace Translater
     public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu
     {
         public string Name => "Translator";
+        public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
         public string Description => "A simple translation plugin, based on Youdao Translation";
         public IEnumerable<PluginAdditionalOption> AdditionalOptions => GetAdditionalOptions();
         public PluginMetadata? queryMetaData = null;
@@ -31,6 +32,7 @@ namespace Translater
         private TranslateHelper? translateHelper;
         private Suggest.SuggestHelper? suggestHelper;
         private History.HistoryHelper? historyHelper;
+
 
         private bool isDebug = false;
         private string queryPre = "";
