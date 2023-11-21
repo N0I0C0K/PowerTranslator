@@ -68,7 +68,7 @@ public class YoudaoTranslater : ITranslater
         this.md5 = MD5.Create();
 
         client = new HttpClient();
-        client.Timeout = TimeSpan.FromSeconds(3);
+        client.Timeout = TimeSpan.FromSeconds(10);
         this.Reset();
 
     }

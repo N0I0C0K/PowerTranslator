@@ -206,7 +206,7 @@ public class TranslateHelper
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"{idx} Error occurred: {ex.Message}", typeof(Translater));
+                        Log.Error($"{idx} Error occurred: {ex.InnerException!.Message}", typeof(Translater));
                     }
                 });
             });
