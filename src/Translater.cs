@@ -290,6 +290,9 @@ namespace Translater
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Combobox,
                     ComboBoxOptions = languagesOptions,
                     ComboBoxValue = 0,
+                    ComboBoxItems = languagesOptions.Select((val, idx)=>{
+                        return new  KeyValuePair<string, string>(val, idx.ToString());
+                    }).ToList()
                 }
             };
         }
@@ -314,7 +317,10 @@ namespace Translater
             };
             this.enable_suggest = GetSetting("EnableSuggest");
             this.enable_auto_read = GetSetting("EnableAutoRead");
-            defaultLanguageKey = this.languagesKeys[settings.AdditionalOptions.FirstOrDefault(set => set.Key == "DefaultTargetLanguage")?.ComboBoxValue ?? 0];
+            int defaultLanguageIdx = settings.AdditionalOptions.FirstOrDefault(set => set.Key == "DefaultTargetLanguage")?.ComboBoxValue ?? 0;
+            defaultLanguageIdx = defaultLanguageIdx >= this.languagesKeys.Count ? 0 : defaultLanguageIdx;
+            defaultLanguageKey = this.languagesKeys[defaultLanguageIdx];
+            Log.Info($"update setting {defaultLanguageIdx} {defaultLanguageKey}", typeof(Translater));
             if (this.translateHelper != null)
                 this.translateHelper.defaultLanguageKey = this.defaultLanguageKey;
         }

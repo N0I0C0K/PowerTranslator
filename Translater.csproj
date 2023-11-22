@@ -14,19 +14,19 @@
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Wox.Plugin">
-            <HintPath>"C:\Program Files\PowerToys\Wox.Plugin.dll"</HintPath>
+            <HintPath>".\lib\Wox.Plugin.dll"</HintPath>
         </Reference>
         <Reference Include="Wox.Infrastructure">
-            <HintPath>"C:\Program Files\PowerToys\Wox.Infrastructure.dll"</HintPath>
+            <HintPath>".\lib\Wox.Infrastructure.dll"</HintPath>
         </Reference>
         <Reference Include="PowerToys.Settings.UI.Lib">
-            <HintPath>"C:\Program Files\PowerToys\PowerToys.Settings.UI.Lib.dll"</HintPath>
+            <HintPath>".\lib\PowerToys.Settings.UI.Lib.dll"</HintPath>
         </Reference>
         <Reference Include="PowerToys.Common.UI">
-            <HintPath>"C:\Program Files\PowerToys\PowerToys.Common.UI.dll"</HintPath>
+            <HintPath>".\lib\PowerToys.Common.UI.dll"</HintPath>
         </Reference>
         <Reference Include="PowerToys.ManagedCommon">
-            <HintPath>"C:\Program Files\PowerToys\PowerToys.ManagedCommon.dll"</HintPath>
+            <HintPath>".\lib\PowerToys.ManagedCommon.dll"</HintPath>
         </Reference>
         <None Include="./plugin.json"
               CopyToOutputDirectory="PreserveNewest" />
