@@ -81,10 +81,12 @@
 
 1. 关闭 PowerToys
 2. 下载 [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
-3. 解压到`{安装目录}\RunPlugins\`
+3. 解压到`%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`
    如图所示
    ![file](Images/file.png)
 4. 启动 PowerToys
+
+(参考官方[第三方插件安装文档](https://github.com/microsoft/PowerToys/blob/main/doc/thirdPartyRunPlugins.md))
 
 [安装-升级 详细教程](./doc/how%20to%20install.md)
 

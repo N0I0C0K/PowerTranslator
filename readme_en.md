@@ -82,10 +82,12 @@ The plugin has been updated to use Youdao translation, which supports translatio
 
 1. Close PowerToys.
 2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases).
-3. Extract it to `{installation directory}\RunPlugins\`.
+3. Extract it to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`.
    As shown in the figure:
    ![file](Images/file.png)
 4. Start PowerToys.
+
+Refer to official documents, [Third-Party plugins for PowerToy Run](https://github.com/microsoft/PowerToys/blob/main/doc/thirdPartyRunPlugins.md)
 
 [Installation-upgrade detailed tutorial](./doc/how%20to%20install.md)
 
@@ -97,7 +99,8 @@ The plugin has been updated to use Youdao translation, which supports translatio
   ![auto clean](Images/auto_clean.png)
 - It is recommended to check `Smooth input`, which can optimize the input experience.
   ![enable Smooth input](Images/enable%20Smooth%20input.png)
-
+- Toggles the default target translation language, which defaults to 'auto'
+  ![languages](Images/languages.png)
 ## Issue
 
 If you find translation failure, unknown errors, or need new features, please submit an issue. I will fix or improve it in time.
