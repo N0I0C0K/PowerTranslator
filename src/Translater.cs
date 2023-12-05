@@ -337,6 +337,8 @@ namespace Translater
                         return false;
                     },
                     Glyph = "\u2B1A",
+                    PluginName="PowerTranslator",
+                    FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
                     AcceleratorKey = System.Windows.Input.Key.Return,
                     AcceleratorModifiers = System.Windows.Input.ModifierKeys.Shift
                 },
@@ -348,6 +350,8 @@ namespace Translater
                         return false;
                     },
                     Glyph = "\u23F5",
+                    PluginName="PowerTranslator",
+                    FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
                     AcceleratorKey = System.Windows.Input.Key.Return,
                     AcceleratorModifiers = System.Windows.Input.ModifierKeys.Control
                 }
