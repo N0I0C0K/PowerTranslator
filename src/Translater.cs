@@ -331,12 +331,12 @@ namespace Translater
             {
                 new ContextMenuResult
                 {
-                    Title = "Copy (Enter); Copy Subtitle(shift+Enter)",
+                    Title = "Copy (Enter), Subtitle(shift+Enter)",
                     Action = context=>{
                         UtilsFun.SetClipboardText(selectedResult.SubTitle);
                         return false;
                     },
-                    Glyph = "\u2B1A",
+                    Glyph = "\xF413",
                     PluginName="PowerTranslator",
                     FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
                     AcceleratorKey = System.Windows.Input.Key.Return,
@@ -349,7 +349,7 @@ namespace Translater
                         this.translateHelper?.Read(selectedResult.Title);
                         return false;
                     },
-                    Glyph = "\u23F5",
+                    Glyph = "\xEDB5",
                     PluginName="PowerTranslator",
                     FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
                     AcceleratorKey = System.Windows.Input.Key.Return,
