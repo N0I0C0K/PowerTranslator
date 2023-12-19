@@ -21,8 +21,7 @@ The plugin has been updated to use Youdao translation, which supports translatio
 
 ## Usage
 
-- The default trigger key is `^`. (The current default trigger key conflicts with the Everything plugin. Refer to the following instructions to modify the trigger.)
-- Specify the text to be translated:
+- The default trigger key is `|`. 
 
   - Press `alt+space` to open PowerToys Run, and enter `^[text to be translated]`.
   - Press `Enter` to copy the translation result to the clipboard.
