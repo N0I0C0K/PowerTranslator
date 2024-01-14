@@ -77,6 +77,13 @@ The plugin has been updated to use Youdao translation, which supports translatio
   - **Why doesn't it support customizing the upper limit entry?**
     Because the official only provides a bool type custom parameter, the current version does not support customizing the upper limit of translation history. I will update it when it is supported later. Or you can download the source code and modify it yourself.
 
+- Second Language
+  - Enable the second translation target language, disabled by default
+  ![second option](Images/second_option.png)
+  - When enabled, the second language result will be automatically displayed with each translation
+  ![second](Images/second.png)
+
+
 ## Install
 
 1. Close PowerToys.

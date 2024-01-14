@@ -77,6 +77,13 @@
   - **为什么不支持自定义上限条目?**
     因为官方只开放了 bool 类型的自定义参数, 所以目前不支持自定义历史记录上限. 等待后续支持我会更新.或者可以下载源码自行修改编译.
 
+- 第二语言
+  - 开启第二翻译目标语言，默认关闭
+  ![second option](Images/second_option.png)
+  - 开启后会在每次翻译的时候自动展示第二语言结果
+  ![second](Images/second.png)
+
+
 ## Install
 
 1. 关闭 PowerToys
