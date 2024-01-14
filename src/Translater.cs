@@ -49,6 +49,8 @@ namespace Translater
         private bool delayedExecution = false;
         private bool enable_suggest = true;
         private bool enable_auto_read = false;
+        private bool enable_second_lanuage = false;
+        private string second_lanuage_key = "auto";
         private void LogInfo(string info)
         {
             if (!isDebug)
@@ -184,6 +186,7 @@ namespace Translater
                 return res.ToResultList(this.iconPath);
             }
 
+            // get suggest in other thread
             Task<List<ResultItem>>? suggestTask = null;
             if (enable_suggest)
             {
@@ -193,12 +196,31 @@ namespace Translater
                 });
             }
 
+            // get second translate result in other thread
+            Task<List<ResultItem>>? secondTranslateTask = null;
+            if (enable_second_lanuage && second_lanuage_key != null)
+            {
+                secondTranslateTask = Task.Run(() =>
+                {
+                    return translateHelper!.QueryTranslate(querySearch, toLanuage: second_lanuage_key);
+                });
+            }
+
             res.AddRange(this.translateHelper!.QueryTranslate(querySearch));
+
+            if (secondTranslateTask != null)
+            {
+                var secondRes = secondTranslateTask.GetAwaiter().GetResult();
+                var resItem = secondRes[0];
+                resItem.SubTitle = $"{resItem.SubTitle} [second lanuage]";
+                res.Insert(1, resItem);
+            }
             if (suggestTask != null)
             {
                 var suggest = suggestTask.GetAwaiter().GetResult();
                 res.AddRange(suggest);
             }
+
             if (isDebug)
             {
                 res.Add(new ResultItem
@@ -272,6 +294,10 @@ namespace Translater
 
         public static List<PluginAdditionalOption> GetAdditionalOptions()
         {
+            var lanuageItems = languagesOptions.Select((val, idx) =>
+            {
+                return new KeyValuePair<string, string>(val, idx.ToString());
+            }).ToList();
             return new List<PluginAdditionalOption>
             {
                 new PluginAdditionalOption{
@@ -286,17 +312,24 @@ namespace Translater
                 },
                 new PluginAdditionalOption{
                     Key = "DefaultTargetLanguage",
-                    DisplayLabel = "Default translation target language, Default is auto",
+                    DisplayDescription = "Default translation target language, Default is auto",
+                    DisplayLabel = "Default target lanuage",
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Combobox,
                     ComboBoxOptions = languagesOptions,
                     ComboBoxValue = 0,
-                    ComboBoxItems = languagesOptions.Select((val, idx)=>{
-                        return new  KeyValuePair<string, string>(val, idx.ToString());
-                    }).ToList()
+                    ComboBoxItems = lanuageItems
+                },
+                new PluginAdditionalOption{
+                    Key = "SecondTargetLanuage",
+                    DisplayLabel = "Second target lanuage",
+                    DisplayDescription = "Active second target lanuage, will display after main target",
+                    PluginOptionType = PluginAdditionalOption.AdditionalOptionType.CheckboxAndCombobox,
+                    Value = false,
+                    ComboBoxValue = 0,
+                    ComboBoxItems = lanuageItems
                 }
             };
         }
-
         public void Dispose()
         {
             this.publicAPI!.ThemeChanged -= this.UpdateIconPath;
@@ -313,14 +346,18 @@ namespace Translater
                 {
                     return set.Key == key;
                 });
-                return target?.Value ?? true;
+                return target!;
             };
-            this.enable_suggest = GetSetting("EnableSuggest");
-            this.enable_auto_read = GetSetting("EnableAutoRead");
-            int defaultLanguageIdx = settings.AdditionalOptions.FirstOrDefault(set => set.Key == "DefaultTargetLanguage")?.ComboBoxValue ?? 0;
+            this.enable_suggest = GetSetting("EnableSuggest").Value;
+            this.enable_auto_read = GetSetting("EnableAutoRead").Value;
+            int defaultLanguageIdx = GetSetting("DefaultTargetLanguage").ComboBoxValue;
             defaultLanguageIdx = defaultLanguageIdx >= this.languagesKeys.Count ? 0 : defaultLanguageIdx;
             defaultLanguageKey = this.languagesKeys[defaultLanguageIdx];
-            Log.Info($"update setting {defaultLanguageIdx} {defaultLanguageKey}", typeof(Translater));
+
+            var secondOption = GetSetting("SecondTargetLanuage");
+            enable_second_lanuage = secondOption.Value;
+            second_lanuage_key = languagesKeys[secondOption.ComboBoxValue >= this.languagesKeys.Count ? 0 : secondOption.ComboBoxValue];
+
             if (this.translateHelper != null)
                 this.translateHelper.defaultLanguageKey = this.defaultLanguageKey;
         }

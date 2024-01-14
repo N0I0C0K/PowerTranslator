@@ -66,7 +66,7 @@ public class TranslateHelper
             toLan = this.defaultLanguageKey
         };
     }
-    public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input")
+    public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input", string? toLanuage = null)
     {
         var res = new List<ResultItem>();
         if (raw.Length == 0)
@@ -74,7 +74,7 @@ public class TranslateHelper
 
         var target = ParseRawSrc(raw);
         string src = target.src;
-        string toLan = target.toLan;
+        string toLan = toLanuage ?? target.toLan;
         Youdao.ITranslateResult? translateResult = null;
         int idx = 0;
         translateResult = this.translaters.FirstNotNoneCast((it) =>

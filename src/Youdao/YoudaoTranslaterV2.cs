@@ -87,7 +87,7 @@ public class TranslateResponse : ITranslateResult
             string? tgtpron = tres.tgtPronounce;
             res.Add(new ResultItem
             {
-                Title = tres.tgt + (tres.tgt.Length < 10 ? $" ({tgtpron})" : ""),
+                Title = tres.tgt + (tres.tgt.Length < 10 && tgtpron != null ? $" ({tgtpron})" : ""),
                 SubTitle = tres.src + (srcpron != null ? $" ({srcpron})" : ""),
                 transType = this.type ?? "unknow type",
             });
