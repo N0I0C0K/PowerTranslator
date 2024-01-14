@@ -83,12 +83,13 @@ public class TranslateResponse : ITranslateResult
         List<ResultItem> res = new List<ResultItem>();
         foreach (var tres in this.translateResult![0])
         {
-            string pron = tres.srcPronounce != null ? $"({tres.srcPronounce})" : "";
+            string? srcpron = tres.srcPronounce ?? dictResult?.ec?.word?.usphone;
+            string? tgtpron = tres.tgtPronounce;
             res.Add(new ResultItem
             {
-                Title = tres.tgt,
-                SubTitle = $"{tres.src}{pron}",
-                transType = this.type ?? "Translate",
+                Title = tres.tgt + (tres.tgt.Length < 10 ? $" ({tgtpron})" : ""),
+                SubTitle = tres.src + (srcpron != null ? $" ({srcpron})" : ""),
+                transType = this.type ?? "unknow type",
             });
         }
         if (this.dictResult != null)
