@@ -16,6 +16,7 @@ namespace Translater
         public string? iconPath { get; set; }
         public string? transType { get; set; }
         public string? fromApiName { get; set; }
+        public string? Description { get; set; }
     }
 
     public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu

@@ -90,6 +90,8 @@ public class TranslateResponse : ITranslateResult
                 Title = tres.tgt + (tres.tgt.Length < 10 && tgtpron != null ? $" ({tgtpron})" : ""),
                 SubTitle = tres.src + (srcpron != null ? $" ({srcpron})" : ""),
                 transType = this.type ?? "unknow type",
+                CopyTgt = tres.tgt,
+                Description = $"{tres.tgt} {(tgtpron != null ? $"({tgtpron})" : "")}\n\n{tres.src} {(srcpron != null ? $" ({srcpron})" : "")}"
             });
         }
         if (this.dictResult != null)
