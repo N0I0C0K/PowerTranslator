@@ -163,11 +163,7 @@ public class YoudaoTranslater : ITranslater
         this.random = new Random();
         this.md5 = MD5.Create();
 
-        var handler = new HttpClientHandler()
-        {
-            UseProxy = false,
-        };
-        client = new HttpClient(handler)
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler)
         {
             Timeout = TimeSpan.FromSeconds(10)
         };

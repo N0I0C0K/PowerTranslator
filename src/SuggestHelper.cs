@@ -20,7 +20,7 @@ public class SuggestHelper
     private HttpClient client;
     public SuggestHelper(IPublicAPI api)
     {
-        client = new HttpClient();
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler);
         this.api = api;
     }
     public List<ResultItem> QuerySuggest(string query)

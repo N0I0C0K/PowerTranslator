@@ -2,11 +2,16 @@ using Wox.Plugin.Logger;
 using System.Windows;
 using System.Text.Json;
 using System.Reflection;
+using System.Net.Http;
 
 namespace Translater.Utils
 {
     public static class UtilsFun
     {
+        public static HttpClientHandler httpClientDefaultHandler = new()
+        {
+            UseProxy = false
+        };
         /// <summary>
         /// It is used only to determine whether the contents of the clipboard need to be translated
         /// </summary>
