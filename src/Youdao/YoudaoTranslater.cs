@@ -66,11 +66,15 @@ public class YoudaoTranslater : ITranslater
         this.userAgent = UtilsFun.GetRandomUserAgent();
         this.random = new Random();
         this.md5 = MD5.Create();
-
-        client = new HttpClient();
-        client.Timeout = TimeSpan.FromSeconds(10);
+        var handler = new HttpClientHandler()
+        {
+            UseProxy = false,
+        };
+        client = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
         this.Reset();
-
     }
     public override void Reset()
     {

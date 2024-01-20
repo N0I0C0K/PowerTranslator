@@ -163,8 +163,14 @@ public class YoudaoTranslater : ITranslater
         this.random = new Random();
         this.md5 = MD5.Create();
 
-        client = new HttpClient();
-        client.Timeout = TimeSpan.FromSeconds(10);
+        var handler = new HttpClientHandler()
+        {
+            UseProxy = false,
+        };
+        client = new HttpClient(handler)
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
         client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
