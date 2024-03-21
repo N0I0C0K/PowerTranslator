@@ -18,6 +18,7 @@
 - [安装](#install)
 - [设置](#setting)
 - [提交问题](#issue)
+- [贡献]
 
 ## Usage
 
@@ -111,3 +112,17 @@
 ## Issue
 
 如果发现了无法翻译, 出现了未知错误, 需要新的功能, 欢迎提交 issue. 我会及时修复或改进
+
+## Contribution
+
+### 环境
+
+- .net sdk
+
+### 准备
+
+1. fork 这个仓库
+2. clone fork 后的仓库到本地
+3. 执行 lib.bat
+4. 使用 vscode（任意） 打开
+5. 开始编码吧！

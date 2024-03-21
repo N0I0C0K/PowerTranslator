@@ -1,0 +1,1 @@
+move "Translator" "%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\"
