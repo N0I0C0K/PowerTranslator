@@ -4,6 +4,7 @@ using Microsoft.PowerToys.Settings.UI.Library;
 using Translater.Utils;
 using ManagedCommon;
 using System.Windows.Controls;
+using Wox.Infrastructure;
 
 namespace Translater
 {
@@ -24,7 +25,7 @@ namespace Translater
         public string Name => "Translator";
         public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
         public string Description => "A simple translation plugin, based on Youdao Translation";
-        public IEnumerable<PluginAdditionalOption> AdditionalOptions => GetAdditionalOptions();
+        public IEnumerable<PluginAdditionalOption> AdditionalOptions => additionOptions;
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
         public const int delayQueryMillSecond = 500;
@@ -45,7 +46,8 @@ namespace Translater
 
         // settings
         private static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese (Simplified)", "Chinese (Traditional)", "English", "Japanese", "Korean", "Russian", "French", "Spanish", "Arabic", "German" };
-        private readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "zh-CHT", "en", "ja", "ko", "ru", "fr", "es", "ar", "de" };
+        private static readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "zh-CHT", "en", "ja", "ko", "ru", "fr", "es", "ar", "de" };
+        private static readonly List<PluginAdditionalOption> additionOptions = GetAdditionalOptions();
         private string defaultLanguageKey = "auto";
         private bool delayedExecution = false;
         private bool enable_suggest = true;
@@ -292,7 +294,6 @@ namespace Translater
             }
             this.historyHelper?.UpdateIconPath(now);
         }
-
         public static List<PluginAdditionalOption> GetAdditionalOptions()
         {
             var lanuageItems = languagesOptions.Select((val, idx) =>
@@ -352,12 +353,12 @@ namespace Translater
             this.enable_suggest = GetSetting("EnableSuggest").Value;
             this.enable_auto_read = GetSetting("EnableAutoRead").Value;
             int defaultLanguageIdx = GetSetting("DefaultTargetLanguage").ComboBoxValue;
-            defaultLanguageIdx = defaultLanguageIdx >= this.languagesKeys.Count ? 0 : defaultLanguageIdx;
-            defaultLanguageKey = this.languagesKeys[defaultLanguageIdx];
+            defaultLanguageIdx = defaultLanguageIdx >= languagesKeys.Count ? 0 : defaultLanguageIdx;
+            defaultLanguageKey = languagesKeys[defaultLanguageIdx];
 
             var secondOption = GetSetting("SecondTargetLanuage");
             enable_second_lanuage = secondOption.Value;
-            second_lanuage_key = languagesKeys[secondOption.ComboBoxValue >= this.languagesKeys.Count ? 0 : secondOption.ComboBoxValue];
+            second_lanuage_key = languagesKeys[secondOption.ComboBoxValue >= languagesKeys.Count ? 0 : secondOption.ComboBoxValue];
 
             if (this.translateHelper != null)
                 this.translateHelper.defaultLanguageKey = this.defaultLanguageKey;
@@ -367,6 +368,17 @@ namespace Translater
         {
             return new List<ContextMenuResult>
             {
+                new ContextMenuResult
+                {
+                    Title = "Go to dictionary",
+                    Action = context=>{
+                        Helper.OpenInShell($"https://www.youdao.com/result?word={selectedResult.Title}&lang=en");
+                        return false;
+                    },
+                    Glyph = "\xE721",
+                    PluginName="PowerTranslator",
+                    FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
+                },
                 new ContextMenuResult
                 {
                     Title = "Copy (Enter), Subtitle(shift+Enter)",
