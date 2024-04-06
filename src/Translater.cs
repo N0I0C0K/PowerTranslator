@@ -363,7 +363,6 @@ namespace Translater
             if (this.translateHelper != null)
                 this.translateHelper.defaultLanguageKey = this.defaultLanguageKey;
         }
-
         public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
         {
             return new List<ContextMenuResult>

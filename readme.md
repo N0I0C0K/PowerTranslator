@@ -126,3 +126,5 @@
 3. 执行 lib.bat
 4. 使用 vscode（任意） 打开
 5. 开始编码吧！
+
+[帮助文档 - Getting Start!](doc/code-start-zh.md)

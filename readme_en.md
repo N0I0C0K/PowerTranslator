@@ -110,3 +110,19 @@ Refer to official documents, [Third-Party plugins for PowerToy Run](https://gith
 ## Issue
 
 If you find translation failure, unknown errors, or need new features, please submit an issue. I will fix or improve it in time.
+
+## Contribution
+
+### Environment
+
+- .NET SDK
+
+### Preparation
+
+1. Fork this repository.
+2. Clone the forked repository to your local machine.
+3. Run lib.bat.
+4. Open with Visual Studio Code (or any other IDE).
+5. Start coding!
+
+[Help Document - Getting Started!](doc/code-start-en.md)
