@@ -4,7 +4,7 @@ using System.Text.Json;
 using System.Reflection;
 using System.Net.Http;
 
-namespace Translater.Utils
+namespace Translator.Utils
 {
     public static class UtilsFun
     {

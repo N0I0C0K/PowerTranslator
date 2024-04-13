@@ -2,9 +2,9 @@ using System.Security.Cryptography;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using Translater.Utils;
+using Translator.Utils;
 
-namespace Translater.Youdao.old;
+namespace Translator.Youdao.old;
 public class TranslateResponse : ITranslateResult
 {
     public struct ResStruct
@@ -55,13 +55,13 @@ public class TranslateResponse : ITranslateResult
     }
 }
 
-public class YoudaoTranslater : ITranslater
+public class YoudaoTranslator : ITranslator
 {
     private HttpClient client;
     private Random random;
     private MD5 md5;
     private string userAgent;
-    public YoudaoTranslater()
+    public YoudaoTranslator()
     {
         this.userAgent = UtilsFun.GetRandomUserAgent();
         this.random = new Random();

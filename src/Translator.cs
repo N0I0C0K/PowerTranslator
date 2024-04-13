@@ -1,12 +1,12 @@
 using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Microsoft.PowerToys.Settings.UI.Library;
-using Translater.Utils;
+using Translator.Utils;
 using ManagedCommon;
 using System.Windows.Controls;
 using Wox.Infrastructure;
 
-namespace Translater
+namespace Translator
 {
     public class ResultItem
     {
@@ -20,7 +20,7 @@ namespace Translater
         public string? Description { get; set; }
     }
 
-    public class Translater : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu
+    public class Translator : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu, IReloadable
     {
         public string Name => "Translator";
         public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
@@ -34,8 +34,6 @@ namespace Translater
         private TranslateHelper? translateHelper;
         private Suggest.SuggestHelper? suggestHelper;
         private History.HistoryHelper? historyHelper;
-
-
         private bool isDebug = false;
         private string queryPre = "";
         private long lastQueryTime = 0;
@@ -58,7 +56,7 @@ namespace Translater
         {
             if (!isDebug)
                 return;
-            Log.Info(info, typeof(Translater));
+            Log.Info(info, typeof(Translator));
         }
         public List<Result> Query(Query query)
         {
@@ -68,7 +66,7 @@ namespace Translater
             {
                 Task.Factory.StartNew(() =>
                 {
-                    translateHelper.initTranslater();
+                    translateHelper.InitTranslater();
                 });
                 return new List<Result>(){
                     new Result
@@ -269,7 +267,7 @@ namespace Translater
         }
         public void Init(PluginInitContext context)
         {
-            Log.Info("translater init", typeof(Translater));
+            Log.Info("translater init", typeof(Translator));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
             var translaTask = Task.Factory.StartNew(() =>
@@ -406,6 +404,10 @@ namespace Translater
                 }
 
             };
+        }
+        public void ReloadData()
+        {
+            translateHelper?.Reload();
         }
     }
 }

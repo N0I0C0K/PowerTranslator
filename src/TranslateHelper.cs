@@ -1,11 +1,11 @@
 using Wox.Plugin;
 using Wox.Plugin.Logger;
-using Translater.Utils;
+using Translator.Utils;
 using System.Windows.Media;
-using Translater.Youdao;
-using Translater.Youdao.V2;
-using Translater.Youdao.Backup;
-namespace Translater;
+using Translator.Youdao;
+using Translator.Youdao.V2;
+using Translator.Youdao.Backup;
+namespace Translator;
 
 public class TranslateFailedException : Exception
 {
@@ -23,26 +23,26 @@ public class TranslateHelper
         public string toLan;
     }
     public const string toLanSplit = "->";
-    public bool inited => this.translaters.Count >= 3 && (this.translaters[0] != null || this.translaters[1] != null);
+    public bool inited => this.translators.Count >= 3 && (this.translators[0] != null || this.translators[1] != null);
     private object initLock = new Object();
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
-    private List<Youdao.ITranslater?> translaters;
+    private List<Youdao.ITranslator?> translators;
     private List<Type> translatorTypes;
     private bool isSpeaking = false;
     private bool isIniting = false;
     public string defaultLanguageKey = "auto";
     public TranslateHelper(IPublicAPI publicAPI, string defaultLanguageKey = "auto")
     {
-        this.translaters = new List<Youdao.ITranslater?>{
+        this.translators = new List<Youdao.ITranslator?>{
             null, null, null
         };
         translatorTypes = new List<Type>{
-            typeof(Youdao.V2.YoudaoTranslater),
-            typeof(Youdao.old.YoudaoTranslater),
-            typeof(Youdao.Backup.BackUpTranslater)
+            typeof(Youdao.V2.YoudaoTranslator),
+            typeof(Youdao.old.YoudaoTranslator),
+            typeof(Youdao.Backup.BackUpTranslator)
         };
-        this.initTranslater();
+        this.InitTranslater();
         this.publicAPI = publicAPI;
         this.defaultLanguageKey = defaultLanguageKey;
 
@@ -77,7 +77,7 @@ public class TranslateHelper
         string toLan = toLanuage ?? target.toLan;
         Youdao.ITranslateResult? translateResult = null;
         int idx = 0;
-        translateResult = this.translaters.FirstNotNoneCast((it) =>
+        translateResult = this.translators.FirstNotNoneCast((it) =>
         {
             try
             {
@@ -125,7 +125,7 @@ public class TranslateHelper
             {
                 Task.Factory.StartNew(() =>
                 {
-                    if (this.initTranslater())
+                    if (this.InitTranslater())
                         this.publicAPI?.ChangeQuery(raw, true);
                 });
             }
@@ -178,7 +178,7 @@ public class TranslateHelper
         });
     }
 
-    public bool initTranslater()
+    public bool InitTranslater()
     {
         var now = UtilsFun.GetUtcTimeNow();
         if (now - this.lastInitTime < 1000 * 30 || this.inited || this.isIniting)
@@ -197,16 +197,16 @@ public class TranslateHelper
                 return Task.Factory.StartNew(() =>
                 {
                     Log.Info($"start init {tp.Namespace} {tp.Name} {idx}", tp);
-                    if (translaters[idx] != null)
+                    if (translators[idx] != null)
                         return;
                     try
                     {
                         var tran = tp.GetConstructor(Type.EmptyTypes)?.Invoke(null);
-                        this.translaters[idx] = tran as ITranslater;
+                        this.translators[idx] = tran as ITranslator;
                     }
                     catch (Exception ex)
                     {
-                        Log.Error($"{idx} Error occurred: {ex.InnerException!.Message}", typeof(Translater));
+                        Log.Error($"{idx} Error occurred: {ex.InnerException!.Message}", typeof(Translator));
                     }
                 });
             });
@@ -220,13 +220,13 @@ public class TranslateHelper
                 // 捕获并处理 Task.WhenAll 返回的聚合异常
                 foreach (Exception innerException in ex.InnerExceptions)
                 {
-                    Log.Error($"Error occurred during task execution: {innerException.Message}", typeof(Translater));
+                    Log.Error($"Error occurred during task execution: {innerException.Message}", typeof(Translator));
                 }
                 return false;
             }
             catch (Exception err)
             {
-                Log.Warn(err.Message, typeof(Translater));
+                Log.Warn(err.Message, typeof(Translator));
                 return false;
             }
             finally
@@ -235,6 +235,14 @@ public class TranslateHelper
                 Log.Info("custom init complete", typeof(TranslateHelper));
             }
             return true;
+        }
+    }
+
+    public void Reload()
+    {
+        foreach (var translator in translators)
+        {
+            translator?.Reset();
         }
     }
 }

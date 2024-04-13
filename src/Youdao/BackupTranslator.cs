@@ -1,9 +1,9 @@
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Translater.Utils;
+using Translator.Utils;
 
-namespace Translater.Youdao.Backup;
+namespace Translator.Youdao.Backup;
 
 public class TranslateResult : ITranslateResult
 {
@@ -56,11 +56,11 @@ public class TranslateResult : ITranslateResult
     }
 }
 
-public class BackUpTranslater : ITranslater
+public class BackUpTranslator : ITranslator
 {
     private HttpClient client;
     private const string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
-    public BackUpTranslater()
+    public BackUpTranslator()
     {
         client = new HttpClient();
         client.Timeout = TimeSpan.FromMilliseconds(500);

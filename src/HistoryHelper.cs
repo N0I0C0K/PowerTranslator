@@ -1,4 +1,4 @@
-namespace Translater.History;
+namespace Translator.History;
 using ManagedCommon;
 public class HistoryHelper
 {

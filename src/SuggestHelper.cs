@@ -1,7 +1,7 @@
 using System.Net.Http;
 using Wox.Plugin;
-using Translater.Utils;
-namespace Translater.Suggest;
+using Translator.Utils;
+namespace Translator.Suggest;
 
 public class SuggestInterface
 {

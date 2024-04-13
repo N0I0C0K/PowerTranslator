@@ -4,10 +4,10 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Translater.Utils;
+using Translator.Utils;
 using Wox.Plugin.Logger;
 
-namespace Translater.Youdao.V2;
+namespace Translator.Youdao.V2;
 
 public class KeyResponse
 {
@@ -145,7 +145,7 @@ public class TranslateResponse : ITranslateResult
     }
 }
 
-public class YoudaoTranslater : ITranslater
+public class YoudaoTranslator : ITranslator
 {
     private HttpClient client;
     private Random random;
@@ -155,7 +155,7 @@ public class YoudaoTranslater : ITranslater
     private byte[]? iv;
     private string userAgent;
 
-    public YoudaoTranslater()
+    public YoudaoTranslator()
     {
 
         this.userAgent = UtilsFun.GetRandomUserAgent();
@@ -182,7 +182,7 @@ public class YoudaoTranslater : ITranslater
 
         if (keyRes?.code != 0)
         {
-            Log.Error($"err in get secretKey, {keyRes?.ToString()}", typeof(YoudaoTranslater));
+            Log.Error($"err in get secretKey, {keyRes?.ToString()}", typeof(YoudaoTranslator));
             throw new Exception("err in get secretKey");
         }
 
