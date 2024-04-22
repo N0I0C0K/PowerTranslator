@@ -18,6 +18,7 @@ The plugin has been updated to use Youdao translation, which supports translatio
 - [how to install](#install)
 - [settings](#setting)
 - [submit issue](#issue)
+- [Contribution](#Contribution)
 
 ## Usage
 

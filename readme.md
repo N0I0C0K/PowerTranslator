@@ -18,7 +18,7 @@
 - [安装](#install)
 - [设置](#setting)
 - [提交问题](#issue)
-- [贡献]
+- [贡献](#Contribution)
 
 ## Usage
 
@@ -115,11 +115,11 @@
 
 ## Contribution
 
-### 环境
+### Environment
 
 - .net sdk
 
-### 准备
+### Step
 
 1. fork 这个仓库
 2. clone fork 后的仓库到本地
