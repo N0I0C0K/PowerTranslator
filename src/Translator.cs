@@ -43,8 +43,8 @@ namespace Translator
         private object preQueryLock = new Object();
 
         // settings
-        private static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese (Simplified)", "Chinese (Traditional)", "English", "Japanese", "Korean", "Russian", "French", "Spanish", "Arabic", "German" };
-        private static readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "zh-CHT", "en", "ja", "ko", "ru", "fr", "es", "ar", "de" };
+        private static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese (Simplified)", "Chinese (Traditional)", "English", "Japanese", "Korean", "Russian", "French", "Spanish", "Arabic", "German", "Italian", "Hebrew" };
+        private static readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "zh-CHT", "en", "ja", "ko", "ru", "fr", "es", "ar", "de", "it", "he" };
         private static readonly List<PluginAdditionalOption> additionOptions = GetAdditionalOptions();
         private string defaultLanguageKey = "auto";
         private bool delayedExecution = false;
