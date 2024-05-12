@@ -2,9 +2,6 @@ using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Translator.Utils;
 using System.Windows.Media;
-using Translator.Youdao;
-using Translator.Youdao.V2;
-using Translator.Youdao.Backup;
 namespace Translator;
 
 public class TranslateFailedException : Exception
@@ -202,7 +199,7 @@ public class TranslateHelper
                     try
                     {
                         var tran = tp.GetConstructor(Type.EmptyTypes)?.Invoke(null);
-                        this.translators[idx] = tran as ITranslator;
+                        this.translators[idx] = tran as Youdao.ITranslator;
                     }
                     catch (Exception ex)
                     {

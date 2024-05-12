@@ -1,10 +1,10 @@
 using Wox.Plugin;
-using Wox.Plugin.Logger;
-using Microsoft.PowerToys.Settings.UI.Library;
-using Translator.Utils;
 using ManagedCommon;
-using System.Windows.Controls;
+using Translator.Utils;
+using Wox.Plugin.Logger;
 using Wox.Infrastructure;
+using System.Windows.Controls;
+using Microsoft.PowerToys.Settings.UI.Library;
 
 namespace Translator
 {
@@ -25,7 +25,7 @@ namespace Translator
         public string Name => "Translator";
         public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
         public string Description => "A simple translation plugin, based on Youdao Translation";
-        public IEnumerable<PluginAdditionalOption> AdditionalOptions => additionOptions;
+        public IEnumerable<PluginAdditionalOption> AdditionalOptions => SettingHelper.pluginAdditionalOptions;
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
         public const int delayQueryMillSecond = 500;
@@ -43,15 +43,12 @@ namespace Translator
         private object preQueryLock = new Object();
 
         // settings
-        private static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese (Simplified)", "Chinese (Traditional)", "English", "Japanese", "Korean", "Russian", "French", "Spanish", "Arabic", "German", "Italian", "Hebrew" };
-        private static readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "zh-CHT", "en", "ja", "ko", "ru", "fr", "es", "ar", "de", "it", "he" };
-        private static readonly List<PluginAdditionalOption> additionOptions = GetAdditionalOptions();
-        private string defaultLanguageKey = "auto";
-        private bool delayedExecution = false;
-        private bool enable_suggest = true;
-        private bool enable_auto_read = false;
-        private bool enable_second_lanuage = false;
-        private string second_lanuage_key = "auto";
+        private readonly SettingHelper settingHelper;
+        private bool delayedExecution;
+        public Translator()
+        {
+            settingHelper = new SettingHelper();
+        }
         private void LogInfo(string info)
         {
             if (!isDebug)
@@ -189,7 +186,7 @@ namespace Translator
 
             // get suggest in other thread
             Task<List<ResultItem>>? suggestTask = null;
-            if (enable_suggest)
+            if (settingHelper.enableSuggest)
             {
                 suggestTask = Task.Run(() =>
                 {
@@ -199,11 +196,11 @@ namespace Translator
 
             // get second translate result in other thread
             Task<List<ResultItem>>? secondTranslateTask = null;
-            if (enable_second_lanuage && second_lanuage_key != null)
+            if (settingHelper.enableSecondLanuage && settingHelper.secondLanuageKey != null)
             {
                 secondTranslateTask = Task.Run(() =>
                 {
-                    return translateHelper!.QueryTranslate(querySearch, toLanuage: second_lanuage_key);
+                    return translateHelper!.QueryTranslate(querySearch, toLanuage: settingHelper.secondLanuageKey);
                 });
             }
 
@@ -216,10 +213,20 @@ namespace Translator
                 resItem.SubTitle = $"{resItem.SubTitle} [second lanuage]";
                 res.Insert(1, resItem);
             }
+
             if (suggestTask != null)
             {
                 var suggest = suggestTask.GetAwaiter().GetResult();
                 res.AddRange(suggest);
+            }
+
+            if (settingHelper.showOriginalQuery)
+            {
+                res.Add(new ResultItem
+                {
+                    Title = querySearch,
+                    SubTitle = "[query raw]"
+                });
             }
 
             if (isDebug)
@@ -236,13 +243,7 @@ namespace Translator
                 });
             }
 
-            res.Add(new ResultItem
-            {
-                Title = querySearch,
-                SubTitle = "[query raw]"
-            });
-
-            if (this.enable_auto_read)
+            if (settingHelper.enableAutoRead)
             {
                 this.translateHelper?.Read(res.FirstOrDefault()?.Title);
             }
@@ -272,7 +273,7 @@ namespace Translator
             publicAPI = context.API;
             var translaTask = Task.Factory.StartNew(() =>
             {
-                translateHelper = new TranslateHelper(publicAPI, this.defaultLanguageKey);
+                translateHelper = new TranslateHelper(publicAPI, this.settingHelper.defaultLanguageKey);
             });
             suggestHelper = new Suggest.SuggestHelper(publicAPI);
             historyHelper = new History.HistoryHelper();
@@ -292,44 +293,6 @@ namespace Translator
             }
             this.historyHelper?.UpdateIconPath(now);
         }
-        public static List<PluginAdditionalOption> GetAdditionalOptions()
-        {
-            var lanuageItems = languagesOptions.Select((val, idx) =>
-            {
-                return new KeyValuePair<string, string>(val, idx.ToString());
-            }).ToList();
-            return new List<PluginAdditionalOption>
-            {
-                new PluginAdditionalOption{
-                    Key = "EnableSuggest",
-                    DisplayLabel = "Enable search suggest",
-                    Value = true,
-                },
-                new PluginAdditionalOption{
-                    Key = "EnableAutoRead",
-                    DisplayLabel = "Automatic reading result",
-                    Value = false,
-                },
-                new PluginAdditionalOption{
-                    Key = "DefaultTargetLanguage",
-                    DisplayDescription = "Default translation target language, Default is auto",
-                    DisplayLabel = "Default target lanuage",
-                    PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Combobox,
-                    ComboBoxOptions = languagesOptions,
-                    ComboBoxValue = 0,
-                    ComboBoxItems = lanuageItems
-                },
-                new PluginAdditionalOption{
-                    Key = "SecondTargetLanuage",
-                    DisplayLabel = "Second target lanuage",
-                    DisplayDescription = "Active second target lanuage, will display after main target",
-                    PluginOptionType = PluginAdditionalOption.AdditionalOptionType.CheckboxAndCombobox,
-                    Value = false,
-                    ComboBoxValue = 0,
-                    ComboBoxItems = lanuageItems
-                }
-            };
-        }
         public void Dispose()
         {
             this.publicAPI!.ThemeChanged -= this.UpdateIconPath;
@@ -340,42 +303,15 @@ namespace Translator
         }
         public void UpdateSettings(PowerLauncherPluginSettings settings)
         {
-            var GetSetting = (string key) =>
-            {
-                var target = settings.AdditionalOptions.FirstOrDefault((set) =>
-                {
-                    return set.Key == key;
-                });
-                return target!;
-            };
-            this.enable_suggest = GetSetting("EnableSuggest").Value;
-            this.enable_auto_read = GetSetting("EnableAutoRead").Value;
-            int defaultLanguageIdx = GetSetting("DefaultTargetLanguage").ComboBoxValue;
-            defaultLanguageIdx = defaultLanguageIdx >= languagesKeys.Count ? 0 : defaultLanguageIdx;
-            defaultLanguageKey = languagesKeys[defaultLanguageIdx];
-
-            var secondOption = GetSetting("SecondTargetLanuage");
-            enable_second_lanuage = secondOption.Value;
-            second_lanuage_key = languagesKeys[secondOption.ComboBoxValue >= languagesKeys.Count ? 0 : secondOption.ComboBoxValue];
+            this.settingHelper.UpdateSettings(settings);
 
             if (this.translateHelper != null)
-                this.translateHelper.defaultLanguageKey = this.defaultLanguageKey;
+                this.translateHelper.defaultLanguageKey = this.settingHelper.defaultLanguageKey;
         }
         public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
         {
-            return new List<ContextMenuResult>
+            var contextMenu = new List<ContextMenuResult>
             {
-                new ContextMenuResult
-                {
-                    Title = "Go to dictionary",
-                    Action = context=>{
-                        Helper.OpenInShell($"https://www.youdao.com/result?word={selectedResult.Title}&lang=en");
-                        return false;
-                    },
-                    Glyph = "\xE721",
-                    PluginName="PowerTranslator",
-                    FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
-                },
                 new ContextMenuResult
                 {
                     Title = "Copy (Enter), Subtitle(shift+Enter)",
@@ -404,6 +340,24 @@ namespace Translator
                 }
 
             };
+            if (settingHelper.enableJumpToDict)
+            {
+                contextMenu.Add(
+                    new ContextMenuResult
+                    {
+                        Title = "Go to dictionary",
+                        Action = context =>
+                        {
+                            Helper.OpenInShell(string.Format(settingHelper.dictUtlPattern, selectedResult.Title));
+                            return false;
+                        },
+                        Glyph = "\xE721",
+                        PluginName = "PowerTranslator",
+                        FontFamily = "Segoe Fluent Icons,Segoe MDL2 Assets",
+                    }
+                );
+            }
+            return contextMenu;
         }
         public void ReloadData()
         {
