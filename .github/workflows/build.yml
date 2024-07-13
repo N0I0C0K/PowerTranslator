@@ -1,0 +1,30 @@
+name: Build on release
+on:
+  release:
+    types: created
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Net
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+          cache: true
+
+      - name: Package
+        run: dotnet pack
+
+      - name: Upload To Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          file: bin/Translator.zip
+          asset_name: Translator.zip
