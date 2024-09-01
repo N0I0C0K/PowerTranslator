@@ -89,7 +89,7 @@
 
 1. 关闭 PowerToys
 2. 下载 [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
-3. 解压到`%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`
+3. 解压到`{PowerToys install path}\RunPlugins`
    如图所示
    ![file](Images/file.png)
 4. 启动 PowerToys

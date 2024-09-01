@@ -22,7 +22,7 @@ The plugin has been updated to use Youdao translation, which supports translatio
 
 ## Usage
 
-- The default trigger key is `|`. 
+- The default trigger key is `|`.
 
   - Press `alt+space` to open PowerToys Run, and enter `^[text to be translated]`.
   - Press `Enter` to copy the translation result to the clipboard.
@@ -89,7 +89,7 @@ The plugin has been updated to use Youdao translation, which supports translatio
 
 1. Close PowerToys.
 2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases).
-3. Extract it to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`.
+3. Extract it to `{PowerToys install path}\RunPlugins`.
    As shown in the figure:
    ![file](Images/file.png)
 4. Start PowerToys.
