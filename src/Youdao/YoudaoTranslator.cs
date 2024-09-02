@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using Translator.Utils;
+using Translator.Protocol;
 
 namespace Translator.Youdao.old;
 public class TranslateResponse : ITranslateResult
