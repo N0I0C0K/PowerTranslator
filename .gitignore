@@ -1,7 +1,6 @@
 obj
 bin
 *.dll
-lib
 
 .vs/
 src/lib
