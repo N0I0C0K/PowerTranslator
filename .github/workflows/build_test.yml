@@ -1,0 +1,43 @@
+name: Build on release
+on:
+  release:
+    types: created
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Net
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+          cache: true
+      
+      - name: Dowmload Powertoys
+        run: |
+          curl -L https://github.com/microsoft/PowerToys/releases/download/v0.84.0/PowerToysUserSetup-0.84.0-x64.exe -o powertoys.exe
+          run powertoys.exe -install -quiet -norestart
+          timeout /t 15
+          mkdir lib
+          copy "%LOCALAPPDATA%\PowerToys\PowerToys.Common.UI.dll" "lib\PowerToys.Common.UI.dll"
+          copy "%LOCALAPPDATA%\PowerToys\PowerToys.ManagedCommon.dll" "lib\PowerToys.ManagedCommon.dll"
+          copy "%LOCALAPPDATA%\PowerToys\PowerToys.Settings.UI.Lib.dll" "lib\PowerToys.Settings.UI.Lib.dll"
+          copy "%LOCALAPPDATA%\PowerToys\Wox.Infrastructure.dll" "lib\Wox.Infrastructure.dll"
+          copy "%LOCALAPPDATA%\PowerToys\Wox.Plugin.dll" "lib\Wox.Plugin.dll"
+
+      - name: Package
+        run: dotnet pack
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          # Artifact name
+          name: Translator_x64
+          # A file, directory or wildcard pattern that describes what to upload
+          path: "bin/out"
