@@ -10,8 +10,8 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
         <AssemblyName>Translator</AssemblyName>
-        <Platforms>ARM64</Platforms>
-        <PlatformTarget>x64</PlatformTarget>
+        <Platforms>anycpu</Platforms>
+        <PlatformTarget>anycpu</PlatformTarget>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="Wox.Plugin">

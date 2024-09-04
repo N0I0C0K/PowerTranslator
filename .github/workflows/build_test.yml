@@ -1,10 +1,16 @@
-name: Build on release
+name: Build test
 on:
-  release:
-    types: created
+  push:
 
 jobs:
+
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - platform: x64
+        - platform: arm64
     runs-on: windows-latest
 
     steps:
@@ -12,32 +18,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Install Net
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: 8.0.x
-          cache: true
       
-      - name: Dowmload Powertoys
+      - name: Get Powertoys
         run: |
-          curl -L https://github.com/microsoft/PowerToys/releases/download/v0.84.0/PowerToysUserSetup-0.84.0-x64.exe -o powertoys.exe
-          run powertoys.exe -install -quiet -norestart
-          timeout /t 15
-          mkdir lib
-          copy "%LOCALAPPDATA%\PowerToys\PowerToys.Common.UI.dll" "lib\PowerToys.Common.UI.dll"
-          copy "%LOCALAPPDATA%\PowerToys\PowerToys.ManagedCommon.dll" "lib\PowerToys.ManagedCommon.dll"
-          copy "%LOCALAPPDATA%\PowerToys\PowerToys.Settings.UI.Lib.dll" "lib\PowerToys.Settings.UI.Lib.dll"
-          copy "%LOCALAPPDATA%\PowerToys\Wox.Infrastructure.dll" "lib\Wox.Infrastructure.dll"
-          copy "%LOCALAPPDATA%\PowerToys\Wox.Plugin.dll" "lib\Wox.Plugin.dll"
+          nuget install Community.PowerToys.Run.Plugin.Dependencies -OutputDirectory .
+          Copy-Item -Path "Community.PowerToys.Run.Plugin.Dependencies.*\tools\${{ matrix.platform }}\*" -Destination "lib/" -Recurse
 
       - name: Package
-        run: dotnet pack
+        run: dotnet pack -p:RuntimeIdentifiers=win-${{ matrix.platform }}
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
           # Artifact name
-          name: Translator_x64
+          name: Translator_${{ matrix.platform }}
           # A file, directory or wildcard pattern that describes what to upload
-          path: "bin/out"
+          path: "bin/output/*"
