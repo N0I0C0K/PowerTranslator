@@ -16,6 +16,11 @@ public class TranslateHelper
 {
     public struct TranslateTarget
     {
+        public TranslateTarget(string source, string target)
+        {
+            src = source;
+            target = SettingHelper.Languages.MatchLanguageCode(target);
+        }
         public string src;
         public string toLan;
     }

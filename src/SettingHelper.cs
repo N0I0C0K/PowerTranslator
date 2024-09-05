@@ -17,14 +17,50 @@ namespace Translator
         public bool showOriginalQuery = false;
         public bool enableJumpToDict = false;
         public string dictUtlPattern = dictUrlPatternValues[0];
+        public abstract class Languages
+        {
+            private static readonly Dictionary<string, string> LanguageContrast = new Dictionary<string, string>
+            {
+                { "auto", "auto" },
+                { "zh-CHS", "Chinese (Simplified)" },
+                { "zh-CHT", "Chinese (Traditional)" },
+                { "en", "English" },
+                { "ja", "Japanese" },
+                { "ko", "Korean" },
+                { "ru", "Russian" },
+                { "fr", "French" },
+                { "es", "Spanish" },
+                { "ar", "Arabic" },
+                { "de", "German" },
+                { "it", "Italian" },
+                { "he", "Hebrew" },
+            };
+
+            private static readonly Dictionary<string, string> LanguageAbbreviation = new Dictionary<string, string>
+            {
+                { "zhs", "zh-CHS" },
+                { "zht", "zh-CHT" },
+            };
+
+            public static string MatchLanguageCode(string languageKey)
+            {
+                string defaultLanguageCode = "auto";
+                languageKey = languageKey is null ? defaultLanguageCode : languageKey;
+                LanguageAbbreviation.TryGetValue(languageKey, out languageKey);
+                LanguageContrast.TryGetValue(languageKey, out defaultLanguageCode);
+                return defaultLanguageCode;
+            }
+            
+            public static List<KeyValuePair<string, string>> ContrastList()
+            {
+                return LanguageContrast.ToList();
+            }
+        }
 
         public static List<PluginAdditionalOption> GetAdditionalOptions()
         {
-            var lanuageItems = languagesOptions.Select((val, idx) =>
-            {
-                return new KeyValuePair<string, string>(val, idx.ToString());
-            }).ToList();
-            var dictItems = dictUrlPatternKeys.Select((val, idx) =>
+            var lanuageItems = Languages.ContrastList();
+            var dictItems = DictUrlPatternKeys.Select((val, idx) =>
             {
                 return new KeyValuePair<string, string>(val, idx.ToString());
             }).ToList();
