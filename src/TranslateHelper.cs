@@ -2,6 +2,8 @@ using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Translator.Utils;
 using System.Windows.Media;
+using Translator.Youdao;
+
 namespace Translator;
 
 public class TranslateFailedException : Exception
@@ -29,7 +31,7 @@ public class TranslateHelper
     private object initLock = new Object();
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
-    private List<Youdao.ITranslator?> translators;
+    private List<Translator.Youdao.ITranslator?> translators;
     private List<Type> translatorTypes;
     private bool isSpeaking = false;
     private bool isIniting = false;
@@ -40,7 +42,7 @@ public class TranslateHelper
             null, null, null
         };
         translatorTypes = new List<Type>{
-            typeof(Youdao.V2.YoudaoTranslator),
+            typeof(Translator),
             typeof(Youdao.old.YoudaoTranslator),
             typeof(Youdao.Backup.BackUpTranslator)
         };
@@ -77,7 +79,7 @@ public class TranslateHelper
         var target = ParseRawSrc(raw);
         string src = target.src;
         string toLan = toLanuage ?? target.toLan;
-        Youdao.ITranslateResult? translateResult = null;
+        Translator.Youdao.ITranslateResult? translateResult = null;
         int idx = 0;
         translateResult = this.translators.FirstNotNoneCast((it) =>
         {
@@ -204,7 +206,7 @@ public class TranslateHelper
                     try
                     {
                         var tran = tp.GetConstructor(Type.EmptyTypes)?.Invoke(null);
-                        this.translators[idx] = tran as Youdao.ITranslator;
+                        this.translators[idx] = tran as Translator.Youdao.ITranslator;
                     }
                     catch (Exception ex)
                     {

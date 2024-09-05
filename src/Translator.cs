@@ -25,7 +25,7 @@ namespace Translator
         public string Name => "Translator";
         public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
         public string Description => "A simple translation plugin, based on Youdao Translation";
-        public IEnumerable<PluginAdditionalOption> AdditionalOptions => SettingHelper.pluginAdditionalOptions;
+        public IEnumerable<PluginAdditionalOption> AdditionalOptions => SettingHelper.PluginAdditionalOptions;
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
         public const int delayQueryMillSecond = 500;
@@ -186,7 +186,7 @@ namespace Translator
 
             // get suggest in other thread
             Task<List<ResultItem>>? suggestTask = null;
-            if (settingHelper.enableSuggest)
+            if (settingHelper.EnableSuggest)
             {
                 suggestTask = Task.Run(() =>
                 {
@@ -196,11 +196,11 @@ namespace Translator
 
             // get second translate result in other thread
             Task<List<ResultItem>>? secondTranslateTask = null;
-            if (settingHelper.enableSecondLanuage && settingHelper.secondLanuageKey != null)
+            if (settingHelper.EnableSecondLanuage && settingHelper.SecondLanuageKey != null)
             {
                 secondTranslateTask = Task.Run(() =>
                 {
-                    return translateHelper!.QueryTranslate(querySearch, toLanuage: settingHelper.secondLanuageKey);
+                    return translateHelper!.QueryTranslate(querySearch, toLanuage: settingHelper.SecondLanuageKey);
                 });
             }
 
@@ -220,7 +220,7 @@ namespace Translator
                 res.AddRange(suggest);
             }
 
-            if (settingHelper.showOriginalQuery)
+            if (settingHelper.ShowOriginalQuery)
             {
                 res.Add(new ResultItem
                 {
@@ -243,7 +243,7 @@ namespace Translator
                 });
             }
 
-            if (settingHelper.enableAutoRead)
+            if (settingHelper.EnableAutoRead)
             {
                 this.translateHelper?.Read(res.FirstOrDefault()?.Title);
             }
@@ -273,7 +273,7 @@ namespace Translator
             publicAPI = context.API;
             var translaTask = Task.Factory.StartNew(() =>
             {
-                translateHelper = new TranslateHelper(publicAPI, this.settingHelper.defaultLanguageKey);
+                translateHelper = new TranslateHelper(publicAPI, this.settingHelper.DefaultLanguageKey);
             });
             suggestHelper = new Suggest.SuggestHelper(publicAPI);
             historyHelper = new History.HistoryHelper();
@@ -306,7 +306,7 @@ namespace Translator
             this.settingHelper.UpdateSettings(settings);
 
             if (this.translateHelper != null)
-                this.translateHelper.defaultLanguageKey = this.settingHelper.defaultLanguageKey;
+                this.translateHelper.defaultLanguageKey = this.settingHelper.DefaultLanguageKey;
         }
         public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
         {
@@ -340,7 +340,7 @@ namespace Translator
                 }
 
             };
-            if (settingHelper.enableJumpToDict)
+            if (settingHelper.EnableJumpToDict)
             {
                 contextMenu.Add(
                     new ContextMenuResult
@@ -348,7 +348,7 @@ namespace Translator
                         Title = "Go to dictionary",
                         Action = context =>
                         {
-                            Helper.OpenInShell(string.Format(settingHelper.dictUtlPattern, selectedResult.Title));
+                            Helper.OpenInShell(string.Format(settingHelper.DictUtlPattern, selectedResult.Title));
                             return false;
                         },
                         Glyph = "\xE721",

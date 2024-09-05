@@ -8,7 +8,7 @@ using Translator.Protocol;
 using Translator.Utils;
 using Wox.Plugin.Logger;
 
-namespace Translator.Youdao.V2;
+namespace Translator.Youdao;
 
 public class KeyResponse
 {
