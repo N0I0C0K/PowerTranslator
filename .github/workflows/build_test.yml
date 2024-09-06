@@ -21,6 +21,7 @@ jobs:
       
       - name: Get Powertoys
         run: |
+          mkdir lib
           nuget install Community.PowerToys.Run.Plugin.Dependencies -OutputDirectory .
           Copy-Item -Path "Community.PowerToys.Run.Plugin.Dependencies.*\tools\${{ matrix.platform }}\*" -Destination "lib/" -Recurse
 
