@@ -1,0 +1,43 @@
+name: Build on release
+
+on:
+  release:
+    types: created
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - platform: x64
+        - platform: arm64
+        
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get Powertoys
+        run: |
+          nuget install Community.PowerToys.Run.Plugin.Dependencies -OutputDirectory .
+          Copy-Item -Path "Community.PowerToys.Run.Plugin.Dependencies.*\tools\${{ matrix.platform }}\*" -Destination "lib/" -Recurse
+
+      - name: Package
+        run: dotnet pack -p:RuntimeIdentifiers=win-${{ matrix.platform }}
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: Translator_${{ matrix.platform }}
+          path: "bin/output/*"
+      
+      - name: Upload To Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          file: bin/Translator.zip
+          asset_name: Translator_${{ matrix.platform }}.zip
