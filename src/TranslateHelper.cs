@@ -24,14 +24,14 @@ public class TranslateHelper
     private object initLock = new Object();
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
-    private List<Youdao.ITranslator?> translators;
+    private List<Protocol.ITranslator?> translators;
     private List<Type> translatorTypes;
     private bool isSpeaking = false;
     private bool isIniting = false;
     public string defaultLanguageKey = "auto";
     public TranslateHelper(IPublicAPI publicAPI, string defaultLanguageKey = "auto")
     {
-        this.translators = new List<Youdao.ITranslator?>{
+        this.translators = new List<Protocol.ITranslator?>{
             null, null, null
         };
         translatorTypes = new List<Type>{
@@ -72,7 +72,7 @@ public class TranslateHelper
         var target = ParseRawSrc(raw);
         string src = target.src;
         string toLan = toLanuage ?? target.toLan;
-        Youdao.ITranslateResult? translateResult = null;
+        Protocol.ITranslateResult? translateResult = null;
         int idx = 0;
         translateResult = this.translators.FirstNotNoneCast((it) =>
         {
@@ -199,7 +199,7 @@ public class TranslateHelper
                     try
                     {
                         var tran = tp.GetConstructor(Type.EmptyTypes)?.Invoke(null);
-                        this.translators[idx] = tran as Youdao.ITranslator;
+                        this.translators[idx] = tran as Protocol.ITranslator;
                     }
                     catch (Exception ex)
                     {
