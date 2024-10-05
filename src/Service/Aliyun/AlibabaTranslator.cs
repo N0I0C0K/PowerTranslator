@@ -3,7 +3,7 @@ using System.Text.Json;
 using Translator.Protocol;
 
 
-namespace Translator.Aliyun;
+namespace Translator.Service.Aliyun;
 
 public class AliyunTranslateResult : ITranslateResult
 {

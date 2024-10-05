@@ -122,7 +122,7 @@ If you find translation failure, unknown errors, or need new features, please su
 
 1. Fork this repository.
 2. Clone the forked repository to your local machine.
-3. Run lib.bat.
+3. Run `dotnet restore`(optional).
 4. Open with Visual Studio Code (or any other IDE).
 5. Start coding!
 

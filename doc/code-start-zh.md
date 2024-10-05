@@ -62,7 +62,7 @@
 
 ### build
 
-运行 `dotnet build` 会在 `/bin/output` 下生成完整的插件文件，可以直接拖到插件目录下完成安装
+运行 `dotnet build -p:Platform={x64|ARM64}` 会在 `/bin/output` 下生成完整的插件文件，可以直接拖到插件目录下完成安装
 
 ### 测试用例
 
@@ -70,6 +70,6 @@
 
 ### pack
 
-自己手动测试没有问题后，运行 `dotnet pack` 打包命令，会生成 `/bin/Translator.zip` 就是完整的插件文件了
+自己手动测试没有问题后，运行 `dotnet pack` 打包命令，会生成 `/bin/Translator_{x64|ARM64}.zip` 就是完整的插件文件了
 
 pack 和 build 命令可以通过修改 [Translater.csproj](../Translater.csproj) 文件修改

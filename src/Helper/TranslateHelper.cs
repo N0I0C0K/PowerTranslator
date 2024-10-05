@@ -35,15 +35,15 @@ public class TranslateHelper
             null, null, null
         };
         translatorTypes = new List<Type>{
-            typeof(Youdao.V2.YoudaoTranslator),
-            typeof(Youdao.old.YoudaoTranslator),
-            typeof(Youdao.Backup.BackUpTranslator)
+            typeof(Service.Youdao.V2.YoudaoTranslator),
+            typeof(Service.Youdao.old.YoudaoTranslator),
+            typeof(Service.Youdao.Backup.BackUpTranslator)
         };
         this.InitTranslater();
         this.publicAPI = publicAPI;
         this.defaultLanguageKey = defaultLanguageKey;
 
-        // backup translater, We don't need to initialize it with the others, because it doesn't have an error
+        // backup translator, We don't need to initialize it with the others, because it doesn't have an error
         // this.backUpTranslater = new Youdao.Backup.BackUpTranslater();
     }
     public TranslateTarget ParseRawSrc(string src)

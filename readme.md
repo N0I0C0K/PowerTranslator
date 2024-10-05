@@ -117,14 +117,14 @@
 
 ### Environment
 
-- .net sdk
+- .net sdk 8.0
 
 ### Step
 
 1. fork 这个仓库
 2. clone fork 后的仓库到本地
-3. 执行 lib.bat
-4. 使用 vscode（任意） 打开
+3. 运行 `dotnet restore`(可选)
+3. 使用 vscode（任意） 打开
 5. 开始编码吧！
 
 [帮助文档 - Getting Start!](doc/code-start-zh.md)
