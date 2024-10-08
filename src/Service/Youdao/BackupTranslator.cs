@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 using Translator.Protocol;
 using Translator.Utils;
 
-namespace Translator.Youdao.Backup;
+namespace Translator.Service.Youdao.Backup;
 
 public class TranslateResult : ITranslateResult
 {

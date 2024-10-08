@@ -24,26 +24,26 @@ public class TranslateHelper
     private object initLock = new Object();
     private long lastInitTime = 0;
     private IPublicAPI publicAPI;
-    private List<Youdao.ITranslator?> translators;
+    private List<Protocol.ITranslator?> translators;
     private List<Type> translatorTypes;
     private bool isSpeaking = false;
     private bool isIniting = false;
     public string defaultLanguageKey = "auto";
     public TranslateHelper(IPublicAPI publicAPI, string defaultLanguageKey = "auto")
     {
-        this.translators = new List<Youdao.ITranslator?>{
+        this.translators = new List<Protocol.ITranslator?>{
             null, null, null
         };
         translatorTypes = new List<Type>{
-            typeof(Youdao.V2.YoudaoTranslator),
-            typeof(Youdao.old.YoudaoTranslator),
-            typeof(Youdao.Backup.BackUpTranslator)
+            typeof(Service.Youdao.V2.YoudaoTranslator),
+            typeof(Service.Youdao.old.YoudaoTranslator),
+            typeof(Service.Youdao.Backup.BackUpTranslator)
         };
         this.InitTranslater();
         this.publicAPI = publicAPI;
         this.defaultLanguageKey = defaultLanguageKey;
 
-        // backup translater, We don't need to initialize it with the others, because it doesn't have an error
+        // backup translator, We don't need to initialize it with the others, because it doesn't have an error
         // this.backUpTranslater = new Youdao.Backup.BackUpTranslater();
     }
     public TranslateTarget ParseRawSrc(string src)
@@ -72,7 +72,7 @@ public class TranslateHelper
         var target = ParseRawSrc(raw);
         string src = target.src;
         string toLan = toLanuage ?? target.toLan;
-        Youdao.ITranslateResult? translateResult = null;
+        Protocol.ITranslateResult? translateResult = null;
         int idx = 0;
         translateResult = this.translators.FirstNotNoneCast((it) =>
         {
@@ -199,7 +199,7 @@ public class TranslateHelper
                     try
                     {
                         var tran = tp.GetConstructor(Type.EmptyTypes)?.Invoke(null);
-                        this.translators[idx] = tran as Youdao.ITranslator;
+                        this.translators[idx] = tran as Protocol.ITranslator;
                     }
                     catch (Exception ex)
                     {

@@ -3,9 +3,9 @@ using System.Text.Json;
 using Translator.Protocol;
 
 
-namespace Translator.Alibaba;
+namespace Translator.Service.Aliyun;
 
-public class AlibabaTranslateResult : ITranslateResult
+public class AliyunTranslateResult : ITranslateResult
 {
     public struct Data
     {
@@ -29,21 +29,21 @@ public class AlibabaTranslateResult : ITranslateResult
     }
 }
 
-internal class AlibabaCsrfResp
+internal class AliyunCsrfResp
 {
     public string token { get; set; }
     public string parameterName { get; set; }
     public string headerName { get; set; }
 }
 
-public class AlibabaTranslator : ITranslator
+public class AliyunTranslator : ITranslator
 {
     private HttpClient client;
     private const string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
     private const string apiEndPoint = "https://translate.alibaba.com/api/translate/text";
     private const string csrfEndPoint = "https://translate.alibaba.com/api/translate/csrftoken";
     private string _csrf;
-    public AlibabaTranslator()
+    public AliyunTranslator()
     {
         client = new HttpClient();
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
@@ -60,7 +60,7 @@ public class AlibabaTranslator : ITranslator
                                             .GetResult();
         var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         Console.WriteLine(content);
-        var data = JsonSerializer.Deserialize<AlibabaCsrfResp>(content);
+        var data = JsonSerializer.Deserialize<AliyunCsrfResp>(content);
 
         _csrf = data!.token;
         if (client.DefaultRequestHeaders.Contains(data.headerName))
@@ -68,7 +68,7 @@ public class AlibabaTranslator : ITranslator
         client.DefaultRequestHeaders.Add(data.headerName, _csrf);
     }
 
-    public override AlibabaTranslateResult? Translate(string src, string fromLan, string toLan)
+    public override AliyunTranslateResult? Translate(string src, string fromLan, string toLan)
     {
         var multiPartData = new MultipartFormDataContent()
         {
@@ -83,7 +83,7 @@ public class AlibabaTranslator : ITranslator
                                             .GetResult();
         var content = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
         Console.WriteLine(content);
-        var res = JsonSerializer.Deserialize<AlibabaTranslateResult>(content);
+        var res = JsonSerializer.Deserialize<AliyunTranslateResult>(content);
         return res;
     }
 

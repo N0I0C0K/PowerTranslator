@@ -268,7 +268,7 @@ namespace Translator
         }
         public void Init(PluginInitContext context)
         {
-            Log.Info("translater init", typeof(Translator));
+            Log.Info("translator init", typeof(Translator));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
             var translaTask = Task.Factory.StartNew(() =>

@@ -1,32 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk"
-         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net8.0-windows</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <GenerateSatelliteAssembliesForCore>true</GenerateSatelliteAssembliesForCore>
-        <AssemblyName>Translator</AssemblyName>
         <Platforms>x64;ARM64</Platforms>
+        <PlatformTarget>$(Platform)</PlatformTarget>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Translator</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <Reference Include="Wox.Plugin">
-            <HintPath>".\lib\Wox.Plugin.dll"</HintPath>
-        </Reference>
-        <Reference Include="Wox.Infrastructure">
-            <HintPath>".\lib\Wox.Infrastructure.dll"</HintPath>
-        </Reference>
-        <Reference Include="PowerToys.Settings.UI.Lib">
-            <HintPath>".\lib\PowerToys.Settings.UI.Lib.dll"</HintPath>
-        </Reference>
-        <Reference Include="PowerToys.Common.UI">
-            <HintPath>".\lib\PowerToys.Common.UI.dll"</HintPath>
-        </Reference>
-        <Reference Include="PowerToys.ManagedCommon">
-            <HintPath>".\lib\PowerToys.ManagedCommon.dll"</HintPath>
-        </Reference>
         <None Include="./plugin.json"
               CopyToOutputDirectory="PreserveNewest" />
         <None Include="./Images/translator.dark.png"
@@ -42,25 +24,29 @@
               CopyToOutputDirectory="PreserveNewest"
               Link="Images\history.light.png" />
     </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies"
+                          Version="0.85.0" />
+    </ItemGroup>
     <Target Name="Movefiles"
             AfterTargets="Build">
         <ItemGroup>
             <MySourceFiles Include="./plugin.json" />
             <MySourceFiles Include="$(OutputPath)Translator.dll" />
             <ImagesFile Include="$(OutputPath)Images\*.*" />
-            <InstallBashFiles Include="./install.bat"/>
+            <InstallBashFiles Include="./install.bat" />
         </ItemGroup>
         <Copy SourceFiles="@(MySourceFiles)"
-              DestinationFolder="./bin/output/Translator" />
+              DestinationFolder="./bin/output_$(Platform)/Translator" />
         <Copy SourceFiles="@(ImagesFile)"
-              DestinationFolder="./bin/output/Translator/Images" />
+              DestinationFolder="./bin/output_$(Platform)/Translator/Images" />
         <Copy SourceFiles="@(InstallBashFiles)"
-              DestinationFolder="./bin/output" />
+              DestinationFolder="./bin/output_$(Platform)" />
     </Target>
     <Target Name="ZipOutput"
             AfterTargets="Pack">
-        <ZipDirectory SourceDirectory="./bin/output"
-                      DestinationFile="./bin/Translator.zip"
+        <ZipDirectory SourceDirectory="./bin/output_$(Platform)"
+                      DestinationFile="./bin/Translator_$(Platform).zip"
                       Overwrite="true" />
     </Target>
 </Project>
