@@ -39,7 +39,7 @@ public class TranslateHelper
             typeof(Service.Youdao.old.YoudaoTranslator),
             typeof(Service.Youdao.Backup.BackUpTranslator)
         };
-        this.InitTranslater();
+        this.InitTranslator();
         this.publicAPI = publicAPI;
         this.defaultLanguageKey = defaultLanguageKey;
 
@@ -122,7 +122,7 @@ public class TranslateHelper
             {
                 Task.Factory.StartNew(() =>
                 {
-                    if (this.InitTranslater())
+                    if (this.InitTranslator())
                         this.publicAPI?.ChangeQuery(raw, true);
                 });
             }
@@ -175,7 +175,7 @@ public class TranslateHelper
         });
     }
 
-    public bool InitTranslater()
+    public bool InitTranslator()
     {
         var now = UtilsFun.GetUtcTimeNow();
         if (now - this.lastInitTime < 1000 * 30 || this.inited || this.isIniting)
@@ -239,7 +239,10 @@ public class TranslateHelper
     {
         foreach (var translator in translators)
         {
-            translator?.Reset();
+            Task.Factory.StartNew(() =>
+            {
+                translator?.Reset();
+            });
         }
     }
 }
