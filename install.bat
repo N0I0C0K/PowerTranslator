@@ -1,9 +1,17 @@
 @echo off
-set "source=%cd%\Translator"
-set "destination=%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\"
+setlocal
 
-echo Moving directory...
-move "%source%" "%destination%"
+rem Define source and target folders
+set "source_folder=Translator"
+set "target_folder=%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\Translator"
 
-echo Move completed.
-pause
+rem Check if the target folder exists, and delete it if it does
+if exist "%target_folder%" (
+    rmdir /s /q "%target_folder%"
+)
+
+rem Copy the source folder to the target folder
+xcopy "%source_folder%" "%target_folder%" /e /i
+
+echo Copy completed!
+endlocal
