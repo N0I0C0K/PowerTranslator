@@ -63,7 +63,7 @@ public class BackUpTranslator : ITranslator
     private const string userAgent = "Mozilla/5.0 (X11; CrOS i686 3912.101.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36";
     public BackUpTranslator()
     {
-        client = new HttpClient();
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler);
         client.Timeout = TimeSpan.FromMilliseconds(500);
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
         client.DefaultRequestHeaders.Add("Referer", "https://ai.youdao.com/");
@@ -72,7 +72,11 @@ public class BackUpTranslator : ITranslator
 
     public override void Reset()
     {
-
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler);
+        client.Timeout = TimeSpan.FromMilliseconds(500);
+        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+        client.DefaultRequestHeaders.Add("Referer", "https://ai.youdao.com/");
+        client.DefaultRequestHeaders.Add("Origin", "https://ai.youdao.com");
     }
 
     public override TranslateResult? Translate(string src, string fromLan = "Auto", string toLan = "Auto")

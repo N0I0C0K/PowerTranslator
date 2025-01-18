@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Text.Json;
 using Translator.Protocol;
+using Translator.Utils;
 
 
 namespace Translator.Service.Aliyun;
@@ -45,7 +46,7 @@ public class AliyunTranslator : ITranslator
     private string _csrf;
     public AliyunTranslator()
     {
-        client = new HttpClient();
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler);
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
         client.DefaultRequestHeaders.Add("Referer", "https://translate.alibaba.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://translate.alibaba.com");
@@ -89,6 +90,11 @@ public class AliyunTranslator : ITranslator
 
     public override void Reset()
     {
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler);
+        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+        client.DefaultRequestHeaders.Add("Referer", "https://translate.alibaba.com/");
+        client.DefaultRequestHeaders.Add("Origin", "https://translate.alibaba.com");
+        _csrf = "";
         _refreshCsrf();
     }
 }

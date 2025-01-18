@@ -3,6 +3,7 @@ using System.Windows;
 using System.Text.Json;
 using System.Reflection;
 using System.Net.Http;
+using System.Net;
 
 namespace Translator.Utils
 {
@@ -12,11 +13,7 @@ namespace Translator.Utils
         {
             UseProxy = false
         };
-        /// <summary>
-        /// It is used only to determine whether the contents of the clipboard need to be translated
-        /// </summary>
-        /// <param name="s">string</param>
-        /// <returns></returns>
+        public static Action onHttpDefaultHandlerChange;
         public static string[] user_agents = {
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36",
             "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0",
@@ -138,6 +135,16 @@ namespace Translator.Utils
             return default(T);
         }
 
+        public static IEnumerable<(int idx, S item)> Enumerate<S>(this IEnumerable<S> src)
+        {
+            int idx = 0;
+            foreach (var item in src)
+            {
+                yield return (idx, item);
+                idx++;
+            }
+        }
+
         /// <summary>
         /// Fixed Chinese address problems caused by URIs
         /// In the Uri, the Chinese is automatically decoded and MediaPlayer cannot load the correct url
@@ -168,6 +175,26 @@ namespace Translator.Utils
         {
             string pattern = @"[^\w\s\u4e00-\u9fa5]";
             return System.Text.RegularExpressions.Regex.Replace(str, pattern, " ");
+        }
+
+        public static void ChangeDefaultHttpHandlerProxy(bool useSystemProxy)
+        {
+            if (useSystemProxy)
+            {
+                UtilsFun.httpClientDefaultHandler = new HttpClientHandler
+                {
+                    UseProxy = true,
+                    Proxy = WebRequest.GetSystemWebProxy()
+                };
+            }
+            else
+            {
+                UtilsFun.httpClientDefaultHandler = new HttpClientHandler
+                {
+                    UseProxy = false,
+                };
+            }
+            onHttpDefaultHandlerChange?.Invoke();
         }
     }
 }

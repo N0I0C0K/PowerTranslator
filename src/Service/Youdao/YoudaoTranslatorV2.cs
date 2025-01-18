@@ -88,11 +88,11 @@ public class TranslateResponse : ITranslateResult
             string? tgtpron = tres.tgtPronounce;
             res.Add(new ResultItem
             {
-                Title = tres.tgt + (tres.tgt.Length < 10 && tgtpron != null ? $" ({tgtpron})" : ""),
+                Title = tres.tgt,
                 SubTitle = tres.src + (srcpron != null ? $" ({srcpron})" : ""),
                 transType = this.type ?? "unknow type",
                 CopyTgt = tres.tgt,
-                Description = $"{tres.tgt} {(tgtpron != null ? $"({tgtpron})" : "")}\n\n{tres.src} {(srcpron != null ? $" ({srcpron})" : "")}"
+                Description = $"{tres.tgt}{(tgtpron != null ? $"\n({tgtpron})" : "")}\n{tres.src} {(srcpron != null ? $" ({srcpron})" : "")}"
             });
         }
         if (this.dictResult != null)
@@ -158,12 +158,12 @@ public class YoudaoTranslator : ITranslator
 
     public YoudaoTranslator()
     {
-
-        this.userAgent = UtilsFun.GetRandomUserAgent();
-
-        this.random = new Random();
         this.md5 = MD5.Create();
 
+
+        this.random = new Random();
+
+        this.userAgent = UtilsFun.GetRandomUserAgent();
         client = new HttpClient(UtilsFun.httpClientDefaultHandler)
         {
             Timeout = TimeSpan.FromSeconds(10)
@@ -299,9 +299,16 @@ public class YoudaoTranslator : ITranslator
 
     public override void Reset()
     {
-        string OUTFOX_SEARCH_USER_ID_NCOO = $"OUTFOX_SEARCH_USER_ID_NCOO={random.Next(100000000, 999999999)}.{random.Next(100000000, 999999999)}";
-        string OUTFOX_SEARCH_USER_ID = $"OUTFOX_SEARCH_USER_ID={random.Next(100000000, 999999999)}@{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}";
-        client.DefaultRequestHeaders.Add("Cookie", $"{OUTFOX_SEARCH_USER_ID_NCOO};{OUTFOX_SEARCH_USER_ID}");
+        this.userAgent = UtilsFun.GetRandomUserAgent();
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler)
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+        client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
+        client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
+
+        SetCookies();
     }
 
 }
