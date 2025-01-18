@@ -4,10 +4,33 @@ namespace Translator
 {
     public class SettingHelper
     {
-        public static readonly List<string> languagesKeys = new List<string> { "auto", "zh-CHS", "zh-CHT", "en", "ja", "ko", "ru", "fr", "es", "ar", "de", "it", "he" };
-        public static readonly List<string> languagesOptions = new List<string> { "auto", "Chinese (Simplified)", "Chinese (Traditional)", "English", "Japanese", "Korean", "Russian", "French", "Spanish", "Arabic", "German", "Italian", "Hebrew" };
-        public static readonly List<string> dictUrlPatternKeys = new List<string> { "Youdao", "Oxford", "Cambridge" };
-        public static readonly List<string> dictUrlPatternValues = new List<string> { "https://www.youdao.com/result?word={0}&lang=en", "https://www.oed.com/search/dictionary/?scope=Entries&q={0}", "https://dictionary.cambridge.org/us/dictionary/english/{0}" };
+        public static readonly Dictionary<string, string> Languages = new Dictionary<string, string>{
+            { "auto", "auto" },
+            { "zh-CHS", "Chinese (Simplified)" },
+            { "zh-CHT", "Chinese (Traditional)" },
+            { "en", "English" },
+            { "ja", "Japanese" },
+            { "ko", "Korean" },
+            { "ru", "Russian" },
+            { "fr", "French" },
+            { "es", "Spanish" },
+            { "ar", "Arabic" },
+            { "de", "German" },
+            { "it", "Italian" },
+            { "he", "Hebrew" }
+        };
+
+        public static readonly Dictionary<string, string> DictionaryUrlPatterns = new Dictionary<string, string>
+        {
+            { "Youdao", "https://www.youdao.com/result?word={0}&lang=en" },
+            { "Oxford", "https://www.oed.com/search/dictionary/?scope=Entries&q={0}" },
+            { "Cambridge", "https://dictionary.cambridge.org/us/dictionary/english/{0}" }
+        };
+
+        public static readonly List<string> languagesKeys = Languages.Keys.ToList();
+        public static readonly List<string> languagesOptions = Languages.Values.ToList();
+        public static readonly List<string> dictUrlPatternKeys = DictionaryUrlPatterns.Keys.ToList();
+        public static readonly List<string> dictUrlPatternValues = DictionaryUrlPatterns.Values.ToList();
         public static readonly List<PluginAdditionalOption> pluginAdditionalOptions = GetAdditionalOptions();
         public string defaultLanguageKey = "auto";
         public bool enableSuggest = true;
@@ -17,6 +40,7 @@ namespace Translator
         public bool showOriginalQuery = false;
         public bool enableJumpToDict = false;
         public string dictUtlPattern = dictUrlPatternValues[0];
+        public bool useSystemProxy = true;
 
         public static List<PluginAdditionalOption> GetAdditionalOptions()
         {
@@ -71,14 +95,21 @@ namespace Translator
                     Value = false,
                     ComboBoxValue = 0,
                     ComboBoxItems = lanuageItems
-                }
+                },
+                new PluginAdditionalOption{
+                    Key = "UseSystemProxy",
+                    DisplayLabel = "Use system default proxy",
+                    DisplayDescription = "Use a proxy at request time, default to true",
+                    Value = true,
+                },
             };
         }
+
         public void UpdateSettings(PowerLauncherPluginSettings settings)
         {
             var GetSetting = (string key) =>
             {
-                var target = settings.AdditionalOptions.FirstOrDefault((set) =>
+                PluginAdditionalOption target = settings.AdditionalOptions.FirstOrDefault((set) =>
                 {
                     return set.Key == key;
                 });
@@ -87,6 +118,13 @@ namespace Translator
             enableSuggest = GetSetting("EnableSuggest").Value;
             enableAutoRead = GetSetting("EnableAutoRead").Value;
             showOriginalQuery = GetSetting("ShowOriginalQuery").Value;
+            var _useSystemProxy = GetSetting("UseSystemProxy").Value;
+            if (_useSystemProxy != useSystemProxy)
+            {
+                useSystemProxy = _useSystemProxy;
+                Utils.UtilsFun.ChangeDefaultHttpHandlerProxy(_useSystemProxy);
+            }
+
 
             int defaultLanguageIdx = GetSetting("DefaultTargetLanguage").ComboBoxValue;
             defaultLanguageIdx = defaultLanguageIdx >= languagesKeys.Count ? 0 : defaultLanguageIdx;

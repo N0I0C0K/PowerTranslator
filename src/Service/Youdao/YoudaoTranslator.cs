@@ -58,7 +58,7 @@ public class TranslateResponse : ITranslateResult
 
 public class YoudaoTranslator : ITranslator
 {
-    private HttpClient client;
+    private HttpClient? client;
     private Random random;
     private MD5 md5;
     private string userAgent;
@@ -67,15 +67,14 @@ public class YoudaoTranslator : ITranslator
         this.userAgent = UtilsFun.GetRandomUserAgent();
         this.random = new Random();
         this.md5 = MD5.Create();
-        client = new HttpClient(UtilsFun.httpClientDefaultHandler)
-        {
-            Timeout = TimeSpan.FromSeconds(10)
-        };
         this.Reset();
     }
     public override void Reset()
     {
-        this.client.DefaultRequestHeaders.Clear();
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler)
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
         client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
@@ -117,7 +116,7 @@ public class YoudaoTranslator : ITranslator
             keyfrom = "fanyi.web",
             action = "FY_BY_REALTlME"
         };
-        var res = client.PostAsync("https://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule",
+        var res = client!.PostAsync("https://fanyi.youdao.com/translate_o?smartresult=dict&smartresult=rule",
                                     new StringContent(data.toFormDataBodyString(),
                                     new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")))
                                     .GetAwaiter()

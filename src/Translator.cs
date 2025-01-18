@@ -63,7 +63,7 @@ namespace Translator
             {
                 Task.Factory.StartNew(() =>
                 {
-                    translateHelper.InitTranslater();
+                    translateHelper.InitTranslator();
                 });
                 return new List<Result>(){
                     new Result
