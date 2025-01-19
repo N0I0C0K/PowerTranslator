@@ -96,6 +96,12 @@
 
 (参考官方[第三方插件安装文档](https://github.com/microsoft/PowerToys/blob/main/doc/thirdPartyRunPlugins.md))
 
+### Via [ptr](https://github.com/8LWXpg/ptr)
+
+```shell
+ptr add Translator N0I0C0K/PowerTranslator
+```
+
 [安装-升级 详细教程](./doc/how%20to%20install.md)
 
 ## Setting
