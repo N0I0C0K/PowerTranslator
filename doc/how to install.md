@@ -14,3 +14,17 @@
 2. 下载新版本`Translator.zip`.
 3. 解压覆盖掉原先的 Translator 文件夹即可.
 4. 启动 PowerToys
+
+## Via [ptr](https://github.com/8LWXpg/ptr)
+
+### 安装
+
+```shell
+ptr add Translator N0I0C0K/PowerTranslator
+```
+
+### 升级
+
+```shell
+ptr u Translator
+```
