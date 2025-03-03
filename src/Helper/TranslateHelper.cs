@@ -4,6 +4,7 @@ using Wox.Plugin.Logger;
 using Translator.Utils;
 using System.Windows.Media;
 using Translator.Protocol;
+using Translator.Properties;
 namespace Translator;
 
 public class TranslateFailedException : Exception
@@ -103,8 +104,8 @@ public class TranslateHelper
             }
             res.Add(new ResultItem
             {
-                Title = "initializing other apis...",
-                SubTitle = "please try later"
+                Title = Resources.Error_Init_Title,
+                SubTitle = Resources.Error_Init_SubTitle,
             });
             return res;
         }
@@ -124,12 +125,12 @@ public class TranslateHelper
         {
             res.Add(new ResultItem
             {
-                Title = "result is null, some error happen in translate. check out your network!",
-                SubTitle = "Press enter to get help",
+                Title = Resources.Error_Null_title,
+                SubTitle = Resources.Error_Null_SubTitile,
                 Action = (ev) =>
                 {
                     UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTranslator/issues?q=");
-                    this.publicAPI.ShowMsg("Copy!", "The URL has been copied, Go to your browser and visit the website for help.");
+                    this.publicAPI.ShowMsg(Resources.Error_Null_ModalTitle, Resources.Error_Null_ModalSubTitle);
                     return true;
                 }
             });

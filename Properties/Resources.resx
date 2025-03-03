@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="DefaultTargetLanguage" xml:space="preserve">
+    <value>Default target language</value>
+  </data>
+  <data name="EnableAutoRead" xml:space="preserve">
+    <value>Automatic reading result</value>
+  </data>
+  <data name="EnableJumpDictionary" xml:space="preserve">
+    <value>Show jump to dictionary button</value>
+  </data>
+  <data name="EnableJumpDictionaryDescription" xml:space="preserve">
+    <value>Will add a button to quick jump to dictionary, default is youdao.</value>
+  </data>
+  <data name="EnableSuggest" xml:space="preserve">
+    <value>Enable search suggest</value>
+  </data>
+  <data name="PluginDescription" xml:space="preserve">
+    <value>A simple translation plugin, based on Youdao Translation</value>
+  </data>
+  <data name="PluginName" xml:space="preserve">
+    <value>Translator</value>
+  </data>
+  <data name="SecondTargetLanguageDescription" xml:space="preserve">
+    <value>Active second target lanuage, will display after main target.</value>
+  </data>
+  <data name="SecondTargetLanuage" xml:space="preserve">
+    <value>Second target lanuage</value>
+  </data>
+  <data name="ShowOriginalQuery" xml:space="preserve">
+    <value>Display original query</value>
+  </data>
+  <data name="ShowOriginalQueryDescription" xml:space="preserve">
+    <value>Will add a item at the end of the results with "[query raw]".</value>
+  </data>
+  <data name="UseSystemProxy" xml:space="preserve">
+    <value>Use system default proxy</value>
+  </data>
+  <data name="UseSystemProxyDescription" xml:space="preserve">
+    <value>Use a proxy at request time, default to true.</value>
+  </data>
+  <data name="DefaultTargetLanguageDescription" xml:space="preserve">
+    <value>Default translation target language, default is "Auto".</value>
+  </data>
+  <data name="Lan_auto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="Lan_zh-CHS" xml:space="preserve">
+    <value>Chinese (Simplified)</value>
+  </data>
+  <data name="Lan_zh-CHT" xml:space="preserve">
+    <value>Chinese (Traditional)</value>
+  </data>
+  <data name="Lan_en" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Lan_ja" xml:space="preserve">
+    <value>Japanese</value>
+  </data>
+  <data name="Lan_ko" xml:space="preserve">
+    <value>Korean</value>
+  </data>
+  <data name="Lan_ru" xml:space="preserve">
+    <value>Russian</value>
+  </data>
+  <data name="Lan_fr" xml:space="preserve">
+    <value>French</value>
+  </data>
+  <data name="Lan_es" xml:space="preserve">
+    <value>Spanish</value>
+  </data>
+  <data name="Lan_ar" xml:space="preserve">
+    <value>Arabic</value>
+  </data>
+  <data name="Lan_de" xml:space="preserve">
+    <value>German</value>
+  </data>
+  <data name="Lan_it" xml:space="preserve">
+    <value>Italian</value>
+  </data>
+  <data name="Lan_he" xml:space="preserve">
+    <value>Hebrew</value>
+  </data>
+  <data name="Error_Init_Title" xml:space="preserve">
+    <value>Initializing apis...</value>
+  </data>
+  <data name="Error_Init_SubTitle" xml:space="preserve">
+    <value>Please try later</value>
+  </data>
+  <data name="Error_Null_title" xml:space="preserve">
+    <value>Result is null, some error happen in translate. Check out your network!</value>
+  </data>
+  <data name="Error_Null_SubTitile" xml:space="preserve">
+    <value>Press [Enter] to get a link to GitHub Issues for help</value>
+  </data>
+  <data name="Error_Null_ModalTitle" xml:space="preserve">
+    <value>Copied!</value>
+  </data>
+  <data name="Error_Null_ModalSubTitle" xml:space="preserve">
+    <value>The URL has been copied. go to your browser and visit the website for help.</value>
+  </data>
+  <data name="Error_Suggest_Title" xml:space="preserve">
+    <value>Some errors occurred while searching for suggestions.</value>
+  </data>
+  <data name="InitTitle" xml:space="preserve">
+    <value>Initializing...</value>
+  </data>
+  <data name="InitSubTitle" xml:space="preserve">
+    <value>Initialize translation components</value>
+  </data>
+  <data name="Tag_SecondLanguage" xml:space="preserve">
+    <value>[second lanuage]</value>
+  </data>
+  <data name="Tag_QueryRaw" xml:space="preserve">
+    <value>[query raw]</value>
+  </data>
+  <data name="Menu_Copy_Title" xml:space="preserve">
+    <value>Copy (Enter), Subtitle[Shift+Enter]</value>
+  </data>
+  <data name="Menu_Read_Title" xml:space="preserve">
+    <value>Read [Ctrl+Enter]</value>
+  </data>
+  <data name="Tag_GoToDictionary_Title" xml:space="preserve">
+    <value>Go to dictionary</value>
+  </data>
+</root>

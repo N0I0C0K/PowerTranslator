@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net9.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <Platforms>x64;ARM64</Platforms>
+        <PlatformTarget>$(Platform)</PlatformTarget>
+        <Nullable>enable</Nullable>
+        <AssemblyName>Translator</AssemblyName>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <ItemGroup>
+        <None Include="./plugin.json" CopyToOutputDirectory="PreserveNewest" />
+        <None Include="./Images/translator.dark.png" CopyToOutputDirectory="PreserveNewest" Link="Images\translator.dark.png" />
+        <None Include="./Images/translator.light.png" CopyToOutputDirectory="PreserveNewest" Link="Images\translator.light.png" />
+        <None Include="./Images/history.dark.png" CopyToOutputDirectory="PreserveNewest" Link="Images\history.dark.png" />
+        <None Include="./Images/history.light.png" CopyToOutputDirectory="PreserveNewest" Link="Images\history.light.png" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.87.1" />
+    </ItemGroup>
+    <ItemGroup>
+      <Compile Update="Properties\Resources.Designer.cs">
+        <DesignTime>True</DesignTime>
+        <AutoGen>True</AutoGen>
+        <DependentUpon>Resources.resx</DependentUpon>
+      </Compile>
+    </ItemGroup>
+    <ItemGroup>
+      <EmbeddedResource Update="Properties\Resources.resx">
+        <Generator>ResXFileCodeGenerator</Generator>
+        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      </EmbeddedResource>
+    </ItemGroup>
+    <Target Name="Movefiles" AfterTargets="Build">
+        <ItemGroup>
+            <MySourceFiles Include="./plugin.json" />
+            <MySourceFiles Include="$(OutputPath)Translator.dll" />
+            <MySourceFiles Include="$(OutputPath)Translator.deps.json" />
+            <znCNTransFiles Include="$(OutputPath)zh-CN\*.*" />
+            <ImagesFile Include="$(OutputPath)Images\*.*" />
+            <InstallBashFiles Include="./install.bat" />
+        </ItemGroup>
+        <Copy SourceFiles="@(MySourceFiles)" DestinationFolder="./bin/output_$(Platform)/Translator" />
+        <Copy SourceFiles="@(znCNTransFiles)" DestinationFolder="./bin/output_$(Platform)/Translator/zh-CN" />
+        <Copy SourceFiles="@(ImagesFile)" DestinationFolder="./bin/output_$(Platform)/Translator/Images" />
+        <Copy SourceFiles="@(InstallBashFiles)" DestinationFolder="./bin/output_$(Platform)" />
+    </Target>
+    <Target Name="ZipOutput" AfterTargets="Pack">
+        <ZipDirectory SourceDirectory="./bin/output_$(Platform)" DestinationFile="./bin/Translator_$(Platform).zip" Overwrite="true" />
+    </Target>
+</Project>
