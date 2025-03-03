@@ -1,8 +1,8 @@
 using System.Net.Http;
 using Wox.Plugin;
 using Translator.Utils;
+using Translator.Properties;
 namespace Translator.Suggest;
-
 public class SuggestInterface
 {
     public struct SuggestItem
@@ -56,7 +56,7 @@ public class SuggestHelper
         {
             return new List<ResultItem>{
                     new ResultItem{
-                        Title = "some err happen in suggest",
+                        Title = Resources.Error_Suggest_Title,
                         SubTitle = err.Message
                     }
                 };

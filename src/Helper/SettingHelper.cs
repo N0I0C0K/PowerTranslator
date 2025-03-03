@@ -1,23 +1,24 @@
 using Microsoft.PowerToys.Settings.UI.Library;
+using Translator.Properties;
 
 namespace Translator
 {
     public class SettingHelper
     {
         public static readonly Dictionary<string, string> Languages = new Dictionary<string, string>{
-            { "auto", "auto" },
-            { "zh-CHS", "Chinese (Simplified)" },
-            { "zh-CHT", "Chinese (Traditional)" },
-            { "en", "English" },
-            { "ja", "Japanese" },
-            { "ko", "Korean" },
-            { "ru", "Russian" },
-            { "fr", "French" },
-            { "es", "Spanish" },
-            { "ar", "Arabic" },
-            { "de", "German" },
-            { "it", "Italian" },
-            { "he", "Hebrew" }
+            { "auto", Resources.Lan_auto },
+            { "zh-CHS", Resources.Lan_zh_CHS },
+            { "zh-CHT", Resources.Lan_zh_CHT },
+            { "en", Resources.Lan_en },
+            { "ja", Resources.Lan_ja },
+            { "ko", Resources.Lan_ko },
+            { "ru", Resources.Lan_ru },
+            { "fr", Resources.Lan_fr },
+            { "es", Resources.Lan_es },
+            { "ar", Resources.Lan_ar },
+            { "de", Resources.Lan_de },
+            { "it", Resources.Lan_it },
+            { "he", Resources.Lan_he }
         };
 
         public static readonly Dictionary<string, string> DictionaryUrlPatterns = new Dictionary<string, string>
@@ -56,32 +57,32 @@ namespace Translator
             {
                 new PluginAdditionalOption{
                     Key = "DefaultTargetLanguage",
-                    DisplayDescription = "Default translation target language, Default is auto",
-                    DisplayLabel = "Default target lanuage",
+                    DisplayDescription = Resources.DefaultTargetLanguageDescription,
+                    DisplayLabel = Resources.DefaultTargetLanguage,
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Combobox,
                     ComboBoxValue = 0,
                     ComboBoxItems = lanuageItems
                 },
                 new PluginAdditionalOption{
                     Key = "EnableSuggest",
-                    DisplayLabel = "Enable search suggest",
+                    DisplayLabel = Resources.EnableSuggest,
                     Value = true,
                 },
                 new PluginAdditionalOption{
                     Key = "EnableAutoRead",
-                    DisplayLabel = "Automatic reading result",
+                    DisplayLabel = Resources.EnableAutoRead,
                     Value = false,
                 },
                 new PluginAdditionalOption{
                     Key = "ShowOriginalQuery",
-                    DisplayLabel = "Display original query",
-                    DisplayDescription= "Will add a item at the end of the results with \"[query raw]\"",
+                    DisplayLabel = Resources.ShowOriginalQuery,
+                    DisplayDescription= Resources.ShowOriginalQueryDescription,
                     Value = false,
                 },
                 new PluginAdditionalOption{
                     Key = "EnableJumpDictionary",
-                    DisplayLabel = "Show jump to dictionary button",
-                    DisplayDescription= "will add a button to quick jump to dictionary, default is youdao.",
+                    DisplayLabel = Resources.EnableJumpDictionary,
+                    DisplayDescription= Resources.EnableJumpDictionaryDescription,
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.CheckboxAndCombobox,
                     Value = false,
                     ComboBoxValue = 0,
@@ -89,8 +90,8 @@ namespace Translator
                 },
                 new PluginAdditionalOption{
                     Key = "SecondTargetLanuage",
-                    DisplayLabel = "Second target lanuage",
-                    DisplayDescription = "Active second target lanuage, will display after main target",
+                    DisplayLabel = Resources.SecondTargetLanuage,
+                    DisplayDescription = Resources.SecondTargetLanguageDescription,
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.CheckboxAndCombobox,
                     Value = false,
                     ComboBoxValue = 0,
@@ -98,8 +99,8 @@ namespace Translator
                 },
                 new PluginAdditionalOption{
                     Key = "UseSystemProxy",
-                    DisplayLabel = "Use system default proxy",
-                    DisplayDescription = "Use a proxy at request time, default to true",
+                    DisplayLabel = Resources.UseSystemProxy,
+                    DisplayDescription = Resources.UseSystemProxyDescription,
                     Value = true,
                 },
             };

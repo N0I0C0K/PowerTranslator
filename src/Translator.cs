@@ -5,6 +5,7 @@ using Wox.Plugin.Logger;
 using Wox.Infrastructure;
 using System.Windows.Controls;
 using Microsoft.PowerToys.Settings.UI.Library;
+using Translator.Properties;
 
 namespace Translator
 {
@@ -22,9 +23,9 @@ namespace Translator
 
     public class Translator : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu, IReloadable
     {
-        public string Name => "Translator";
+        public string Name => Resources.PluginName;
         public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
-        public string Description => "A simple translation plugin, based on Youdao Translation";
+        public string Description => Resources.PluginDescription;
         public IEnumerable<PluginAdditionalOption> AdditionalOptions => SettingHelper.pluginAdditionalOptions;
         public PluginMetadata? queryMetaData = null;
         public IPublicAPI? publicAPI = null;
@@ -68,8 +69,8 @@ namespace Translator
                 return new List<Result>(){
                     new Result
                     {
-                        Title = "Initializing....",
-                        SubTitle = "[Initialize translation components]",
+                        Title = Resources.InitTitle,
+                        SubTitle = Resources.InitSubTitle,
                         IcoPath = iconPath
                     }
                 };
@@ -210,7 +211,7 @@ namespace Translator
             {
                 var secondRes = secondTranslateTask.GetAwaiter().GetResult();
                 var resItem = secondRes[0];
-                resItem.SubTitle = $"{resItem.SubTitle} [second lanuage]";
+                resItem.SubTitle = $"{resItem.SubTitle} {Resources.Tag_SecondLanguage}";
                 res.Insert(1, resItem);
             }
 
@@ -225,7 +226,7 @@ namespace Translator
                 res.Add(new ResultItem
                 {
                     Title = querySearch,
-                    SubTitle = "[query raw]"
+                    SubTitle = Resources.Tag_QueryRaw
                 });
             }
 
@@ -314,7 +315,7 @@ namespace Translator
             {
                 new ContextMenuResult
                 {
-                    Title = "Copy (Enter), Subtitle(shift+Enter)",
+                    Title = Resources.Menu_Copy_Title,
                     Action = context=>{
                         UtilsFun.SetClipboardText(selectedResult.SubTitle);
                         return false;
@@ -327,7 +328,7 @@ namespace Translator
                 },
                 new ContextMenuResult
                 {
-                    Title = "Read (Ctrl+Enter)",
+                    Title = Resources.Menu_Read_Title,
                     Action = context=>{
                         this.translateHelper?.Read(selectedResult.Title);
                         return false;
@@ -345,7 +346,7 @@ namespace Translator
                 contextMenu.Add(
                     new ContextMenuResult
                     {
-                        Title = "Go to dictionary",
+                        Title = Resources.Tag_GoToDictionary_Title,
                         Action = context =>
                         {
                             Helper.OpenInShell(string.Format(settingHelper.dictUtlPattern, selectedResult.Title));
