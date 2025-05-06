@@ -4,10 +4,11 @@ using System.Text.Json;
 using System.Reflection;
 using System.Net.Http;
 using System.Net;
+using System.Text.RegularExpressions;
 
 namespace Translator.Utils
 {
-    public static class UtilsFun
+    public static partial class UtilsFun
     {
         public static HttpClientHandler httpClientDefaultHandler = new()
         {
@@ -196,5 +197,21 @@ namespace Translator.Utils
             }
             onHttpDefaultHandlerChange?.Invoke();
         }
+
+        public static string ConvertSnakeCaseOrCamelCaseToNormalSpace(string src)
+        {
+            if (src.Contains(' '))
+            {
+                return src;
+            }
+            if (src.Contains('_'))
+            {
+                return src.Replace("_", " ");
+            }
+            return CamelRegex().Replace(src, " $1").TrimStart();
+        }
+
+        [GeneratedRegex(@"([A-Z])", RegexOptions.Compiled)]
+        private static partial Regex CamelRegex();
     }
 }
