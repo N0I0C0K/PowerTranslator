@@ -35,19 +35,12 @@ namespace Translator
         private Suggest.SuggestHelper? suggestHelper;
         private History.HistoryHelper? historyHelper;
         private bool isDebug = false;
-        private string queryPre = "";
-        private long lastQueryTime = 0;
-        private string queryPreReal = "";
-        private long lastQueryTimeReal = 0;
-        private long lastTranslateTime = 0;
-        private object preQueryLock = new Object();
 
         // settings
         private readonly SettingHelper settingHelper;
-        private bool delayedExecution;
         public Translator()
         {
-            settingHelper = new SettingHelper();
+            settingHelper = SettingHelper.Instance;
         }
         private void LogInfo(string info)
         {
@@ -57,108 +50,10 @@ namespace Translator
         }
         public List<Result> Query(Query query)
         {
-            if (delayedExecution)
-                return new List<Result>();
-            if (!translateHelper!.inited)
-            {
-                Task.Factory.StartNew(() =>
-                {
-                    translateHelper.InitTranslator();
-                });
-                return new List<Result>(){
-                    new Result
-                    {
-                        Title = "Initializing....",
-                        SubTitle = "[Initialize translation components]",
-                        IcoPath = iconPath
-                    }
-                };
-            }
-
-            var queryTime = UtilsFun.GetNowTicksMilliseconds();
-            var querySearch = query.Search;
-            var results = new List<ResultItem>();
-
-            //LogInfo($"{query.RawQuery} | {this.queryPre} | now: {queryTime.ToFormateTime()} | pre: {this.lastQueryTime.ToFormateTime()}");
-
-            if (querySearch.Length == 0)
-            {
-                string? clipboardText = Utils.UtilsFun.GetClipboardText();
-                if (Utils.UtilsFun.WhetherTranslate(clipboardText))
-                {
-                    // Translate content from the clipboard
-                    results.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
-                }
-                return results.ToResultList(this.iconPath);
-            }
-
-            if (query.RawQuery == this.queryPre && queryTime - this.lastQueryTime > 300)
-            {
-                LogInfo($"translate {querySearch}");
-                queryCount++;
-                this.lastTranslateTime = queryTime;
-                this.lastQueryTime = queryTime;
-
-                var task = Task.Run(() =>
-                {
-                    return this.suggestHelper!.QuerySuggest(querySearch);
-                });
-
-                results.AddRange(translateHelper!.QueryTranslate(querySearch));
-                //results.AddRange(task.GetAwaiter().GetResult());
-            }
-            else
-            {
-                results.Add(new ResultItem
-                {
-                    Title = querySearch,
-                    SubTitle = "....",
-                    Action = (e) => { return false; }
-                });
-                if (true || querySearch != this.queryPreReal)
-                {
-                    lock (preQueryLock)
-                    {
-                        this.queryPre = query.RawQuery;
-                        this.lastQueryTime = queryTime;
-                    }
-                    Task.Delay(delayQueryMillSecond).ContinueWith((task) =>
-                    {
-                        var time_now = UtilsFun.GetNowTicksMilliseconds();
-                        if (query.RawQuery == this.queryPre
-                            && this.lastTranslateTime < queryTime)
-                        {
-                            LogInfo($"change query to {query.RawQuery}({this.queryPre}), {queryTime.ToFormateTime()}");
-                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                publicAPI!.ChangeQuery(query.RawQuery, true);
-                            });
-                        }
-                    });
-                }
-            }
-            if (isDebug)
-            {
-                results.Add(new ResultItem
-                {
-                    Title = $"{this.queryMetaData!.QueryCount},{queryCount}",
-                    SubTitle = queryPre
-                });
-                results.Add(new ResultItem
-                {
-                    Title = querySearch,
-                    SubTitle = $"[{query.RawQuery}]"
-                });
-            }
-
-            this.queryPreReal = querySearch;
-            this.lastQueryTimeReal = queryTime;
-
-            return results.ToResultList(this.iconPath);
+            return new List<Result>();
         }
         public List<Result> Query(Query query, bool delayedExecution)
         {
-            this.delayedExecution = delayedExecution;
             var querySearch = query.Search;
             var res = new List<ResultItem>();
             // query from clipboard
@@ -231,11 +126,6 @@ namespace Translator
 
             if (isDebug)
             {
-                res.Add(new ResultItem
-                {
-                    Title = $"{this.queryMetaData!.QueryCount},{++queryCount}",
-                    SubTitle = queryPre
-                });
                 res.Add(new ResultItem
                 {
                     Title = querySearch,

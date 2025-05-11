@@ -49,19 +49,28 @@ public class TranslateHelper
     }
     public TranslateTarget ParseRawSrc(string src)
     {
+        string _src, _toLan;
+
         if (src.Contains(toLanSplit))
         {
             var srcArr = src.Split(toLanSplit);
-            return new TranslateTarget
-            {
-                src = srcArr.First().TrimEnd().TrimStart(),
-                toLan = srcArr.Last().TrimEnd().TrimStart()
-            };
+            _src = srcArr.First().TrimEnd().TrimStart();
+            _toLan = srcArr.Last().TrimEnd().TrimStart();
         }
+        else
+        {
+            _src = src;
+            _toLan = this.defaultLanguageKey;
+        }
+        if (SettingHelper.Instance.enableCodeMode)
+        {
+            _src = UtilsFun.ConvertSnakeCaseOrCamelCaseToNormalSpace(_src);
+        }
+
         return new TranslateTarget
         {
-            src = src,
-            toLan = this.defaultLanguageKey
+            src = _src,
+            toLan = _toLan
         };
     }
     private ITranslateResult? Translate(string text, string toLan)

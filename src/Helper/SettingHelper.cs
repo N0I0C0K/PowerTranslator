@@ -41,6 +41,16 @@ namespace Translator
         public bool enableJumpToDict = false;
         public string dictUtlPattern = dictUrlPatternValues[0];
         public bool useSystemProxy = true;
+        public bool enableCodeMode = true;
+        private static SettingHelper? __instance;
+        public static SettingHelper Instance
+        {
+            get
+            {
+                __instance ??= new SettingHelper();
+                return __instance;
+            }
+        }
 
         public static List<PluginAdditionalOption> GetAdditionalOptions()
         {
@@ -102,22 +112,29 @@ namespace Translator
                     DisplayDescription = "Use a proxy at request time, default to true",
                     Value = true,
                 },
+                new PluginAdditionalOption{
+                    Key = "EnableCodeMode",
+                    DisplayLabel = "Translate snake case or camel case words",
+                    DisplayDescription = "Translate snake case or camel case words, default to true",
+                    Value = true,
+                }
             };
         }
 
         public void UpdateSettings(PowerLauncherPluginSettings settings)
         {
-            var GetSetting = (string key) =>
+            PluginAdditionalOption GetSetting(string key)
             {
-                PluginAdditionalOption target = settings.AdditionalOptions.FirstOrDefault((set) =>
+                PluginAdditionalOption target = settings.AdditionalOptions.First((set) =>
                 {
                     return set.Key == key;
                 });
-                return target!;
-            };
+                return target;
+            }
             enableSuggest = GetSetting("EnableSuggest").Value;
             enableAutoRead = GetSetting("EnableAutoRead").Value;
             showOriginalQuery = GetSetting("ShowOriginalQuery").Value;
+            enableCodeMode = GetSetting("EnableCodeMode").Value;
             var _useSystemProxy = GetSetting("UseSystemProxy").Value;
             if (_useSystemProxy != useSystemProxy)
             {
