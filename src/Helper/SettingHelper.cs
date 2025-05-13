@@ -17,7 +17,8 @@ namespace Translator
             { "ar", "Arabic" },
             { "de", "German" },
             { "it", "Italian" },
-            { "he", "Hebrew" }
+            { "he", "Hebrew" },
+            { "uk", "Ukrainian" }
         };
 
         public static readonly Dictionary<string, string> DictionaryUrlPatterns = new Dictionary<string, string>
