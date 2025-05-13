@@ -56,6 +56,7 @@ The plugin has been updated to use Youdao translation, which supports translatio
     |Korean |ko| 한국어
     |French |fr| En français
     |Russian |ru| русск
+    |Ukrainian |uk| українська
 
 - Search suggestions:
 
