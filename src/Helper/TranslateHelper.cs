@@ -94,7 +94,7 @@ public class TranslateHelper
             }
         });
     }
-    public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input", string? toLanuage = null)
+    public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input", string? toLanguage = null)
     {
         var res = new List<ResultItem>();
         if (raw.Length == 0)
@@ -120,7 +120,7 @@ public class TranslateHelper
 
         var target = ParseRawSrc(raw);
         string src = target.src;
-        string toLan = toLanuage ?? target.toLan;
+        string toLan = toLanguage ?? target.toLan;
         ITranslateResult? translateResult = Translate(src, toLan);
 
         if (translateResult != null)
