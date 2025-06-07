@@ -49,8 +49,8 @@ The plugin has been updated to use Youdao translation, which supports translatio
     Common language codes:
     |Language|Code|Note|
     |---------|------|-|
-    |Chinese(Simplified) | zh-CHS | Simplified Chinese
-    |Chinese(Traditional) | zh-CHT| Traditional Chinese
+    |Chinese(Simplified) | zhs | Simplified Chinese
+    |Chinese(Traditional) | zht| Traditional Chinese
     |Japanese |ja| Japanese
     |English |en| English
     |Korean |ko| 한국어

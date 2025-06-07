@@ -6,8 +6,8 @@ namespace Translator
     {
         public static readonly Dictionary<string, string> Languages = new Dictionary<string, string>{
             { "auto", "auto" },
-            { "zh-CHS", "Chinese (Simplified)" },
-            { "zh-CHT", "Chinese (Traditional)" },
+            { "zhs", "Chinese (Simplified)" },
+            { "zht", "Chinese (Traditional)" },
             { "en", "English" },
             { "ja", "Japanese" },
             { "ko", "Korean" },

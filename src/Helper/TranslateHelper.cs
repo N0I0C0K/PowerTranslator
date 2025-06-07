@@ -31,6 +31,12 @@ public class TranslateHelper
     private bool isSpeaking = false;
     private bool isIniting = false;
     public string defaultLanguageKey = "auto";
+    private Middleware.Alias.CultureAliasHelper cultureAliasHelper = new(
+        new Dictionary<string, string>{
+            { "zhs", "zh-Hans" },
+            { "zht", "zh-Hant" },
+        }
+    );
     public TranslateHelper(IPublicAPI publicAPI, string defaultLanguageKey = "auto")
     {
         this.translators = new List<ITranslator?>{
@@ -70,7 +76,7 @@ public class TranslateHelper
         return new TranslateTarget
         {
             src = _src,
-            toLan = _toLan
+            toLan = cultureAliasHelper.GetCultureFromAlias(_toLan)
         };
     }
     private ITranslateResult? Translate(string text, string toLan)

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Translator.Protocol;
+using Translator.Service.Youdao.Utils;
 using Translator.Utils;
 using Wox.Plugin.Logger;
 
@@ -211,6 +212,8 @@ public class YoudaoTranslator : ITranslator
 
     public override TranslateResponse? Translate(string src, string toLan = "auto", string fromLan = "auto")
     {
+        toLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(toLan);
+        fromLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(fromLan);
         var data = new
         {
             i = src,
