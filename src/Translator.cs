@@ -91,11 +91,11 @@ namespace Translator
 
             // get second translate result in other thread
             Task<List<ResultItem>>? secondTranslateTask = null;
-            if (settingHelper.enableSecondLanuage && settingHelper.secondLanuageKey != null)
+            if (settingHelper.enableSecondLanguage && settingHelper.secondLanguageKey != null)
             {
                 secondTranslateTask = Task.Run(() =>
                 {
-                    return translateHelper!.QueryTranslate(querySearch, toLanuage: settingHelper.secondLanuageKey);
+                    return translateHelper!.QueryTranslate(querySearch, toLanguage: settingHelper.secondLanguageKey);
                 });
             }
 
@@ -105,7 +105,7 @@ namespace Translator
             {
                 var secondRes = secondTranslateTask.GetAwaiter().GetResult();
                 var resItem = secondRes[0];
-                resItem.SubTitle = $"{resItem.SubTitle} [second lanuage]";
+                resItem.SubTitle = $"{resItem.SubTitle} [second language]";
                 res.Insert(1, resItem);
             }
 

@@ -14,7 +14,7 @@ namespace Translator.Utils
         {
             UseProxy = false
         };
-        public static Action onHttpDefaultHandlerChange;
+        public static Action? onHttpDefaultHandlerChange;
         public static string[] user_agents = {
             "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36",
             "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:34.0) Gecko/20100101 Firefox/34.0",
@@ -175,10 +175,10 @@ namespace Translator.Utils
         public static string removeSpecialCharacter(this string str)
         {
             string pattern = @"[^\w\s\u4e00-\u9fa5]";
-            return System.Text.RegularExpressions.Regex.Replace(str, pattern, " ");
+            return Regex.Replace(str, pattern, " ");
         }
 
-        public static void ChangeDefaultHttpHandlerProxy(bool useSystemProxy)
+        public static void ChangeDefaultHttpHandlerProxy(bool useSystemProxy, bool callEvent = true)
         {
             if (useSystemProxy)
             {
@@ -195,7 +195,8 @@ namespace Translator.Utils
                     UseProxy = false,
                 };
             }
-            onHttpDefaultHandlerChange?.Invoke();
+            if (callEvent)
+                onHttpDefaultHandlerChange?.Invoke();
         }
 
         public static string ConvertSnakeCaseOrCamelCaseToNormalSpace(string src)

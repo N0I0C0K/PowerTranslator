@@ -6,8 +6,8 @@ namespace Translator
     {
         public static readonly Dictionary<string, string> Languages = new Dictionary<string, string>{
             { "auto", "auto" },
-            { "zh-CHS", "Chinese (Simplified)" },
-            { "zh-CHT", "Chinese (Traditional)" },
+            { "zhs", "Chinese (Simplified)" },
+            { "zht", "Chinese (Traditional)" },
             { "en", "English" },
             { "ja", "Japanese" },
             { "ko", "Korean" },
@@ -35,8 +35,8 @@ namespace Translator
         public string defaultLanguageKey = "auto";
         public bool enableSuggest = true;
         public bool enableAutoRead = false;
-        public bool enableSecondLanuage = false;
-        public string secondLanuageKey = "auto";
+        public bool enableSecondLanguage = false;
+        public string secondLanguageKey = "auto";
         public bool showOriginalQuery = false;
         public bool enableJumpToDict = false;
         public string dictUtlPattern = dictUrlPatternValues[0];
@@ -54,7 +54,7 @@ namespace Translator
 
         public static List<PluginAdditionalOption> GetAdditionalOptions()
         {
-            var lanuageItems = languagesOptions.Select((val, idx) =>
+            var languageItems = languagesOptions.Select((val, idx) =>
             {
                 return new KeyValuePair<string, string>(val, idx.ToString());
             }).ToList();
@@ -67,10 +67,10 @@ namespace Translator
                 new PluginAdditionalOption{
                     Key = "DefaultTargetLanguage",
                     DisplayDescription = "Default translation target language, Default is auto",
-                    DisplayLabel = "Default target lanuage",
+                    DisplayLabel = "Default target language",
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Combobox,
                     ComboBoxValue = 0,
-                    ComboBoxItems = lanuageItems
+                    ComboBoxItems = languageItems
                 },
                 new PluginAdditionalOption{
                     Key = "EnableSuggest",
@@ -98,13 +98,13 @@ namespace Translator
                     ComboBoxItems = dictItems
                 },
                 new PluginAdditionalOption{
-                    Key = "SecondTargetLanuage",
-                    DisplayLabel = "Second target lanuage",
-                    DisplayDescription = "Active second target lanuage, will display after main target",
+                    Key = "SecondTargetLanguage",
+                    DisplayLabel = "Second target language",
+                    DisplayDescription = "Active second target language, will display after main target",
                     PluginOptionType = PluginAdditionalOption.AdditionalOptionType.CheckboxAndCombobox,
                     Value = false,
                     ComboBoxValue = 0,
-                    ComboBoxItems = lanuageItems
+                    ComboBoxItems = languageItems
                 },
                 new PluginAdditionalOption{
                     Key = "UseSystemProxy",
@@ -147,9 +147,9 @@ namespace Translator
             defaultLanguageIdx = defaultLanguageIdx >= languagesKeys.Count ? 0 : defaultLanguageIdx;
             defaultLanguageKey = languagesKeys[defaultLanguageIdx];
 
-            var secondOption = GetSetting("SecondTargetLanuage");
-            enableSecondLanuage = secondOption.Value;
-            secondLanuageKey = languagesKeys[secondOption.ComboBoxValue >= languagesKeys.Count ? 0 : secondOption.ComboBoxValue];
+            var secondOption = GetSetting("SecondTargetLanguage");
+            enableSecondLanguage = secondOption.Value;
+            secondLanguageKey = languagesKeys[secondOption.ComboBoxValue >= languagesKeys.Count ? 0 : secondOption.ComboBoxValue];
 
             var jumpToDict = GetSetting("EnableJumpDictionary");
             enableJumpToDict = jumpToDict.Value;

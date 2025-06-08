@@ -31,6 +31,12 @@ public class TranslateHelper
     private bool isSpeaking = false;
     private bool isIniting = false;
     public string defaultLanguageKey = "auto";
+    private Middleware.Alias.CultureAliasHelper cultureAliasHelper = new(
+        new Dictionary<string, string>{
+            { "zhs", "zh-Hans" },
+            { "zht", "zh-Hant" },
+        }
+    );
     public TranslateHelper(IPublicAPI publicAPI, string defaultLanguageKey = "auto")
     {
         this.translators = new List<ITranslator?>{
@@ -39,8 +45,12 @@ public class TranslateHelper
         translatorGenerators = new List<Type>{
             typeof(Service.Youdao.V2.YoudaoTranslator),
             typeof(Service.Youdao.old.YoudaoTranslator),
-            typeof(Service.Youdao.Backup.BackUpTranslator)
+            typeof(Service.DeepL.DeepLTranslator),
+            typeof(Service.Youdao.Backup.BackUpTranslator),
         };
+        // make sure do it before init translator
+        UtilsFun.ChangeDefaultHttpHandlerProxy(SettingHelper.Instance.useSystemProxy, false);
+
         this.InitTranslator();
         this.publicAPI = publicAPI;
         this.defaultLanguageKey = defaultLanguageKey;
@@ -70,7 +80,7 @@ public class TranslateHelper
         return new TranslateTarget
         {
             src = _src,
-            toLan = _toLan
+            toLan = cultureAliasHelper.GetCultureFromAlias(_toLan)
         };
     }
     private ITranslateResult? Translate(string text, string toLan)
@@ -94,7 +104,7 @@ public class TranslateHelper
             }
         });
     }
-    public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input", string? toLanuage = null)
+    public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input", string? toLanguage = null)
     {
         var res = new List<ResultItem>();
         if (raw.Length == 0)
@@ -120,7 +130,7 @@ public class TranslateHelper
 
         var target = ParseRawSrc(raw);
         string src = target.src;
-        string toLan = toLanuage ?? target.toLan;
+        string toLan = toLanguage ?? target.toLan;
         ITranslateResult? translateResult = Translate(src, toLan);
 
         if (translateResult != null)

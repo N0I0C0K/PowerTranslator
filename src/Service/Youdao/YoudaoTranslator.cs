@@ -4,8 +4,10 @@ using System.Text;
 using System.Text.Json;
 using Translator.Utils;
 using Translator.Protocol;
+using Translator.Service.Youdao.Utils;
 
 namespace Translator.Service.Youdao.old;
+
 public class TranslateResponse : ITranslateResult
 {
     public struct ResStruct
@@ -96,6 +98,9 @@ public class YoudaoTranslator : ITranslator
 
     public override TranslateResponse? Translate(string src, string toLan = "AUTO", string fromLan = "AUTO")
     {
+        toLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(toLan);
+        fromLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(fromLan);
+
         var ts = UtilsFun.GetUtcTimeNow().ToString();
         var salt = $"{ts}{random.Next(0, 9)}";
         var bv = md5Encrypt(this.userAgent);

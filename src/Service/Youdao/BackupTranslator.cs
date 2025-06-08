@@ -2,6 +2,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Translator.Protocol;
+using Translator.Service.Youdao.Utils;
 using Translator.Utils;
 
 namespace Translator.Service.Youdao.Backup;
@@ -81,6 +82,9 @@ public class BackUpTranslator : ITranslator
 
     public override TranslateResult? Translate(string src, string fromLan = "Auto", string toLan = "Auto")
     {
+        fromLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(fromLan);
+        toLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(toLan);
+
         var data = new
         {
             q = src,
