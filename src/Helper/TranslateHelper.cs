@@ -45,8 +45,12 @@ public class TranslateHelper
         translatorGenerators = new List<Type>{
             typeof(Service.Youdao.V2.YoudaoTranslator),
             typeof(Service.Youdao.old.YoudaoTranslator),
-            typeof(Service.Youdao.Backup.BackUpTranslator)
+            typeof(Service.DeepL.DeepLTranslator),
+            typeof(Service.Youdao.Backup.BackUpTranslator),
         };
+        // make sure do it before init translator
+        UtilsFun.ChangeDefaultHttpHandlerProxy(SettingHelper.Instance.useSystemProxy, false);
+
         this.InitTranslator();
         this.publicAPI = publicAPI;
         this.defaultLanguageKey = defaultLanguageKey;
