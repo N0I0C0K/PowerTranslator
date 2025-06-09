@@ -114,6 +114,7 @@ namespace Translator.Utils
                 {
                     Title = item.Title,
                     SubTitle = item.SubTitle,
+                    DisableUsageBasedScoring = true,
                     Action = item.Action != null ? ((e) =>
                     {
                         return item.Action!(new CustomActionContext
