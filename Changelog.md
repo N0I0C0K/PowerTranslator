@@ -5,12 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.12.0] - 2025-06-09
 
 ### Added
 - 支持了语言代码简写. 现在你可以使用 `zhs` 用来指代 `zh-CHS`
 - 添加了 DeepL 翻译(因为对频率的限制较强，未将其设为默认翻译引擎)
 - 支持翻译代码变量（在snake_case或camelCase）。例如，`hello_world` 将被当作 `hello world`
+- 添加帮助列表, 支持快速查看语言代码
 
 ### Fixed
 - 修复“是否使用代理设置”在软件启动时未正确设置

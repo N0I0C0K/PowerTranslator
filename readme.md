@@ -10,9 +10,9 @@
 
 ## About
 
-一个用于[PowerToysRun](https://github.com/microsoft/PowerToys)的插件.
+一个用于[PowerToysRun](https://github.com/microsoft/PowerToys)的插件。现已接入多个平台提供**快速且稳定**的翻译
 
-现已更新到有道翻译, **支持有道翻译的全部语言翻译**.
+## Index
 
 - [如何使用](#usage)
 - [安装](#install)
