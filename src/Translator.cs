@@ -8,26 +8,15 @@ using Microsoft.PowerToys.Settings.UI.Library;
 
 namespace Translator
 {
-    public class ResultItem
-    {
-        public string Title { get; set; } = default!;
-        public string SubTitle { get; set; } = default!;
-        public Func<ActionContext, bool>? Action { get; set; }
-        public string? CopyTgt { get; set; }
-        public string? iconPath { get; set; }
-        public string? transType { get; set; }
-        public string? fromApiName { get; set; }
-        public string? Description { get; set; }
-    }
-
     public class Translator : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu, IReloadable
     {
         public string Name => "Translator";
         public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
         public string Description => "A simple translation plugin, based on Youdao Translation";
         public IEnumerable<PluginAdditionalOption> AdditionalOptions => SettingHelper.pluginAdditionalOptions;
-        public PluginMetadata? queryMetaData = null;
-        public IPublicAPI? publicAPI = null;
+        public PluginMetadata queryMetaData;
+        public IPublicAPI publicAPI;
+        public PluginInitContext pluginContext;
         public const int delayQueryMillSecond = 500;
         private string iconPath = "Images/translator.dark.png";
         public int queryCount = 0;
@@ -65,18 +54,19 @@ namespace Translator
                     // Translate content from the clipboard
                     res.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
                 }
-                else
-                {
-                    // Query history
-                    res.AddRange(historyHelper!.query().Reverse());
-                }
-                return res.ToResultList(this.iconPath);
+                res.AddRange(SettingHelper.helpInfoList);
+                return res.ToResultList(this.iconPath, this.pluginContext);
             }
             //  Query history
             if (querySearch == "h")
             {
                 res.AddRange(historyHelper!.query().Reverse());
-                return res.ToResultList(this.iconPath);
+                return res.ToResultList(this.iconPath, this.pluginContext);
+            }
+            else if (querySearch == "l")
+            {
+                res.AddRange(SettingHelper.languageList);
+                return res.ToResultList(this.iconPath, this.pluginContext);
             }
 
             // get suggest in other thread
@@ -152,7 +142,7 @@ namespace Translator
                 });
             }
 
-            var query_res = res.ToResultList(this.iconPath);
+            var query_res = res.ToResultList(this.iconPath, this.pluginContext);
 
             return query_res;
         }
@@ -161,6 +151,7 @@ namespace Translator
             Log.Info("translator init", typeof(Translator));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
+            pluginContext = context;
             var translaTask = Task.Factory.StartNew(() =>
             {
                 translateHelper = new TranslateHelper(publicAPI, this.settingHelper.defaultLanguageKey);

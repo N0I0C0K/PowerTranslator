@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Net.Http;
 using System.Net;
 using System.Text.RegularExpressions;
+using Wox.Plugin;
 
 namespace Translator.Utils
 {
@@ -105,7 +106,7 @@ namespace Translator.Utils
             }
             return string.Join("&", res);
         }
-        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath)
+        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath, PluginInitContext pluginInitContext)
         {
             return src.Select((item, idx) =>
             {
@@ -113,7 +114,14 @@ namespace Translator.Utils
                 {
                     Title = item.Title,
                     SubTitle = item.SubTitle,
-                    Action = item.Action ??
+                    Action = item.Action != null ? ((e) =>
+                    {
+                        return item.Action!(new CustomActionContext
+                        {
+                            actionContext = e,
+                            pluginInitContext = pluginInitContext
+                        });
+                    }) :
                     ((e) =>
                     {
                         UtilsFun.SetClipboardText(item.CopyTgt ?? item.Title);

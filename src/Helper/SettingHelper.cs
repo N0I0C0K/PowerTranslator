@@ -1,4 +1,5 @@
 using Microsoft.PowerToys.Settings.UI.Library;
+using Wox.Infrastructure;
 
 namespace Translator
 {
@@ -18,6 +19,41 @@ namespace Translator
             { "de", "German" },
             { "it", "Italian" },
             { "he", "Hebrew" }
+        };
+
+        public static readonly List<ResultItem> languageList = Languages.Select((val) => new ResultItem { Title = val.Key, SubTitle = val.Value }).ToList();
+        public static readonly List<ResultItem> helpInfoList = new List<ResultItem>
+        {
+            new ResultItem{
+                Title = "History",
+                SubTitle = "Type `h` to view history",
+                Action = (ev) =>
+                {
+                    var key = ev.pluginInitContext.CurrentPluginMetadata.ActionKeyword;
+                    ev.pluginInitContext.API.ChangeQuery(key+"h", true);
+                    return false;
+                }
+            },
+            new ResultItem{
+                Title = "Support languages",
+                SubTitle = "Type `l` to view support languages and it's short code",
+                Action = (ev) =>
+                {
+                    var key = ev.pluginInitContext.CurrentPluginMetadata.ActionKeyword;
+                    ev.pluginInitContext.API.ChangeQuery(key+"l", true);
+                    return false;
+                }
+            },
+            new ResultItem
+            {
+                Title = "Find help",
+                SubTitle = "Go to issue page to find help",
+                Action = (ev) =>
+                {
+                    Helper.OpenInShell("https://github.com/N0I0C0K/PowerTranslator/issues?q=");
+                    return true;
+                }
+            }
         };
 
         public static readonly Dictionary<string, string> DictionaryUrlPatterns = new Dictionary<string, string>
