@@ -6,7 +6,7 @@
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
          IgnorableNamespaces="uap uap3 rescap">
     <Identity Name="PowerTranslatorExtension"
-              Publisher="N0I0C0K"
+              Publisher="CN=N0I0C0K"
               Version="0.0.1.0" />
     <!-- When you're ready to publish your extension, you'll need to change the
        Publisher= to match your own identity -->
