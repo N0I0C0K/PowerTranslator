@@ -1,0 +1,49 @@
+name: BuildCmdPal
+
+on:
+  release:
+    types: created
+jobs:
+  build:
+    strategy:
+      matrix:
+        platform: [x64, ARM64]
+
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read version
+        run: |
+          [xml]$xml = Get-Content -Path cmdpal\PowerTranslatorExtension\Package.appxmanifest
+          $version = "$($xml.Package.Identity.Version)".Trim()
+          echo "VERSION=$version" >> $env:GITHUB_ENV
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Setup msbuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Restore packages
+        run: msbuild cmdpal\PowerTranslatorExtension.sln /t:Restore /p:Configuration=Release
+
+      - name: Build Plugin
+        run: msbuild cmdpal\PowerTranslatorExtension\PowerTranslatorExtension.csproj /p:Configuration=Release /p:Platform=${{matrix.platform}} /p:Version=${{env.VERSION}}
+
+      - name: Prepare artifact
+        run: |
+          New-Item -Type Directory build
+          Get-ChildItem -Path cmdpal -Recurse -Include *.msix | Where-Object { $_.FullName -notmatch "\\Dependencies\\" } | ForEach-Object {
+            Copy-Item -Path $_.FullName -Destination build
+          }
+
+      - name: Upload artifact To Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          file: build\*.msix

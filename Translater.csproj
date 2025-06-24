@@ -23,6 +23,8 @@
         <None Include="./Images/history.light.png"
               CopyToOutputDirectory="PreserveNewest"
               Link="Images\history.light.png" />
+        <Compile Remove="./cmdpal/**/*" />
+        <!-- Remove cmdpal folder -->
     </ItemGroup>
     <ItemGroup>
         <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies"
