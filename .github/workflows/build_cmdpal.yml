@@ -40,10 +40,12 @@ jobs:
           New-Item -Type Directory build
           Get-ChildItem -Path cmdpal -Recurse -Include *.msix | Where-Object { $_.FullName -notmatch "\\Dependencies\\" } | ForEach-Object {
             Copy-Item -Path $_.FullName -Destination build
+            Write-Host "Copied $($_.FullName) to build"
           }
 
       - name: Upload artifact To Release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
-          file: build\*.msix
+          file: build/*.msix
+          file_glob: true
