@@ -150,7 +150,7 @@ public class TranslateHelper
 
         return res;
     }
-    public bool InitTranslator()
+    private bool InitTranslator()
     {
         var now = UtilsFun.GetUtcTimeNow();
         if (now - this.lastInitTime < 1000 * 30 || this.inited || this.isIniting)

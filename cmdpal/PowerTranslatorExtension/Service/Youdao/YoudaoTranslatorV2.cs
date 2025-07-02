@@ -162,8 +162,9 @@ public class YoudaoTranslator : ITranslator
     public string Name => "Youdao Web Api(v2)";
     public void Init()
     {
+        client.DefaultRequestHeaders.Clear();
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
-        client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
+        client.DefaultRequestHeaders.Referrer = new Uri("https://fanyi.youdao.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
 
         SetCookies();
