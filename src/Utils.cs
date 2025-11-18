@@ -106,7 +106,7 @@ namespace Translator.Utils
             }
             return string.Join("&", res);
         }
-        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath, PluginInitContext pluginInitContext)
+        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath, PluginInitContext pluginInitContext, string? originalQuery = null)
         {
             return src.Select((item, idx) =>
             {
@@ -125,7 +125,13 @@ namespace Translator.Utils
                     }) :
                     ((e) =>
                     {
-                        UtilsFun.SetClipboardText(item.CopyTgt ?? item.Title);
+                        var textToCopy = item.CopyTgt ?? item.Title;
+                        // If input doesn't contain semicolon but output does, copy only the first part
+                        if (originalQuery != null && !originalQuery.Contains(';') && textToCopy.Contains(';'))
+                        {
+                            textToCopy = textToCopy.Split(';')[0].Trim();
+                        }
+                        UtilsFun.SetClipboardText(textToCopy);
                         return true;
                     }),
                     IcoPath = item.iconPath ?? iconPath,
