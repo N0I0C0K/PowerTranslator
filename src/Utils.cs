@@ -127,9 +127,14 @@ namespace Translator.Utils
                     {
                         var textToCopy = item.CopyTgt ?? item.Title;
                         // If input doesn't contain semicolon but output does, copy only the first part
-                        if (originalQuery != null && !originalQuery.Contains(';') && textToCopy.Contains(';'))
+                        if (originalQuery != null && !originalQuery.Contains(';') && !originalQuery.Contains('；'))
                         {
-                            textToCopy = textToCopy.Split(';')[0].Trim();
+                            if (textToCopy.Contains(';') || textToCopy.Contains('；'))
+                            {
+                                // Split by both ASCII and Chinese semicolons
+                                var parts = textToCopy.Split(new[] { ';', '；' }, StringSplitOptions.None);
+                                textToCopy = parts[0].Trim();
+                            }
                         }
                         UtilsFun.SetClipboardText(textToCopy);
                         return true;
