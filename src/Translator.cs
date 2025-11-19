@@ -55,7 +55,7 @@ namespace Translator
                     res.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
                 }
                 res.AddRange(SettingHelper.helpInfoList);
-                return res.ToResultList(this.iconPath, this.pluginContext, clipboardText);
+                return res.ToResultList(this.iconPath, this.pluginContext, clipboardText != null && !clipboardText.Contains(';') && !clipboardText.Contains('；'));
             }
             //  Query history
             if (querySearch == "h")
@@ -142,7 +142,7 @@ namespace Translator
                 });
             }
 
-            var query_res = res.ToResultList(this.iconPath, this.pluginContext, querySearch);
+            var query_res = res.ToResultList(this.iconPath, this.pluginContext, !querySearch.Contains(';') && !querySearch.Contains('；'));
 
             return query_res;
         }

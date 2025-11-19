@@ -106,7 +106,7 @@ namespace Translator.Utils
             }
             return string.Join("&", res);
         }
-        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath, PluginInitContext pluginInitContext, string? originalQuery = null)
+        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath, PluginInitContext pluginInitContext, bool copyOnlyFirstOption = false)
         {
             return src.Select((item, idx) =>
             {
@@ -126,15 +126,12 @@ namespace Translator.Utils
                     ((e) =>
                     {
                         var textToCopy = item.CopyTgt ?? item.Title;
-                        // If input doesn't contain semicolon but output does, copy only the first part
-                        if (originalQuery != null && !originalQuery.Contains(';') && !originalQuery.Contains('；'))
+                        // If copyOnlyFirstOption is true and output contains semicolon, copy only the first part
+                        if (copyOnlyFirstOption && (textToCopy.Contains(';') || textToCopy.Contains('；')))
                         {
-                            if (textToCopy.Contains(';') || textToCopy.Contains('；'))
-                            {
-                                // Split by both ASCII and Chinese semicolons
-                                var parts = textToCopy.Split(new[] { ';', '；' }, StringSplitOptions.None);
-                                textToCopy = parts[0].Trim();
-                            }
+                            // Split by both ASCII and Chinese semicolons
+                            var parts = textToCopy.Split(new[] { ';', '；' }, StringSplitOptions.None);
+                            textToCopy = parts[0].Trim();
                         }
                         UtilsFun.SetClipboardText(textToCopy);
                         return true;
