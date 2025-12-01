@@ -1,0 +1,37 @@
+name: Build test
+on:
+  push:
+
+jobs:
+
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - platform: x64
+        - platform: arm64
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Get Powertoys
+        run: |
+          mkdir lib
+          nuget install Community.PowerToys.Run.Plugin.Dependencies -OutputDirectory .
+          Copy-Item -Path "Community.PowerToys.Run.Plugin.Dependencies.*\tools\${{ matrix.platform }}\*" -Destination "lib/" -Recurse
+
+      - name: Package
+        run: dotnet pack -p:RuntimeIdentifiers=win-${{ matrix.platform }}
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          # Artifact name
+          name: Translator_${{ matrix.platform }}
+          # A file, directory or wildcard pattern that describes what to upload
+          path: "bin/output/*"
