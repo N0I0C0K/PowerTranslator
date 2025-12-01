@@ -1,13 +1,17 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Translator.Utils;
-using Wox.Plugin.Logger;
+using PowerTranslatorExtension.Protocol;
+using PowerTranslatorExtension.Service.Youdao.Utils;
+using PowerTranslatorExtension.Utils;
+using Microsoft.CommandPalette.Extensions.Toolkit;
 
-namespace Translator.Youdao.V2;
+namespace PowerTranslatorExtension.Service.Youdao.V2;
 
 public class KeyResponse
 {
@@ -76,7 +80,7 @@ public class TranslateResponse : ITranslateResult
     public TranslateResult[][]? translateResult { get; set; }
     public string? type { get; set; }
 
-    public override IEnumerable<ResultItem>? Transform()
+    public IEnumerable<ResultItem>? Transform()
     {
         if (this.code != 0)
             return null;
@@ -87,11 +91,11 @@ public class TranslateResponse : ITranslateResult
             string? tgtpron = tres.tgtPronounce;
             res.Add(new ResultItem
             {
-                Title = tres.tgt + (tres.tgt.Length < 10 && tgtpron != null ? $" ({tgtpron})" : ""),
+                Title = tres.tgt,
                 SubTitle = tres.src + (srcpron != null ? $" ({srcpron})" : ""),
                 transType = this.type ?? "unknow type",
                 CopyTgt = tres.tgt,
-                Description = $"{tres.tgt} {(tgtpron != null ? $"({tgtpron})" : "")}\n\n{tres.src} {(srcpron != null ? $" ({srcpron})" : "")}"
+                Description = $"{tres.tgt}{(tgtpron != null ? $"\n({tgtpron})" : "")}\n{tres.src} {(srcpron != null ? $" ({srcpron})" : "")}"
             });
         }
         if (this.dictResult != null)
@@ -154,21 +158,13 @@ public class YoudaoTranslator : ITranslator
     private byte[]? encryptKey;
     private byte[]? iv;
     private string userAgent;
-
-    public YoudaoTranslator()
+    public bool Inited => this.secretKey != null;
+    public string Name => "Youdao Web Api(v2)";
+    public void Init()
     {
-
-        this.userAgent = UtilsFun.GetRandomUserAgent();
-
-        this.random = new Random();
-        this.md5 = MD5.Create();
-
-        client = new HttpClient(UtilsFun.httpClientDefaultHandler)
-        {
-            Timeout = TimeSpan.FromSeconds(10)
-        };
+        client.DefaultRequestHeaders.Clear();
         client.DefaultRequestHeaders.Add("User-Agent", userAgent);
-        client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
+        client.DefaultRequestHeaders.Referrer = new Uri("https://fanyi.youdao.com/");
         client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
 
         SetCookies();
@@ -182,13 +178,23 @@ public class YoudaoTranslator : ITranslator
 
         if (keyRes?.code != 0)
         {
-            Log.Error($"err in get secretKey, {keyRes?.ToString()}", typeof(YoudaoTranslator));
+            UtilsFun.LogMessage($"err in get secretKey, {keyRes?.ToString()}");
             throw new Exception("err in get secretKey");
         }
 
         this.secretKey = keyRes.data!.secretKey;
         this.InitEncrypt();
-
+        UtilsFun.LogMessage("YoudaoTranslator init success");
+    }
+    public YoudaoTranslator()
+    {
+        this.md5 = MD5.Create();
+        this.random = new Random();
+        this.userAgent = UtilsFun.GetRandomUserAgent();
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler)
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
     }
 
     private void InitEncrypt()
@@ -208,8 +214,15 @@ public class YoudaoTranslator : ITranslator
         GetKeyByte("ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4", this.iv);
     }
 
-    public override TranslateResponse? Translate(string src, string toLan = "auto", string fromLan = "auto")
+    public ITranslateResult? Translate(string src, string toLan = "auto", string fromLan = "auto")
     {
+        if (!this.Inited)
+        {
+            UtilsFun.LogMessage("YoudaoTranslator not inited");
+            return null;
+        }
+        toLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(toLan);
+        fromLan = YoudaoUtils.Instance.GetYoudaoLanguageCode(fromLan);
         var data = new
         {
             i = src,
@@ -296,11 +309,22 @@ public class YoudaoTranslator : ITranslator
         return res;
     }
 
-    public override void Reset()
+    public void Reset()
     {
-        string OUTFOX_SEARCH_USER_ID_NCOO = $"OUTFOX_SEARCH_USER_ID_NCOO={random.Next(100000000, 999999999)}.{random.Next(100000000, 999999999)}";
-        string OUTFOX_SEARCH_USER_ID = $"OUTFOX_SEARCH_USER_ID={random.Next(100000000, 999999999)}@{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}.{random.Next(1, 255)}";
-        client.DefaultRequestHeaders.Add("Cookie", $"{OUTFOX_SEARCH_USER_ID_NCOO};{OUTFOX_SEARCH_USER_ID}");
+        userAgent = UtilsFun.GetRandomUserAgent();
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler)
+        {
+            Timeout = TimeSpan.FromSeconds(10)
+        };
+        client.DefaultRequestHeaders.Add("User-Agent", userAgent);
+        client.DefaultRequestHeaders.Add("Referer", "https://fanyi.youdao.com/");
+        client.DefaultRequestHeaders.Add("Origin", "https://fanyi.youdao.com");
+
+        SetCookies();
     }
 
+    public void Dispose()
+    {
+        this.client.Dispose();
+    }
 }

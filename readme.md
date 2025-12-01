@@ -2,7 +2,7 @@
 <h1>PowerTranslator</h1>
 <p>一个用于<a href=https://github.com/microsoft/PowerToys>PowerToys Run</a>的翻译插件, 快速, 稳定.</p>
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/N0I0C0K/PowerTranslator?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/N0I0C0K/PowerTranslator?color=ffb900&style=flat-square) ![GitHub all releases](https://img.shields.io/github/downloads/N0I0C0K/PowerTranslator/total?style=flat-square) ![GitHub](https://img.shields.io/github/license/N0I0C0K/PowerTranslator?style=flat-square)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/N0I0C0K/PowerTranslator?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/N0I0C0K/PowerTranslator?color=ffb900&style=flat-square) ![GitHub all releases](https://img.shields.io/github/downloads/N0I0C0K/PowerTranslator/total?style=flat-square) ![GitHub](https://img.shields.io/github/license/N0I0C0K/PowerTranslator?style=flat-square) [![Mentioned in Awesome PowerToys Run Plugins](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/hlaueriksson/awesome-powertoys-run-plugins)
 
 [English](./readme_en.md)
 
@@ -10,9 +10,9 @@
 
 ## About
 
-一个用于[PowerToysRun](https://github.com/microsoft/PowerToys)的插件.
+一个用于[PowerToysRun](https://github.com/microsoft/PowerToys)的插件。现已接入多个平台提供**快速且稳定**的翻译
 
-现已更新到有道翻译, **支持有道翻译的全部语言翻译**.
+## Index
 
 - [如何使用](#usage)
 - [安装](#install)
@@ -50,13 +50,13 @@
     常用语言代码
     |语言|代码|备注|
     |---------|------|-|
-    |汉语(简体) | zh-CHS | 汉语简体
-    |汉语(繁体) | zh-CHT| 漢語翻譯
+    |汉语(简体) | zhs | 汉语简体
+    |汉语(繁体) | zht| 漢語翻譯
     |日语 |ja| 日本語
     |英语 |en| English
     |韩语 |ko| 한국어
     |法语 |fr| En français
-    |俄语 |ru| русск
+    |俄语 |ru| русский
 
 - 搜索建议
 
@@ -96,6 +96,12 @@
 
 (参考官方[第三方插件安装文档](https://github.com/microsoft/PowerToys/blob/main/doc/thirdPartyRunPlugins.md))
 
+### Via [ptr](https://github.com/8LWXpg/ptr)
+
+```shell
+ptr add Translator N0I0C0K/PowerTranslator
+```
+
 [安装-升级 详细教程](./doc/how%20to%20install.md)
 
 ## Setting
@@ -117,14 +123,14 @@
 
 ### Environment
 
-- .net sdk
+- .net sdk 8.0
 
 ### Step
 
 1. fork 这个仓库
 2. clone fork 后的仓库到本地
-3. 执行 lib.bat
-4. 使用 vscode（任意） 打开
+3. 运行 `dotnet restore`(可选)
+3. 使用 vscode（任意） 打开
 5. 开始编码吧！
 
 [帮助文档 - Getting Start!](doc/code-start-zh.md)

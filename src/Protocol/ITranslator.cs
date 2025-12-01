@@ -1,4 +1,4 @@
-namespace Translator.Youdao;
+namespace Translator.Protocol;
 
 
 public abstract class ITranslateResult

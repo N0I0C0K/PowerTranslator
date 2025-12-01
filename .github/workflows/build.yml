@@ -1,0 +1,38 @@
+name: Build on release
+on:
+  release:
+    types: created
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version
+        run: |
+          $json = Get-Content -path .\plugin.json -Raw | ConvertFrom-Json
+          echo "PLUGIN_VERSION=$($json.Version)" >> $env:GITHUB_ENV
+
+      - name: Package
+        run: |
+          dotnet pack -p:Platform=x64
+          dotnet pack -p:Platform=ARM64
+
+      - name: Upload x64 To Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          file: bin/Translator_x64.zip
+          asset_name: Translator-${{env.PLUGIN_VERSION}}-x64.zip
+
+      - name: Upload ARM64 To Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          file: bin/Translator_ARM64.zip
+          asset_name: Translator-${{env.PLUGIN_VERSION}}-arm64.zip

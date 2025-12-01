@@ -1,13 +1,15 @@
-using Wox.Plugin.Logger;
-using System.Windows;
 using System.Text.Json;
 using System.Reflection;
 using System.Net.Http;
 using System.Net;
 using System.Text.RegularExpressions;
-using Wox.Plugin;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using PowerTranslatorExtension.Protocol;
+using Microsoft.CommandPalette.Extensions.Toolkit;
 
-namespace Translator.Utils
+namespace PowerTranslatorExtension.Utils
 {
     public static partial class UtilsFun
     {
@@ -27,7 +29,7 @@ namespace Translator.Utils
         }
         public static bool WhetherTranslate(string? s)
         {
-            return s != null && s.Length > 0 && !s.Contains("\\") && !s.Contains("/");
+            return s != null && s.Length > 0 && !s.Contains('\\') && !s.Contains('/');
         }
         public static string ToEnPunctuation(this string src)
         {
@@ -47,7 +49,7 @@ namespace Translator.Utils
         }
         public static void SetClipboardText(string s)
         {
-            Clipboard.SetDataObject(s);
+            throw new NotImplementedException();
         }
         public static long GetUtcTimeNow()
         {
@@ -59,26 +61,11 @@ namespace Translator.Utils
         }
         public static string ToFormateTime(this long ticks)
         {
-            var time = new DateTime(ticks * TimeSpan.TicksPerMillisecond);
-            return String.Format("{0:yyyy/MM/dd hh:mm:ss}:{1}", time, time.Millisecond);
+            throw new NotImplementedException();
         }
         public static string? GetClipboardText()
         {
-            try
-            {
-                string? res = null;
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    if (Clipboard.ContainsText())
-                        res = Clipboard.GetText();
-                });
-                return res;
-            }
-            catch (Exception err)
-            {
-                Log.Error(err.Message, typeof(UtilsFun));
-                return string.Empty;
-            }
+            throw new NotImplementedException();
         }
 
         public static void each<T>(this IEnumerable<T> src, Action<T> action)
@@ -106,38 +93,16 @@ namespace Translator.Utils
             }
             return string.Join("&", res);
         }
-        public static List<Wox.Plugin.Result> ToResultList(this IEnumerable<ResultItem> src, string iconPath, PluginInitContext pluginInitContext, bool copyOnlyFirstOption = false)
+        public static List<ListItem> ToResultList(this IEnumerable<ResultItem> src, IconInfo? icon)
         {
             return src.Select((item, idx) =>
             {
-                return new Wox.Plugin.Result
+                return new ListItem
                 {
                     Title = item.Title,
-                    SubTitle = item.SubTitle,
-                    DisableUsageBasedScoring = true,
-                    Action = item.Action != null ? ((e) =>
-                    {
-                        return item.Action!(new CustomActionContext
-                        {
-                            actionContext = e,
-                            pluginInitContext = pluginInitContext
-                        });
-                    }) :
-                    ((e) =>
-                    {
-                        var textToCopy = item.CopyTgt ?? item.Title;
-                        // If copyOnlyFirstOption is true and output contains semicolon, copy only the first part
-                        if (copyOnlyFirstOption && (textToCopy.Contains(';') || textToCopy.Contains('；')))
-                        {
-                            // Split by both ASCII and Chinese semicolons
-                            var parts = textToCopy.Split(new[] { ';', '；' }, StringSplitOptions.None);
-                            textToCopy = parts[0].Trim();
-                        }
-                        UtilsFun.SetClipboardText(textToCopy);
-                        return true;
-                    }),
-                    IcoPath = item.iconPath ?? iconPath,
-                    ToolTipData = new Wox.Plugin.ToolTipData(item.Title, $"{item.Description ?? item.SubTitle}\n\n{item.transType}-{item.fromApiName}")
+                    Subtitle = item.SubTitle,
+                    Icon = item.icon ?? icon,
+                    Command = new CopyTextCommand(item.CopyTgt ?? item.Title),
                 };
             }).ToList();
         }
@@ -231,5 +196,13 @@ namespace Translator.Utils
 
         [GeneratedRegex(@"([A-Z])", RegexOptions.Compiled)]
         private static partial Regex CamelRegex();
+
+        public static void LogMessage(string message)
+        {
+            ExtensionHost.LogMessage(new LogMessage
+            {
+                Message = message,
+            });
+        }
     }
 }

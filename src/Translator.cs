@@ -8,26 +8,15 @@ using Microsoft.PowerToys.Settings.UI.Library;
 
 namespace Translator
 {
-    public class ResultItem
-    {
-        public string Title { get; set; } = default!;
-        public string SubTitle { get; set; } = default!;
-        public Func<ActionContext, bool>? Action { get; set; }
-        public string? CopyTgt { get; set; }
-        public string? iconPath { get; set; }
-        public string? transType { get; set; }
-        public string? fromApiName { get; set; }
-        public string? Description { get; set; }
-    }
-
     public class Translator : IPlugin, IDisposable, IDelayedExecutionPlugin, ISettingProvider, IContextMenu, IReloadable
     {
         public string Name => "Translator";
         public static string PluginID => "EY1EBAMTNIWIVLYM039DSOS5MWITDJOD";
         public string Description => "A simple translation plugin, based on Youdao Translation";
         public IEnumerable<PluginAdditionalOption> AdditionalOptions => SettingHelper.pluginAdditionalOptions;
-        public PluginMetadata? queryMetaData = null;
-        public IPublicAPI? publicAPI = null;
+        public PluginMetadata queryMetaData;
+        public IPublicAPI publicAPI;
+        public PluginInitContext pluginContext;
         public const int delayQueryMillSecond = 500;
         private string iconPath = "Images/translator.dark.png";
         public int queryCount = 0;
@@ -35,19 +24,12 @@ namespace Translator
         private Suggest.SuggestHelper? suggestHelper;
         private History.HistoryHelper? historyHelper;
         private bool isDebug = false;
-        private string queryPre = "";
-        private long lastQueryTime = 0;
-        private string queryPreReal = "";
-        private long lastQueryTimeReal = 0;
-        private long lastTranslateTime = 0;
-        private object preQueryLock = new Object();
 
         // settings
         private readonly SettingHelper settingHelper;
-        private bool delayedExecution;
         public Translator()
         {
-            settingHelper = new SettingHelper();
+            settingHelper = SettingHelper.Instance;
         }
         private void LogInfo(string info)
         {
@@ -57,108 +39,10 @@ namespace Translator
         }
         public List<Result> Query(Query query)
         {
-            if (delayedExecution)
-                return new List<Result>();
-            if (!translateHelper!.inited)
-            {
-                Task.Factory.StartNew(() =>
-                {
-                    translateHelper.InitTranslater();
-                });
-                return new List<Result>(){
-                    new Result
-                    {
-                        Title = "Initializing....",
-                        SubTitle = "[Initialize translation components]",
-                        IcoPath = iconPath
-                    }
-                };
-            }
-
-            var queryTime = UtilsFun.GetNowTicksMilliseconds();
-            var querySearch = query.Search;
-            var results = new List<ResultItem>();
-
-            //LogInfo($"{query.RawQuery} | {this.queryPre} | now: {queryTime.ToFormateTime()} | pre: {this.lastQueryTime.ToFormateTime()}");
-
-            if (querySearch.Length == 0)
-            {
-                string? clipboardText = Utils.UtilsFun.GetClipboardText();
-                if (Utils.UtilsFun.WhetherTranslate(clipboardText))
-                {
-                    // Translate content from the clipboard
-                    results.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
-                }
-                return results.ToResultList(this.iconPath);
-            }
-
-            if (query.RawQuery == this.queryPre && queryTime - this.lastQueryTime > 300)
-            {
-                LogInfo($"translate {querySearch}");
-                queryCount++;
-                this.lastTranslateTime = queryTime;
-                this.lastQueryTime = queryTime;
-
-                var task = Task.Run(() =>
-                {
-                    return this.suggestHelper!.QuerySuggest(querySearch);
-                });
-
-                results.AddRange(translateHelper!.QueryTranslate(querySearch));
-                //results.AddRange(task.GetAwaiter().GetResult());
-            }
-            else
-            {
-                results.Add(new ResultItem
-                {
-                    Title = querySearch,
-                    SubTitle = "....",
-                    Action = (e) => { return false; }
-                });
-                if (true || querySearch != this.queryPreReal)
-                {
-                    lock (preQueryLock)
-                    {
-                        this.queryPre = query.RawQuery;
-                        this.lastQueryTime = queryTime;
-                    }
-                    Task.Delay(delayQueryMillSecond).ContinueWith((task) =>
-                    {
-                        var time_now = UtilsFun.GetNowTicksMilliseconds();
-                        if (query.RawQuery == this.queryPre
-                            && this.lastTranslateTime < queryTime)
-                        {
-                            LogInfo($"change query to {query.RawQuery}({this.queryPre}), {queryTime.ToFormateTime()}");
-                            System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                            {
-                                publicAPI!.ChangeQuery(query.RawQuery, true);
-                            });
-                        }
-                    });
-                }
-            }
-            if (isDebug)
-            {
-                results.Add(new ResultItem
-                {
-                    Title = $"{this.queryMetaData!.QueryCount},{queryCount}",
-                    SubTitle = queryPre
-                });
-                results.Add(new ResultItem
-                {
-                    Title = querySearch,
-                    SubTitle = $"[{query.RawQuery}]"
-                });
-            }
-
-            this.queryPreReal = querySearch;
-            this.lastQueryTimeReal = queryTime;
-
-            return results.ToResultList(this.iconPath);
+            return new List<Result>();
         }
         public List<Result> Query(Query query, bool delayedExecution)
         {
-            this.delayedExecution = delayedExecution;
             var querySearch = query.Search;
             var res = new List<ResultItem>();
             // query from clipboard
@@ -170,18 +54,19 @@ namespace Translator
                     // Translate content from the clipboard
                     res.AddRange(translateHelper!.QueryTranslate(clipboardText!, "clipboard"));
                 }
-                else
-                {
-                    // Query history
-                    res.AddRange(historyHelper!.query().Reverse());
-                }
-                return res.ToResultList(this.iconPath);
+                res.AddRange(SettingHelper.helpInfoList);
+                return res.ToResultList(this.iconPath, this.pluginContext, clipboardText != null && !clipboardText.Contains(';') && !clipboardText.Contains('；'));
             }
             //  Query history
             if (querySearch == "h")
             {
                 res.AddRange(historyHelper!.query().Reverse());
-                return res.ToResultList(this.iconPath);
+                return res.ToResultList(this.iconPath, this.pluginContext);
+            }
+            else if (querySearch == "l")
+            {
+                res.AddRange(SettingHelper.languageList);
+                return res.ToResultList(this.iconPath, this.pluginContext);
             }
 
             // get suggest in other thread
@@ -196,11 +81,11 @@ namespace Translator
 
             // get second translate result in other thread
             Task<List<ResultItem>>? secondTranslateTask = null;
-            if (settingHelper.enableSecondLanuage && settingHelper.secondLanuageKey != null)
+            if (settingHelper.enableSecondLanguage && settingHelper.secondLanguageKey != null)
             {
                 secondTranslateTask = Task.Run(() =>
                 {
-                    return translateHelper!.QueryTranslate(querySearch, toLanuage: settingHelper.secondLanuageKey);
+                    return translateHelper!.QueryTranslate(querySearch, toLanguage: settingHelper.secondLanguageKey);
                 });
             }
 
@@ -210,7 +95,7 @@ namespace Translator
             {
                 var secondRes = secondTranslateTask.GetAwaiter().GetResult();
                 var resItem = secondRes[0];
-                resItem.SubTitle = $"{resItem.SubTitle} [second lanuage]";
+                resItem.SubTitle = $"{resItem.SubTitle} [second language]";
                 res.Insert(1, resItem);
             }
 
@@ -231,11 +116,6 @@ namespace Translator
 
             if (isDebug)
             {
-                res.Add(new ResultItem
-                {
-                    Title = $"{this.queryMetaData!.QueryCount},{++queryCount}",
-                    SubTitle = queryPre
-                });
                 res.Add(new ResultItem
                 {
                     Title = querySearch,
@@ -262,15 +142,16 @@ namespace Translator
                 });
             }
 
-            var query_res = res.ToResultList(this.iconPath);
+            var query_res = res.ToResultList(this.iconPath, this.pluginContext, !querySearch.Contains(';') && !querySearch.Contains('；'));
 
             return query_res;
         }
         public void Init(PluginInitContext context)
         {
-            Log.Info("translater init", typeof(Translator));
+            Log.Info("translator init", typeof(Translator));
             queryMetaData = context.CurrentPluginMetadata;
             publicAPI = context.API;
+            pluginContext = context;
             var translaTask = Task.Factory.StartNew(() =>
             {
                 translateHelper = new TranslateHelper(publicAPI, this.settingHelper.defaultLanguageKey);
