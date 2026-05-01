@@ -4,24 +4,33 @@
 
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using PowerTranslatorExtension;
 
 namespace PowerTranslatorExtension;
 
 public partial class PowerTranslatorExtensionCommandsProvider : CommandProvider
 {
     private readonly ICommandItem[] _commands;
-    private TranslateHelper translateHelper;
+    private readonly TranslateHelper _translateHelper;
+    private readonly SettingHelper _settingHelper;
 
     public PowerTranslatorExtensionCommandsProvider()
     {
         DisplayName = "Translator";
         Icon = IconHelpers.FromRelativePaths("Assets/translator.light.png", "Assets/translator.dark.png");
-        this.translateHelper = new TranslateHelper();
-        _commands = [
-            new CommandItem(new PowerTranslatorExtensionPage(translateHelper)) { Title = DisplayName, Subtitle = "Translate any text" },
+        _translateHelper = new TranslateHelper();
+        _settingHelper = SettingHelper.Instance;
+        Settings = _settingHelper.Settings;
+        _commands =
+        [
+            new CommandItem(new PowerTranslatorExtensionPage(_translateHelper, _settingHelper))
+            {
+                Title = DisplayName,
+                Subtitle = "Translate any text",
+                MoreCommands = [new CommandContextItem(_settingHelper.Settings.SettingsPage)],
+            },
         ];
     }
+
     public override ICommandItem[] TopLevelCommands()
     {
         return _commands;

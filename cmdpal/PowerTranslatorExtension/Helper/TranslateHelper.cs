@@ -4,134 +4,113 @@ using System.Linq;
 using System.Threading.Tasks;
 using PowerTranslatorExtension.Protocol;
 using PowerTranslatorExtension.Utils;
+
 namespace PowerTranslatorExtension;
 
 public class TranslateFailedException : Exception
 {
-    public TranslateFailedException() : base("translate failed")
+    public TranslateFailedException()
+        : base("translate failed")
     {
-
     }
 }
 
-public class TranslateHelper
+public sealed class TranslateHelper
 {
     public struct TranslateTarget
     {
         public string src;
         public string toLan;
     }
-    public const string toLanSplit = "->";
-    public bool inited => this.translators.Count > 0 && this.translators[0].Inited;
-    private object initLock = new Object();
-    private long lastInitTime;
-    private List<ITranslator> translators;
-    private bool isSpeaking;
-    private bool isIniting;
-    public string defaultLanguageKey = "auto";
-    private Middleware.Alias.CultureAliasMiddleware cultureAliasHelper = new(
-        new Dictionary<string, string>{
+
+    public const string ToLanSplit = "->";
+
+    private readonly object _initLock = new();
+    private readonly List<ITranslator> _translators;
+    private readonly Middleware.Alias.CultureAliasMiddleware _cultureAliasHelper = new(
+        new Dictionary<string, string>
+        {
             { "zhs", "zh-Hans" },
             { "zht", "zh-Hant" },
-        }
-    );
-    public TranslateHelper(string defaultLanguageKey = "auto")
+        });
+    private long _lastInitTime;
+    private bool _isIniting;
+
+    public TranslateHelper()
     {
-        this.translators = [
-            new Service.Youdao.V2.YoudaoTranslator()
+        _translators =
+        [
+            new Service.Youdao.V2.YoudaoTranslator(),
+            new Service.Youdao.old.YoudaoTranslator(),
+            new Service.DeepL.DeepLTranslator(),
+            new Service.Youdao.Backup.BackUpTranslator(),
         ];
-        // make sure do it before init translator
-        // UtilsFun.ChangeDefaultHttpHandlerProxy(SettingHelper.Instance.useSystemProxy, false);
-
-        // this.InitTranslator();
-        this.defaultLanguageKey = defaultLanguageKey;
-        UtilsFun.LogMessage("custom init 3");
-
-        //UtilsFun.onHttpDefaultHandlerChange += this.Reload;
+        UtilsFun.onHttpDefaultHandlerChange += Reload;
     }
+
+    public bool inited => _translators.Any(t => t.Inited);
+
     public TranslateTarget ParseRawSrc(string src)
     {
-        string _src, _toLan;
+        string rawSrc;
+        string rawTargetLanguage;
 
-        if (src.Contains(toLanSplit))
+        if (src.Contains(ToLanSplit, StringComparison.Ordinal))
         {
-            var srcArr = src.Split(toLanSplit);
-            _src = srcArr.First().TrimEnd().TrimStart();
-            _toLan = srcArr.Last().TrimEnd().TrimStart();
+            var srcArr = src.Split(ToLanSplit, StringSplitOptions.None);
+            rawSrc = srcArr.First().Trim();
+            rawTargetLanguage = srcArr.Last().Trim();
         }
         else
         {
-            _src = src;
-            _toLan = this.defaultLanguageKey;
+            rawSrc = src;
+            rawTargetLanguage = SettingHelper.Instance.defaultLanguageKey;
         }
-        _src = UtilsFun.ConvertSnakeCaseOrCamelCaseToNormalSpace(_src);
-        // if (SettingHelper.Instance.enableCodeMode)
-        // {
 
-        // }
+        if (SettingHelper.Instance.enableCodeMode)
+        {
+            rawSrc = UtilsFun.ConvertSnakeCaseOrCamelCaseToNormalSpace(rawSrc);
+        }
 
         return new TranslateTarget
         {
-            src = _src,
-            toLan = cultureAliasHelper.GetCultureFromAlias(_toLan)
+            src = rawSrc,
+            toLan = _cultureAliasHelper.GetCultureFromAlias(rawTargetLanguage),
         };
     }
-    private ITranslateResult? Translate(string text, string toLan)
+
+    public List<ResultItem> QueryTranslate(string raw, string translateFrom = "user input", string? toLanguage = null)
     {
-        return translators.Enumerate().FirstNotNoneCast((data) =>
+        List<ResultItem> res = [];
+        if (string.IsNullOrWhiteSpace(raw))
         {
-            var (idx, it) = data;
-            try
-            {
-                if (it == null)
-                {
-                    throw new Exception($"{it.Name} is null");
-                }
-                return it?.Translate(text, toLan, "auto");
-            }
-            catch (Exception err)
-            {
-                UtilsFun.LogMessage(err.Message);
-                return null;
-            }
-        });
-    }
-    public List<ResultItem> QueryTranslate(string raw, string? toLanguage = null)
-    {
-        var res = new List<ResultItem>();
-        if (raw.Length == 0)
             return res;
+        }
 
         if (!inited)
         {
-            if (!this.isIniting)
+            if (!_isIniting)
             {
-                Task.Factory.StartNew(() =>
-                {
-                    if (this.InitTranslator())
-                    {
-                        // this.publicAPI?.ChangeQuery(raw, true);
-                    }
-                });
+                Task.Factory.StartNew(InitTranslator);
             }
+
             res.Add(new ResultItem
             {
                 Title = "initializing other apis...",
-                SubTitle = "please try later"
+                SubTitle = "please try later",
             });
             return res;
         }
 
         var target = ParseRawSrc(raw);
-        string src = target.src;
-        string toLan = toLanguage ?? target.toLan;
-        ITranslateResult? translateResult = Translate(src, toLan);
-
+        var translateResult = Translate(target.src, toLanguage ?? target.toLan);
         if (translateResult != null)
         {
-            var tres = translateResult!.Transform();
-            if (tres != null)
-                res.AddRange(tres);
+            var transformed = translateResult.Transform();
+            if (transformed != null)
+            {
+                res.AddRange(transformed);
+            }
         }
         else
         {
@@ -139,48 +118,73 @@ public class TranslateHelper
             {
                 Title = "result is null, some error happen in translate. check out your network!",
                 SubTitle = "Press enter to get help",
-                Action = () =>
-                {
-                    UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTranslator/issues?q=");
-                    //this.publicAPI.ShowMsg("Copy!", "The URL has been copied, Go to your browser and visit the website for help.");
-                    return true;
-                }
+                Action = () => UtilsFun.OpenInShell("https://github.com/N0I0C0K/PowerTranslator/issues?q="),
             });
         }
 
         return res;
     }
+
+    public void Read(string? txt)
+    {
+        UtilsFun.ReadText(txt);
+    }
+
+    public void Reload()
+    {
+        foreach (var translator in _translators)
+        {
+            Task.Factory.StartNew(translator.Reset);
+        }
+    }
+
+    private ITranslateResult? Translate(string text, string toLan)
+    {
+        return _translators.Enumerate().FirstNotNoneCast(data =>
+        {
+            var (_, translator) = data;
+            try
+            {
+                return translator.Translate(text, toLan, "auto");
+            }
+            catch (Exception err)
+            {
+                UtilsFun.LogMessage($"{translator.Name}: {err.Message}");
+                return null;
+            }
+        });
+    }
+
     private bool InitTranslator()
     {
         var now = UtilsFun.GetUtcTimeNow();
-        if (now - this.lastInitTime < 1000 * 30 || this.inited || this.isIniting)
-            return false;
-        lock (this.initLock)
+        if ((now - _lastInitTime) < (1000 * 30) || inited || _isIniting)
         {
-            this.isIniting = true;
-            this.lastInitTime = now;
-            UtilsFun.LogMessage("custom init");
+            return false;
+        }
 
-            var actions = translators.Select((translator, idx) =>
+        lock (_initLock)
+        {
+            _isIniting = true;
+            _lastInitTime = now;
+
+            var actions = _translators.Select(translator => Task.Factory.StartNew(() =>
             {
-                return Task.Factory.StartNew(() =>
+                if (translator.Inited)
                 {
-                    if (translator.Inited)
-                    {
-                        return;
-                    }
-                    try
-                    {
-                        UtilsFun.LogMessage($"start init {translator.Name}");
-                        translator.Init();
-                        UtilsFun.LogMessage($"init {translator.Name} success: {translator.Inited}");
-                    }
-                    catch (Exception ex)
-                    {
-                        UtilsFun.LogMessage($"Init {translator.Name} Error occurred: {(ex.InnerException ?? ex).Message}");
-                    }
-                });
-            });
+                    return;
+                }
+
+                try
+                {
+                    translator.Init();
+                    UtilsFun.LogMessage($"init {translator.Name} success: {translator.Inited}");
+                }
+                catch (Exception ex)
+                {
+                    UtilsFun.LogMessage($"Init {translator.Name} Error occurred: {(ex.InnerException ?? ex).Message}");
+                }
+            }));
 
             try
             {
@@ -188,11 +192,11 @@ public class TranslateHelper
             }
             catch (AggregateException ex)
             {
-                // 捕获并处理 Task.WhenAll 返回的聚合异常
-                foreach (Exception innerException in ex.InnerExceptions)
+                foreach (var innerException in ex.InnerExceptions)
                 {
                     UtilsFun.LogMessage($"Error occurred during task execution: {innerException.Message}");
                 }
+
                 return false;
             }
             catch (Exception err)
@@ -202,21 +206,10 @@ public class TranslateHelper
             }
             finally
             {
-                this.isIniting = false;
-                UtilsFun.LogMessage("custom init complete");
+                _isIniting = false;
             }
-            return true;
-        }
-    }
 
-    public void Reload()
-    {
-        foreach (var translator in translators)
-        {
-            Task.Factory.StartNew(() =>
-            {
-                translator?.Reset();
-            });
+            return true;
         }
     }
 }
