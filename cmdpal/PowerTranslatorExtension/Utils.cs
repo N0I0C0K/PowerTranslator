@@ -22,6 +22,8 @@ namespace PowerTranslatorExtension.Utils
         private static readonly object MediaLock = new();
         private static MediaPlayer? _mediaPlayer;
         private static bool _isSpeaking;
+        private const string ReadAloudEndpoint = "https://dict.youdao.com/dictvoice?audio={0}&le=zh";
+        private const string NonWordAndNonChineseCharactersPattern = @"[^\w\s\p{IsCJKUnifiedIdeographs}]";
 
         public static HttpClientHandler httpClientDefaultHandler = new()
         {
@@ -256,8 +258,7 @@ namespace PowerTranslatorExtension.Utils
 
         public static string removeSpecialCharacter(this string str)
         {
-            const string pattern = @"[^\w\s一-龥]";
-            return Regex.Replace(str, pattern, " ");
+            return Regex.Replace(str, NonWordAndNonChineseCharactersPattern, " ");
         }
 
         public static void ChangeDefaultHttpHandlerProxy(bool useSystemProxy, bool callEvent = true)
@@ -330,7 +331,7 @@ namespace PowerTranslatorExtension.Utils
                 _mediaPlayer = new MediaPlayer();
                 _mediaPlayer.MediaEnded += OnMediaPlaybackCompleted;
                 _mediaPlayer.MediaFailed += OnMediaPlaybackFailed;
-                _mediaPlayer.Source = MediaSource.CreateFromUri(new Uri($"https://dict.youdao.com/dictvoice?audio={Uri.EscapeDataString(txt.removeSpecialCharacter())}&le=zh"));
+                _mediaPlayer.Source = MediaSource.CreateFromUri(new Uri(string.Format(ReadAloudEndpoint, Uri.EscapeDataString(txt.removeSpecialCharacter()))));
                 _mediaPlayer.Play();
             }
         }

@@ -190,13 +190,13 @@ public sealed class SettingHelper
         secondLanguageKey = CoalesceLanguage(_secondTargetLanguage.Value);
         enableCodeMode = _enableCodeMode.Value;
 
-        var nextUseProxy = _useSystemProxy.Value;
-        if (nextUseProxy != useSystemProxy)
+        var useSystemProxyValue = _useSystemProxy.Value;
+        if (useSystemProxyValue != useSystemProxy)
         {
-            UtilsFun.ChangeDefaultHttpHandlerProxy(nextUseProxy);
+            UtilsFun.ChangeDefaultHttpHandlerProxy(useSystemProxyValue);
         }
 
-        useSystemProxy = nextUseProxy;
+        useSystemProxy = useSystemProxyValue;
     }
 
     private static string CoalesceLanguage(string? key)

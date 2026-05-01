@@ -39,7 +39,7 @@ public sealed class HistoryHelper
                 _history.Enqueue(new ResultItem
                 {
                     Title = item.Title,
-                    SubTitle = $"{item.SubTitle} [{DateTime.Now:MM/dd HH:mm:ss}]",
+                    SubTitle = $"{item.SubTitle} [{DateTimeOffset.Now:MM/dd HH:mm:ss zzz}]",
                     icon = _historyIcon,
                     transType = "[History]",
                     CopyTgt = item.Title,

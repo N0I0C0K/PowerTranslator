@@ -1,17 +1,17 @@
 using System;
-        using System.Collections.Generic;
-        using System.Net.Http;
-        using System.Security.Cryptography;
-        using System.Text;
-        using System.Text.Json;
-        using PowerTranslatorExtension.Protocol;
-        using PowerTranslatorExtension.Service.Youdao.Utils;
-        using PowerTranslatorExtension.Utils;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using PowerTranslatorExtension.Protocol;
+using PowerTranslatorExtension.Service.Youdao.Utils;
+using PowerTranslatorExtension.Utils;
 
-        namespace PowerTranslatorExtension.Service.Youdao.old;
+namespace PowerTranslatorExtension.Service.Youdao.old;
 
-        public class TranslateResponse : ITranslateResult
-        {
+public class TranslateResponse : ITranslateResult
+{
             public struct ResStruct
             {
                 public string tgt { get; set; }

@@ -239,12 +239,9 @@ public sealed class DeepLTranslator : ITranslator
             toLan = "en";
         }
 
-        if (fromLan == "auto")
-        {
-            fromLan = null!;
-        }
+        string? sourceLanguage = fromLan == "auto" ? null : fromLan;
 
-        var body = new DeepLTranslateRequestBody(new Params(toLan, fromLan, src));
+        var body = new DeepLTranslateRequestBody(new Params(toLan, sourceLanguage, src));
         var bodyStr = JsonSerializer.Serialize(body, new JsonSerializerOptions { WriteIndented = true });
         var response = _client.PostAsync(ApiEndpoint, new StringContent(bodyStr, Encoding.Default, "application/json"))
             .GetAwaiter()

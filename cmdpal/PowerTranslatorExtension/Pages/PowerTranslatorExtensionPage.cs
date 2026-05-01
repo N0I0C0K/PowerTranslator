@@ -50,7 +50,7 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
             }
 
             res.AddRange(_settingHelper.GetHelpInfoList());
-            return res.ToResultList(Icon, _settingHelper, clipboardText != null && !clipboardText.Contains(';') && !clipboardText.Contains('；')).ToArray();
+            return res.ToResultList(Icon, _settingHelper, ShouldCopyOnlyFirstOption(clipboardText)).ToArray();
         }
 
         if (querySearch == "h")
@@ -118,7 +118,12 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
             });
         }
 
-        return res.ToResultList(Icon, _settingHelper, !querySearch.Contains(';') && !querySearch.Contains('；')).ToArray();
+        return res.ToResultList(Icon, _settingHelper, ShouldCopyOnlyFirstOption(querySearch)).ToArray();
+    }
+
+    private static bool ShouldCopyOnlyFirstOption(string? text)
+    {
+        return !string.IsNullOrWhiteSpace(text) && !text.Contains(';') && !text.Contains('；');
     }
 
     public override void UpdateSearchText(string oldSearch, string newSearch)
