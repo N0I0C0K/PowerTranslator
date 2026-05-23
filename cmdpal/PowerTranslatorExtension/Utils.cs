@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using PowerTranslatorExtension.Protocol;
+using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
 namespace PowerTranslatorExtension.Utils
@@ -49,7 +50,16 @@ namespace PowerTranslatorExtension.Utils
         }
         public static void SetClipboardText(string s)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var pkg = new global::Windows.ApplicationModel.DataTransfer.DataPackage();
+                pkg.SetText(s ?? string.Empty);
+                global::Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(pkg);
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"SetClipboardText failed: {ex.Message}");
+            }
         }
         public static long GetUtcTimeNow()
         {
@@ -59,13 +69,20 @@ namespace PowerTranslatorExtension.Utils
         {
             return DateTime.Now.Ticks / TimeSpan.TicksPerMillisecond;
         }
-        public static string ToFormateTime(this long ticks)
-        {
-            throw new NotImplementedException();
-        }
         public static string? GetClipboardText()
         {
-            throw new NotImplementedException();
+            try
+            {
+                var content = global::Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+                if (content == null || !content.Contains(global::Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text))
+                    return null;
+                return content.GetTextAsync().AsTask().GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"GetClipboardText failed: {ex.Message}");
+                return null;
+            }
         }
 
         public static void each<T>(this IEnumerable<T> src, Action<T> action)
@@ -93,16 +110,47 @@ namespace PowerTranslatorExtension.Utils
             }
             return string.Join("&", res);
         }
-        public static List<ListItem> ToResultList(this IEnumerable<ResultItem> src, IconInfo? icon)
+        public static List<ListItem> ToResultList(
+            this IEnumerable<ResultItem> src,
+            IconInfo? icon,
+            TranslateHelper? translateHelper = null)
         {
-            return src.Select((item, idx) =>
+            var enableJumpDict = SettingsManager.Instance.EnableJumpDictionary;
+            var dictPattern = SettingsManager.Instance.DictionaryUrlPattern;
+            return src.Select((item) =>
             {
+                var contextItems = new List<IContextItem>();
+                if (!string.IsNullOrEmpty(item.SubTitle))
+                {
+                    contextItems.Add(new CommandContextItem(new CopyTextCommand(item.SubTitle)
+                    {
+                        Name = "Copy subtitle",
+                    }));
+                }
+                if (translateHelper != null && !string.IsNullOrEmpty(item.Title))
+                {
+                    contextItems.Add(new CommandContextItem(new AnonymousCommand(() => translateHelper.Read(item.Title))
+                    {
+                        Name = "Read aloud",
+                        Result = CommandResult.KeepOpen(),
+                    }));
+                }
+                if (enableJumpDict && !string.IsNullOrEmpty(item.Title))
+                {
+                    var url = string.Format(System.Globalization.CultureInfo.InvariantCulture, dictPattern, Uri.EscapeDataString(item.Title));
+                    contextItems.Add(new CommandContextItem(new OpenUrlCommand(url)
+                    {
+                        Name = "Jump to dictionary",
+                    }));
+                }
+
                 return new ListItem
                 {
                     Title = item.Title,
                     Subtitle = item.SubTitle,
                     Icon = item.icon ?? icon,
                     Command = new CopyTextCommand(item.CopyTgt ?? item.Title),
+                    MoreCommands = contextItems.ToArray(),
                 };
             }).ToList();
         }
