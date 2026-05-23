@@ -38,70 +38,21 @@ public class SettingsManager : JsonSettingsManager
     private static string Namespaced(string property) => $"{_namespace}.{property}";
 
     private static List<ChoiceSetSetting.Choice> LanguageChoices() =>
-        Languages.Select(kv => new ChoiceSetSetting.Choice(kv.Value, kv.Key)).ToList();
+        Languages.Select(kv => new ChoiceSetSetting.Choice(Loc.Language(kv.Key), kv.Key)).ToList();
 
     private static List<ChoiceSetSetting.Choice> DictionaryChoices() =>
-        DictionaryUrlPatterns.Select(kv => new ChoiceSetSetting.Choice(kv.Key, kv.Key)).ToList();
+        DictionaryUrlPatterns.Select(kv => new ChoiceSetSetting.Choice(Loc.Dictionary(kv.Key), kv.Key)).ToList();
 
-    private readonly ChoiceSetSetting _defaultTargetLanguage = new(
-        Namespaced("DefaultTargetLanguage"),
-        "Default target language",
-        "Used when the query does not contain `->`",
-        LanguageChoices());
-
-    private readonly ToggleSetting _enableSuggest = new(
-        Namespaced("EnableSuggest"),
-        "Enable search suggestions",
-        "Append Baidu autocomplete suggestions after translation results",
-        true);
-
-    private readonly ToggleSetting _enableAutoRead = new(
-        Namespaced("EnableAutoRead"),
-        "Automatically read result",
-        "Play TTS for the first result after each query",
-        false);
-
-    private readonly ToggleSetting _showOriginalQuery = new(
-        Namespaced("ShowOriginalQuery"),
-        "Show original query",
-        "Append the raw query as the final result row",
-        false);
-
-    private readonly ToggleSetting _enableJumpDictionary = new(
-        Namespaced("EnableJumpDictionary"),
-        "Show jump to dictionary command",
-        "Adds a per-result command that opens the selected word in an online dictionary",
-        false);
-
-    private readonly ChoiceSetSetting _dictionaryPattern = new(
-        Namespaced("DictionaryPattern"),
-        "Dictionary",
-        "Which dictionary to jump to when the command above is enabled",
-        DictionaryChoices());
-
-    private readonly ToggleSetting _enableSecondLanguage = new(
-        Namespaced("EnableSecondLanguage"),
-        "Enable second target language",
-        "Show an additional translation row for the language selected below",
-        false);
-
-    private readonly ChoiceSetSetting _secondTargetLanguage = new(
-        Namespaced("SecondTargetLanguage"),
-        "Second target language",
-        "Only used when 'Enable second target language' is on",
-        LanguageChoices());
-
-    private readonly ToggleSetting _useSystemProxy = new(
-        Namespaced("UseSystemProxy"),
-        "Use system proxy",
-        "Route HTTP requests through the Windows default proxy",
-        true);
-
-    private readonly ToggleSetting _enableCodeMode = new(
-        Namespaced("EnableCodeMode"),
-        "Translate snake_case / camelCase words",
-        "Split snake/camel words into spaces before translating",
-        true);
+    private readonly ChoiceSetSetting _defaultTargetLanguage;
+    private readonly ToggleSetting _enableSuggest;
+    private readonly ToggleSetting _enableAutoRead;
+    private readonly ToggleSetting _showOriginalQuery;
+    private readonly ToggleSetting _enableJumpDictionary;
+    private readonly ChoiceSetSetting _dictionaryPattern;
+    private readonly ToggleSetting _enableSecondLanguage;
+    private readonly ChoiceSetSetting _secondTargetLanguage;
+    private readonly ToggleSetting _useSystemProxy;
+    private readonly ToggleSetting _enableCodeMode;
 
     public string DefaultLanguageKey => _defaultTargetLanguage.Value ?? "auto";
     public string SecondLanguageKey => _secondTargetLanguage.Value ?? "auto";
@@ -130,6 +81,66 @@ public class SettingsManager : JsonSettingsManager
 
     private SettingsManager()
     {
+        _defaultTargetLanguage = new(
+            Namespaced("DefaultTargetLanguage"),
+            Loc.Get("Setting_DefaultTargetLanguage_Label"),
+            Loc.Get("Setting_DefaultTargetLanguage_Desc"),
+            LanguageChoices());
+
+        _enableSuggest = new(
+            Namespaced("EnableSuggest"),
+            Loc.Get("Setting_EnableSuggest_Label"),
+            Loc.Get("Setting_EnableSuggest_Desc"),
+            true);
+
+        _enableAutoRead = new(
+            Namespaced("EnableAutoRead"),
+            Loc.Get("Setting_EnableAutoRead_Label"),
+            Loc.Get("Setting_EnableAutoRead_Desc"),
+            false);
+
+        _showOriginalQuery = new(
+            Namespaced("ShowOriginalQuery"),
+            Loc.Get("Setting_ShowOriginalQuery_Label"),
+            Loc.Get("Setting_ShowOriginalQuery_Desc"),
+            false);
+
+        _enableJumpDictionary = new(
+            Namespaced("EnableJumpDictionary"),
+            Loc.Get("Setting_EnableJumpDictionary_Label"),
+            Loc.Get("Setting_EnableJumpDictionary_Desc"),
+            false);
+
+        _dictionaryPattern = new(
+            Namespaced("DictionaryPattern"),
+            Loc.Get("Setting_DictionaryPattern_Label"),
+            Loc.Get("Setting_DictionaryPattern_Desc"),
+            DictionaryChoices());
+
+        _enableSecondLanguage = new(
+            Namespaced("EnableSecondLanguage"),
+            Loc.Get("Setting_EnableSecondLanguage_Label"),
+            Loc.Get("Setting_EnableSecondLanguage_Desc"),
+            false);
+
+        _secondTargetLanguage = new(
+            Namespaced("SecondTargetLanguage"),
+            Loc.Get("Setting_SecondTargetLanguage_Label"),
+            Loc.Get("Setting_SecondTargetLanguage_Desc"),
+            LanguageChoices());
+
+        _useSystemProxy = new(
+            Namespaced("UseSystemProxy"),
+            Loc.Get("Setting_UseSystemProxy_Label"),
+            Loc.Get("Setting_UseSystemProxy_Desc"),
+            true);
+
+        _enableCodeMode = new(
+            Namespaced("EnableCodeMode"),
+            Loc.Get("Setting_EnableCodeMode_Label"),
+            Loc.Get("Setting_EnableCodeMode_Desc"),
+            true);
+
         FilePath = SettingsJsonPath();
         Settings.Add(_defaultTargetLanguage);
         Settings.Add(_enableSuggest);

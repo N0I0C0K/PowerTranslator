@@ -14,9 +14,9 @@ internal sealed partial class HistoryPage : ListPage
     {
         this.translateHelper = translateHelper;
         Icon = IconHelpers.FromRelativePaths("Assets/translator.light.png", "Assets/translator.dark.png");
-        Title = "Translation history";
-        Name = "Open";
-        PlaceholderText = "Recent translations";
+        Title = Loc.Get("Cmd_History_Title");
+        Name = Loc.Get("Verb_Open");
+        PlaceholderText = Loc.Get("Page_History_Placeholder");
     }
 
     public override IListItem[] GetItems()
@@ -28,8 +28,8 @@ internal sealed partial class HistoryPage : ListPage
             {
                 new ListItem(new NoOpCommand())
                 {
-                    Title = "No history yet",
-                    Subtitle = "Recent translations will appear here",
+                    Title = Loc.Get("Empty_NoHistory_Title"),
+                    Subtitle = Loc.Get("Empty_NoHistory_Subtitle"),
                     Icon = this.Icon,
                 },
             };
