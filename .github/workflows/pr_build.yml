@@ -56,6 +56,14 @@ jobs:
       - name: Setup msbuild.exe
         uses: microsoft/setup-msbuild@v2
 
+      # csproj 锁了 WindowsSdkPackageVersion = 10.0.22621.57，runner 镜像（尤其
+      # windows-2025）默认不带 UAP Platforms\10.0.22621.0\Platform.xml，cswinrt
+      # 投影会因此挂掉。显式装一下 SDK 22621。
+      - name: Install Windows 10/11 SDK 22621
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+
       - name: Restore packages
         run: msbuild cmdpal\PowerTranslatorExtension.sln /t:Restore /p:Configuration=Release /p:Platform=${{ matrix.platform }}
 
