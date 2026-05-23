@@ -1,0 +1,90 @@
+name: PR Build
+
+on:
+  pull_request:
+    branches: [main]
+
+# 同一 PR 推新提交时取消旧任务，省 Actions 配额
+concurrency:
+  group: pr-build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-legacy:
+    name: Build legacy plugin (${{ matrix.platform }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x64, ARM64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Pack (build + zip)
+        run: dotnet pack Translater.csproj -c Release -p:Platform=${{ matrix.platform }}
+
+      - name: Upload zip artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Translator-${{ matrix.platform }}-pr${{ github.event.pull_request.number }}
+          path: bin/Translator_${{ matrix.platform }}.zip
+          if-no-files-found: error
+          retention-days: 14
+
+  build-cmdpal:
+    name: Build cmdpal extension (${{ matrix.platform }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [x64, ARM64]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Setup msbuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      # csproj 锁了 WindowsSdkPackageVersion = 10.0.22621.57，runner 镜像（尤其
+      # windows-2025）默认不带 UAP Platforms\10.0.22621.0\Platform.xml，cswinrt
+      # 投影会因此挂掉。显式装一下 SDK 22621。
+      - name: Install Windows 10/11 SDK 22621
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+
+      - name: Restore packages
+        run: msbuild cmdpal\PowerTranslatorExtension.sln /t:Restore /p:Configuration=Release /p:Platform=${{ matrix.platform }}
+
+      - name: Build extension
+        run: msbuild cmdpal\PowerTranslatorExtension\PowerTranslatorExtension.csproj /p:Configuration=Release /p:Platform=${{ matrix.platform }}
+
+      - name: Collect MSIX
+        run: |
+          New-Item -ItemType Directory -Path build -Force | Out-Null
+          $msixFiles = Get-ChildItem -Path cmdpal -Recurse -Include *.msix |
+              Where-Object { $_.FullName -notmatch "\\Dependencies\\" }
+          if (-not $msixFiles) { throw "No MSIX produced for ${{ matrix.platform }}" }
+          foreach ($f in $msixFiles) {
+              Copy-Item -Path $f.FullName -Destination build
+              Write-Host "Collected $($f.Name)"
+          }
+
+      - name: Upload MSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PowerTranslatorExtension-${{ matrix.platform }}-pr${{ github.event.pull_request.number }}
+          path: build/*.msix
+          if-no-files-found: error
+          retention-days: 14

@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using PowerTranslatorExtension.Protocol;
 using PowerTranslatorExtension.Utils;
+using Windows.Media.Core;
+using Windows.Media.Playback;
 namespace PowerTranslatorExtension;
 
 public class TranslateFailedException : Exception
@@ -37,17 +40,15 @@ public class TranslateHelper
     );
     public TranslateHelper(string defaultLanguageKey = "auto")
     {
-        this.translators = [
-            new Service.Youdao.V2.YoudaoTranslator()
-        ];
-        // make sure do it before init translator
-        // UtilsFun.ChangeDefaultHttpHandlerProxy(SettingHelper.Instance.useSystemProxy, false);
-
-        // this.InitTranslator();
+        this.translators = new List<ITranslator>
+        {
+            new Service.Youdao.V2.YoudaoTranslator(),
+            new Service.Youdao.Old.YoudaoTranslator(),
+            new Service.DeepL.DeepLTranslator(),
+            new Service.Youdao.Backup.BackUpTranslator(),
+        };
         this.defaultLanguageKey = defaultLanguageKey;
-        UtilsFun.LogMessage("custom init 3");
-
-        //UtilsFun.onHttpDefaultHandlerChange += this.Reload;
+        UtilsFun.onHttpDefaultHandlerChange += this.Reload;
     }
     public TranslateTarget ParseRawSrc(string src)
     {
@@ -64,11 +65,10 @@ public class TranslateHelper
             _src = src;
             _toLan = this.defaultLanguageKey;
         }
-        _src = UtilsFun.ConvertSnakeCaseOrCamelCaseToNormalSpace(_src);
-        // if (SettingHelper.Instance.enableCodeMode)
-        // {
-
-        // }
+        if (SettingsManager.Instance.EnableCodeMode)
+        {
+            _src = UtilsFun.ConvertSnakeCaseOrCamelCaseToNormalSpace(_src);
+        }
 
         return new TranslateTarget
         {
@@ -218,5 +218,44 @@ public class TranslateHelper
                 translator?.Reset();
             });
         }
+    }
+
+    public void Read(string? txt)
+    {
+        if (isSpeaking || string.IsNullOrEmpty(txt))
+            return;
+        Task.Factory.StartNew(() =>
+        {
+            isSpeaking = true;
+            MediaPlayer? player = null;
+            try
+            {
+                var uri = new Uri($"https://dict.youdao.com/dictvoice?audio={Uri.EscapeDataString(txt.removeSpecialCharacter())}&le=zh");
+                uri.fixChinese();
+                player = new MediaPlayer
+                {
+                    Source = MediaSource.CreateFromUri(uri),
+                    Volume = 1.0,
+                };
+                var ended = new ManualResetEventSlim(false);
+                player.MediaEnded += (s, e) => ended.Set();
+                player.MediaFailed += (s, e) =>
+                {
+                    UtilsFun.LogMessage($"TTS failed: {e.ErrorMessage}");
+                    ended.Set();
+                };
+                player.Play();
+                ended.Wait(TimeSpan.FromSeconds(15));
+            }
+            catch (Exception ex)
+            {
+                UtilsFun.LogMessage($"Read failed: {ex.Message}");
+            }
+            finally
+            {
+                player?.Dispose();
+                isSpeaking = false;
+            }
+        });
     }
 }
