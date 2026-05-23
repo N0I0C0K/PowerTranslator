@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- Top-level commands -->
+  <data name="Cmd_Translator_DisplayName" xml:space="preserve"><value>Translator</value></data>
+  <data name="Cmd_Translator_Subtitle" xml:space="preserve"><value>Translate any text</value></data>
+  <data name="Cmd_History_Title" xml:space="preserve"><value>Translation history</value></data>
+  <data name="Cmd_History_Subtitle" xml:space="preserve"><value>Recent translations</value></data>
+  <data name="Cmd_Languages_Title" xml:space="preserve"><value>Supported languages</value></data>
+  <data name="Cmd_Languages_Subtitle" xml:space="preserve"><value>Browse language codes</value></data>
+
+  <!-- Pages -->
+  <data name="Page_Translator_Placeholder" xml:space="preserve"><value>Enter any text, optionally followed by `-&gt; &lt;lang&gt;`</value></data>
+  <data name="Page_History_Placeholder" xml:space="preserve"><value>Recent translations</value></data>
+  <data name="Page_Languages_Placeholder" xml:space="preserve"><value>Use short code as target language</value></data>
+
+  <!-- Empty-state quick links on the main page -->
+  <data name="Empty_History_Title" xml:space="preserve"><value>History</value></data>
+  <data name="Empty_History_Subtitle" xml:space="preserve"><value>View recent translations</value></data>
+  <data name="Empty_Languages_Title" xml:space="preserve"><value>Supported languages</value></data>
+  <data name="Empty_Languages_Subtitle" xml:space="preserve"><value>Browse the language codes you can target with `-&gt; &lt;code&gt;`</value></data>
+  <data name="Empty_Help_Title" xml:space="preserve"><value>Find help</value></data>
+  <data name="Empty_Help_Subtitle" xml:space="preserve"><value>Open the project's issue page</value></data>
+  <data name="Empty_NoHistory_Title" xml:space="preserve"><value>No history yet</value></data>
+  <data name="Empty_NoHistory_Subtitle" xml:space="preserve"><value>Recent translations will appear here</value></data>
+
+  <!-- Status messages -->
+  <data name="Status_Initializing_Title" xml:space="preserve"><value>initializing other apis...</value></data>
+  <data name="Status_Initializing_Subtitle" xml:space="preserve"><value>please try later</value></data>
+  <data name="Status_TranslateError_Title" xml:space="preserve"><value>result is null, some error happen in translate. check out your network!</value></data>
+  <data name="Status_TranslateError_Subtitle" xml:space="preserve"><value>Press enter to get help</value></data>
+
+  <!-- Result row tags -->
+  <data name="Tag_SecondLanguage" xml:space="preserve"><value>[second language]</value></data>
+  <data name="Tag_QueryRaw" xml:space="preserve"><value>[query raw]</value></data>
+  <data name="Tag_Exam" xml:space="preserve"><value>exam</value></data>
+  <data name="Tag_SmartResult" xml:space="preserve"><value>[smart result]</value></data>
+
+  <!-- Generic verbs / shared labels -->
+  <data name="Verb_Open" xml:space="preserve"><value>Open</value></data>
+
+  <!-- Per-result context menu items -->
+  <data name="Context_CopySubtitle" xml:space="preserve"><value>Copy subtitle</value></data>
+  <data name="Context_ReadAloud" xml:space="preserve"><value>Read aloud</value></data>
+  <data name="Context_JumpToDictionary" xml:space="preserve"><value>Jump to dictionary</value></data>
+
+  <!-- Settings -->
+  <data name="Setting_DefaultTargetLanguage_Label" xml:space="preserve"><value>Default target language</value></data>
+  <data name="Setting_DefaultTargetLanguage_Desc" xml:space="preserve"><value>Used when the query does not contain `-&gt;`</value></data>
+  <data name="Setting_EnableSuggest_Label" xml:space="preserve"><value>Enable search suggestions</value></data>
+  <data name="Setting_EnableSuggest_Desc" xml:space="preserve"><value>Append Baidu autocomplete suggestions after translation results</value></data>
+  <data name="Setting_EnableAutoRead_Label" xml:space="preserve"><value>Automatically read result</value></data>
+  <data name="Setting_EnableAutoRead_Desc" xml:space="preserve"><value>Play TTS for the first result after each query</value></data>
+  <data name="Setting_ShowOriginalQuery_Label" xml:space="preserve"><value>Show original query</value></data>
+  <data name="Setting_ShowOriginalQuery_Desc" xml:space="preserve"><value>Append the raw query as the final result row</value></data>
+  <data name="Setting_EnableJumpDictionary_Label" xml:space="preserve"><value>Show jump to dictionary command</value></data>
+  <data name="Setting_EnableJumpDictionary_Desc" xml:space="preserve"><value>Adds a per-result command that opens the selected word in an online dictionary</value></data>
+  <data name="Setting_DictionaryPattern_Label" xml:space="preserve"><value>Dictionary</value></data>
+  <data name="Setting_DictionaryPattern_Desc" xml:space="preserve"><value>Which dictionary to jump to when the command above is enabled</value></data>
+  <data name="Setting_EnableSecondLanguage_Label" xml:space="preserve"><value>Enable second target language</value></data>
+  <data name="Setting_EnableSecondLanguage_Desc" xml:space="preserve"><value>Show an additional translation row for the language selected below</value></data>
+  <data name="Setting_SecondTargetLanguage_Label" xml:space="preserve"><value>Second target language</value></data>
+  <data name="Setting_SecondTargetLanguage_Desc" xml:space="preserve"><value>Only used when 'Enable second target language' is on</value></data>
+  <data name="Setting_UseSystemProxy_Label" xml:space="preserve"><value>Use system proxy</value></data>
+  <data name="Setting_UseSystemProxy_Desc" xml:space="preserve"><value>Route HTTP requests through the Windows default proxy</value></data>
+  <data name="Setting_EnableCodeMode_Label" xml:space="preserve"><value>Translate snake_case / camelCase words</value></data>
+  <data name="Setting_EnableCodeMode_Desc" xml:space="preserve"><value>Split snake/camel words into spaces before translating</value></data>
+
+  <!-- Language display names (keys match SettingsManager.Languages) -->
+  <data name="Language_auto" xml:space="preserve"><value>Auto</value></data>
+  <data name="Language_zhs" xml:space="preserve"><value>Chinese (Simplified)</value></data>
+  <data name="Language_zht" xml:space="preserve"><value>Chinese (Traditional)</value></data>
+  <data name="Language_en" xml:space="preserve"><value>English</value></data>
+  <data name="Language_ja" xml:space="preserve"><value>Japanese</value></data>
+  <data name="Language_ko" xml:space="preserve"><value>Korean</value></data>
+  <data name="Language_ru" xml:space="preserve"><value>Russian</value></data>
+  <data name="Language_fr" xml:space="preserve"><value>French</value></data>
+  <data name="Language_es" xml:space="preserve"><value>Spanish</value></data>
+  <data name="Language_ar" xml:space="preserve"><value>Arabic</value></data>
+  <data name="Language_de" xml:space="preserve"><value>German</value></data>
+  <data name="Language_it" xml:space="preserve"><value>Italian</value></data>
+  <data name="Language_he" xml:space="preserve"><value>Hebrew</value></data>
+
+  <!-- Dictionary provider display names -->
+  <data name="Dictionary_Youdao" xml:space="preserve"><value>Youdao</value></data>
+  <data name="Dictionary_Oxford" xml:space="preserve"><value>Oxford</value></data>
+  <data name="Dictionary_Cambridge" xml:space="preserve"><value>Cambridge</value></data>
+</root>

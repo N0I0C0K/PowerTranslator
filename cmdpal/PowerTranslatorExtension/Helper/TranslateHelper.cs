@@ -116,8 +116,8 @@ public class TranslateHelper
             }
             res.Add(new ResultItem
             {
-                Title = "initializing other apis...",
-                SubTitle = "please try later"
+                Title = Loc.Get("Status_Initializing_Title"),
+                SubTitle = Loc.Get("Status_Initializing_Subtitle")
             });
             return res;
         }
@@ -137,8 +137,8 @@ public class TranslateHelper
         {
             res.Add(new ResultItem
             {
-                Title = "result is null, some error happen in translate. check out your network!",
-                SubTitle = "Press enter to get help",
+                Title = Loc.Get("Status_TranslateError_Title"),
+                SubTitle = Loc.Get("Status_TranslateError_Subtitle"),
                 Action = () =>
                 {
                     UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTranslator/issues?q=");

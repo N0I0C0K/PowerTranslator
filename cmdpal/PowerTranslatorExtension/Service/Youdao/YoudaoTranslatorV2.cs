@@ -135,7 +135,7 @@ public class TranslateResponse : ITranslateResult
                     res.Add(new ResultItem
                     {
                         Title = String.Join(" | ", ec?.exam_type!),
-                        SubTitle = "exam",
+                        SubTitle = Loc.Get("Tag_Exam"),
                         transType = "exam"
                     });
                 }
