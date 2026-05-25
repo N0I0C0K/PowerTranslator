@@ -5,3 +5,5 @@ lib
 
 .vs/
 src/lib
+
+dist

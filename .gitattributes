@@ -1,0 +1,49 @@
+# 让 git 把这些扩展名当二进制处理：不做换行符转换、不试图 diff 文本
+# 防止 PNG 等图片被某些工具按 UTF-8 文本读取后写回时损坏（曾发生过：
+# 模板自带的 Asset PNG 在初次 commit 时被破坏，所有非 ASCII 字节被替换
+# 成 U+FFFD，文件不可恢复）。
+
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.bmp   binary
+*.webp  binary
+*.tif   binary
+*.tiff  binary
+
+*.msix       binary
+*.msixbundle binary
+*.msixupload binary
+*.appx       binary
+*.appxbundle binary
+*.appxupload binary
+
+*.zip binary
+*.7z  binary
+*.pdf binary
+
+*.ttf binary
+*.otf binary
+*.woff  binary
+*.woff2 binary
+
+*.dll binary
+*.exe binary
+*.pdb binary
+
+# 文本文件强制 LF，避免 Windows 上 CRLF 污染（与 PowerToys/cmdpal 仓库习惯一致）
+*.cs       text eol=lf
+*.csproj   text eol=lf
+*.sln      text eol=lf
+*.json     text eol=lf
+*.xml      text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.md       text eol=lf
+*.ps1      text eol=lf
+
+# Windows 脚本保留 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
