@@ -124,14 +124,14 @@ namespace PowerTranslatorExtension.Utils
                 {
                     contextItems.Add(new CommandContextItem(new CopyTextCommand(item.SubTitle)
                     {
-                        Name = "Copy subtitle",
+                        Name = Loc.Get("Context_CopySubtitle"),
                     }));
                 }
                 if (translateHelper != null && !string.IsNullOrEmpty(item.Title))
                 {
                     contextItems.Add(new CommandContextItem(new AnonymousCommand(() => translateHelper.Read(item.Title))
                     {
-                        Name = "Read aloud",
+                        Name = Loc.Get("Context_ReadAloud"),
                         Result = CommandResult.KeepOpen(),
                     }));
                 }
@@ -140,7 +140,7 @@ namespace PowerTranslatorExtension.Utils
                     var url = string.Format(System.Globalization.CultureInfo.InvariantCulture, dictPattern, Uri.EscapeDataString(item.Title));
                     contextItems.Add(new CommandContextItem(new OpenUrlCommand(url)
                     {
-                        Name = "Jump to dictionary",
+                        Name = Loc.Get("Context_JumpToDictionary"),
                     }));
                 }
 

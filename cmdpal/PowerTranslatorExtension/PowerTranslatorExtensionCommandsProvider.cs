@@ -16,7 +16,7 @@ public partial class PowerTranslatorExtensionCommandsProvider : CommandProvider
 
     public PowerTranslatorExtensionCommandsProvider()
     {
-        DisplayName = "Translator";
+        DisplayName = Loc.Get("Cmd_Translator_DisplayName");
         Icon = IconHelpers.FromRelativePaths("Assets/translator.light.png", "Assets/translator.dark.png");
 
         Settings = SettingsManager.Instance.Settings;
@@ -33,9 +33,9 @@ public partial class PowerTranslatorExtensionCommandsProvider : CommandProvider
 
         _commands =
         [
-            new CommandItem(mainPage) { Title = DisplayName, Subtitle = "Translate any text" },
-            new CommandItem(historyPage) { Title = "Translation history", Subtitle = "Recent translations" },
-            new CommandItem(languagePage) { Title = "Supported languages", Subtitle = "Browse language codes" },
+            new CommandItem(mainPage) { Title = DisplayName, Subtitle = Loc.Get("Cmd_Translator_Subtitle") },
+            new CommandItem(historyPage) { Title = Loc.Get("Cmd_History_Title"), Subtitle = Loc.Get("Cmd_History_Subtitle") },
+            new CommandItem(languagePage) { Title = Loc.Get("Cmd_Languages_Title"), Subtitle = Loc.Get("Cmd_Languages_Subtitle") },
         ];
     }
 

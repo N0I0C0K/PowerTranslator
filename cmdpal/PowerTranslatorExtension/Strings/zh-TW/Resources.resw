@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Cmd_Translator_DisplayName" xml:space="preserve"><value>翻譯</value></data>
+  <data name="Cmd_Translator_Subtitle" xml:space="preserve"><value>翻譯任意文字</value></data>
+  <data name="Cmd_History_Title" xml:space="preserve"><value>翻譯紀錄</value></data>
+  <data name="Cmd_History_Subtitle" xml:space="preserve"><value>最近的翻譯紀錄</value></data>
+  <data name="Cmd_Languages_Title" xml:space="preserve"><value>支援的語言</value></data>
+  <data name="Cmd_Languages_Subtitle" xml:space="preserve"><value>瀏覽可用的語言代碼</value></data>
+
+  <data name="Page_Translator_Placeholder" xml:space="preserve"><value>輸入要翻譯的文字，可在結尾加上 `-&gt; 語言代碼`</value></data>
+  <data name="Page_History_Placeholder" xml:space="preserve"><value>最近的翻譯紀錄</value></data>
+  <data name="Page_Languages_Placeholder" xml:space="preserve"><value>使用簡短代碼作為目標語言</value></data>
+
+  <data name="Empty_History_Title" xml:space="preserve"><value>紀錄</value></data>
+  <data name="Empty_History_Subtitle" xml:space="preserve"><value>檢視最近的翻譯紀錄</value></data>
+  <data name="Empty_Languages_Title" xml:space="preserve"><value>支援的語言</value></data>
+  <data name="Empty_Languages_Subtitle" xml:space="preserve"><value>瀏覽可作為目標語言的代碼，搭配 `-&gt; 代碼` 使用</value></data>
+  <data name="Empty_Help_Title" xml:space="preserve"><value>尋求協助</value></data>
+  <data name="Empty_Help_Subtitle" xml:space="preserve"><value>開啟專案 issue 頁面</value></data>
+  <data name="Empty_NoHistory_Title" xml:space="preserve"><value>尚無翻譯紀錄</value></data>
+  <data name="Empty_NoHistory_Subtitle" xml:space="preserve"><value>最近的翻譯將顯示於此</value></data>
+
+  <data name="Status_Initializing_Title" xml:space="preserve"><value>正在初始化其他翻譯 API…</value></data>
+  <data name="Status_Initializing_Subtitle" xml:space="preserve"><value>請稍候再試</value></data>
+  <data name="Status_TranslateError_Title" xml:space="preserve"><value>翻譯失敗，請檢查網路連線</value></data>
+  <data name="Status_TranslateError_Subtitle" xml:space="preserve"><value>按 Enter 取得協助</value></data>
+
+  <data name="Tag_SecondLanguage" xml:space="preserve"><value>[第二目標語言]</value></data>
+  <data name="Tag_QueryRaw" xml:space="preserve"><value>[原始查詢]</value></data>
+  <data name="Tag_Exam" xml:space="preserve"><value>例句</value></data>
+  <data name="Tag_SmartResult" xml:space="preserve"><value>[智慧結果]</value></data>
+
+  <data name="Verb_Open" xml:space="preserve"><value>開啟</value></data>
+
+  <data name="Context_CopySubtitle" xml:space="preserve"><value>複製副標題</value></data>
+  <data name="Context_ReadAloud" xml:space="preserve"><value>朗讀</value></data>
+  <data name="Context_JumpToDictionary" xml:space="preserve"><value>跳至辭典</value></data>
+
+  <data name="Setting_DefaultTargetLanguage_Label" xml:space="preserve"><value>預設目標語言</value></data>
+  <data name="Setting_DefaultTargetLanguage_Desc" xml:space="preserve"><value>在查詢未包含 `-&gt;` 時使用</value></data>
+  <data name="Setting_EnableSuggest_Label" xml:space="preserve"><value>啟用搜尋建議</value></data>
+  <data name="Setting_EnableSuggest_Desc" xml:space="preserve"><value>在翻譯結果之後附加百度自動完成建議</value></data>
+  <data name="Setting_EnableAutoRead_Label" xml:space="preserve"><value>自動朗讀結果</value></data>
+  <data name="Setting_EnableAutoRead_Desc" xml:space="preserve"><value>每次查詢後自動朗讀第一筆結果</value></data>
+  <data name="Setting_ShowOriginalQuery_Label" xml:space="preserve"><value>顯示原始查詢</value></data>
+  <data name="Setting_ShowOriginalQuery_Desc" xml:space="preserve"><value>在結果末端附加原始查詢內容</value></data>
+  <data name="Setting_EnableJumpDictionary_Label" xml:space="preserve"><value>顯示跳至辭典的指令</value></data>
+  <data name="Setting_EnableJumpDictionary_Desc" xml:space="preserve"><value>為每筆結果加入線上辭典查詢指令</value></data>
+  <data name="Setting_DictionaryPattern_Label" xml:space="preserve"><value>辭典</value></data>
+  <data name="Setting_DictionaryPattern_Desc" xml:space="preserve"><value>啟用上述指令時要使用哪個線上辭典</value></data>
+  <data name="Setting_EnableSecondLanguage_Label" xml:space="preserve"><value>啟用第二目標語言</value></data>
+  <data name="Setting_EnableSecondLanguage_Desc" xml:space="preserve"><value>為下方選擇的語言額外顯示一筆翻譯結果</value></data>
+  <data name="Setting_SecondTargetLanguage_Label" xml:space="preserve"><value>第二目標語言</value></data>
+  <data name="Setting_SecondTargetLanguage_Desc" xml:space="preserve"><value>僅在啟用「啟用第二目標語言」時生效</value></data>
+  <data name="Setting_UseSystemProxy_Label" xml:space="preserve"><value>使用系統 Proxy</value></data>
+  <data name="Setting_UseSystemProxy_Desc" xml:space="preserve"><value>透過 Windows 預設 Proxy 轉送 HTTP 請求</value></data>
+  <data name="Setting_EnableCodeMode_Label" xml:space="preserve"><value>翻譯 snake_case / camelCase 單字</value></data>
+  <data name="Setting_EnableCodeMode_Desc" xml:space="preserve"><value>翻譯前將 snake/camel 單字依空格拆分</value></data>
+
+  <data name="Language_auto" xml:space="preserve"><value>自動</value></data>
+  <data name="Language_zhs" xml:space="preserve"><value>簡體中文</value></data>
+  <data name="Language_zht" xml:space="preserve"><value>繁體中文</value></data>
+  <data name="Language_en" xml:space="preserve"><value>英文</value></data>
+  <data name="Language_ja" xml:space="preserve"><value>日文</value></data>
+  <data name="Language_ko" xml:space="preserve"><value>韓文</value></data>
+  <data name="Language_ru" xml:space="preserve"><value>俄文</value></data>
+  <data name="Language_fr" xml:space="preserve"><value>法文</value></data>
+  <data name="Language_es" xml:space="preserve"><value>西班牙文</value></data>
+  <data name="Language_ar" xml:space="preserve"><value>阿拉伯文</value></data>
+  <data name="Language_de" xml:space="preserve"><value>德文</value></data>
+  <data name="Language_it" xml:space="preserve"><value>義大利文</value></data>
+  <data name="Language_he" xml:space="preserve"><value>希伯來文</value></data>
+
+  <data name="Dictionary_Youdao" xml:space="preserve"><value>有道</value></data>
+  <data name="Dictionary_Oxford" xml:space="preserve"><value>牛津</value></data>
+  <data name="Dictionary_Cambridge" xml:space="preserve"><value>劍橋</value></data>
+</root>

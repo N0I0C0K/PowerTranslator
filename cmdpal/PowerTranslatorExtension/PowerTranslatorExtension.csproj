@@ -12,7 +12,11 @@
         <EnableMsixTooling>true</EnableMsixTooling>
         <GenerateAppxPackageOnBuild>true</GenerateAppxPackageOnBuild>
         <Nullable>enable</Nullable>
+        <EnableDefaultPriItems>false</EnableDefaultPriItems>
     </PropertyGroup>
+    <ItemGroup>
+        <PRIResource Include="Strings\**\*.resw" />
+    </ItemGroup>
     <ItemGroup>
         <Content Include="Assets\SplashScreen.scale-200.png" />
         <Content Include="Assets\LockScreenLogo.scale-200.png" />

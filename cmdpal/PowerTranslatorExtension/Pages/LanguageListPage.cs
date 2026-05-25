@@ -9,9 +9,9 @@ internal sealed partial class LanguageListPage : ListPage
     public LanguageListPage()
     {
         Icon = IconHelpers.FromRelativePaths("Assets/translator.light.png", "Assets/translator.dark.png");
-        Title = "Supported languages";
-        Name = "Open";
-        PlaceholderText = "Use short code as target language";
+        Title = Loc.Get("Cmd_Languages_Title");
+        Name = Loc.Get("Verb_Open");
+        PlaceholderText = Loc.Get("Page_Languages_Placeholder");
     }
 
     public override IListItem[] GetItems()
@@ -19,7 +19,7 @@ internal sealed partial class LanguageListPage : ListPage
         return SettingsManager.Languages.Select(kv => new ListItem(new CopyTextCommand(kv.Key))
         {
             Title = kv.Key,
-            Subtitle = kv.Value,
+            Subtitle = Loc.Language(kv.Key),
             Icon = this.Icon,
         }).ToArray<IListItem>();
     }

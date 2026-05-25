@@ -27,9 +27,9 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
     public PowerTranslatorExtensionPage(TranslateHelper translateHelper, SuggestHelper suggestHelper)
     {
         Icon = IconHelpers.FromRelativePaths("Assets/translator.light.png", "Assets/translator.dark.png");
-        Title = "Translator";
-        Name = "Open";
-        PlaceholderText = "Enter any text, optionally followed by `-> <lang>`";
+        Title = Loc.Get("Cmd_Translator_DisplayName");
+        Name = Loc.Get("Verb_Open");
+        PlaceholderText = Loc.Get("Page_Translator_Placeholder");
         this.translateHelper = translateHelper;
         this.suggestHelper = suggestHelper;
         this.historyPage = new HistoryPage(translateHelper);
@@ -74,7 +74,7 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
             if (secondRes.Count > 0)
             {
                 var first = secondRes[0];
-                first.SubTitle = $"{first.SubTitle} [second language]";
+                first.SubTitle = $"{first.SubTitle} {Loc.Get("Tag_SecondLanguage")}";
                 if (res.Count > 1)
                     res.Insert(1, first);
                 else
@@ -89,7 +89,7 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
 
         if (settings.ShowOriginalQuery)
         {
-            res.Add(new ResultItem { Title = search, SubTitle = "[query raw]" });
+            res.Add(new ResultItem { Title = search, SubTitle = Loc.Get("Tag_QueryRaw") });
         }
 
         if (settings.EnableAutoRead && res.Count > 0)
@@ -122,20 +122,20 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
 
         items.Add(new ListItem(historyPage)
         {
-            Title = "History",
-            Subtitle = "View recent translations",
+            Title = Loc.Get("Empty_History_Title"),
+            Subtitle = Loc.Get("Empty_History_Subtitle"),
             Icon = this.Icon,
         });
         items.Add(new ListItem(languageListPage)
         {
-            Title = "Supported languages",
-            Subtitle = "Browse the language codes you can target with `-> <code>`",
+            Title = Loc.Get("Empty_Languages_Title"),
+            Subtitle = Loc.Get("Empty_Languages_Subtitle"),
             Icon = this.Icon,
         });
         items.Add(new ListItem(new OpenUrlCommand("https://github.com/N0I0C0K/PowerTranslator/issues?q="))
         {
-            Title = "Find help",
-            Subtitle = "Open the project's issue page",
+            Title = Loc.Get("Empty_Help_Title"),
+            Subtitle = Loc.Get("Empty_Help_Subtitle"),
             Icon = this.Icon,
         });
         return items.ToArray();

@@ -49,7 +49,7 @@ public class TranslateResponse : ITranslateResult
                 var t = s.Replace("\r\n", " ").TrimStart().Replace(" ", "");
                 if (string.IsNullOrEmpty(t))
                     continue;
-                res.Add(new ResultItem { Title = t, SubTitle = "[smart result]" });
+                res.Add(new ResultItem { Title = t, SubTitle = Loc.Get("Tag_SmartResult") });
             }
         }
         foreach (var val in res)
