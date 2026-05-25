@@ -36,9 +36,8 @@ The following data is processed **entirely on your own device** and never sent t
 
 To perform translation, the Extension sends the text you choose to translate to a third-party translation API of your choice. Currently supported providers include:
 
-- **Youdao Translate** ([privacy policy](https://ai.youdao.com/DOCSIRMA/html/trans/price/wbfy/index.html))
+- **Youdao Translate** ([privacy policy](https://c.youdao.com/dict/law/youdao_dict_privacy.html))
 - **DeepL** ([privacy policy](https://www.deepl.com/privacy/))
-- **Alibaba Cloud Machine Translation** ([privacy policy](https://www.alibabacloud.com/help/en/legal/latest/alibaba-cloud-international-website-privacy-policy))
 
 When you use these services:
 
@@ -100,7 +99,6 @@ For privacy-related questions, please open an issue in the repository above.
 
 - **有道翻译**（[隐私政策](https://ai.youdao.com/DOCSIRMA/html/trans/price/wbfy/index.html)）
 - **DeepL**（[隐私政策](https://www.deepl.com/zh/privacy/)）
-- **阿里云机器翻译**（[隐私政策](https://terms.aliyun.com/legal-agreement/terms/suit_bu1_ali_cloud/suit_bu1_ali_cloud202112071754_82996.html)）
 
 当您使用上述服务时：
 
