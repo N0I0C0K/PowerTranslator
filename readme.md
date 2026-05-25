@@ -1,6 +1,7 @@
 <div align="center">
 <h1>PowerTranslator</h1>
 <p>一个用于<a href=https://github.com/microsoft/PowerToys>PowerToys Run</a>的翻译插件, 快速, 稳定.</p>
+<p>支持 cmdpal</p>
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/N0I0C0K/PowerTranslator?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/N0I0C0K/PowerTranslator?color=ffb900&style=flat-square) ![GitHub all releases](https://img.shields.io/github/downloads/N0I0C0K/PowerTranslator/total?style=flat-square) ![GitHub](https://img.shields.io/github/license/N0I0C0K/PowerTranslator?style=flat-square) [![Mentioned in Awesome PowerToys Run Plugins](https://awesome.re/mentioned-badge-flat.svg)](https://github.com/hlaueriksson/awesome-powertoys-run-plugins)
 
@@ -15,6 +16,7 @@
 ## Index
 
 - [如何使用](#usage)
+  - [cmdpal](#支持-cmdpal)
 - [安装](#install)
 - [设置](#setting)
 - [提交问题](#issue)
@@ -83,6 +85,11 @@
   ![second option](Images/second_option.png)
   - 开启后会在每次翻译的时候自动展示第二语言结果
   ![second](Images/second.png)
+
+
+### 支持 Cmdpal
+所有 Powertoys Run 的功能同样也支持在 cmdpal 中使用
+![cmdpal](Images/cmdpal_translate.png)
 
 
 ## Install
