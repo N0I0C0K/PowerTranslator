@@ -93,6 +93,12 @@ All the plugin function in Powertyos run also support in cmdpal.
 
 ## Install
 
+### Cmdpal
+
+Install via MicroStore - [Store Page](https://apps.microsoft.com/store/detail/9NWN01SZ6KNK?cid=DevShareMCLPCS)
+
+### PowerToys Run Plugin
+
 1. Close PowerToys.
 2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases).
 3. Extract it to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`.
@@ -102,7 +108,8 @@ All the plugin function in Powertyos run also support in cmdpal.
 
 Refer to official documents, [Third-Party plugins for PowerToy Run](https://github.com/microsoft/PowerToys/blob/main/doc/thirdPartyRunPlugins.md)
 
-### Via [ptr](https://github.com/8LWXpg/ptr)
+--- 
+Via [ptr](https://github.com/8LWXpg/ptr)
 
 ```shell
 ptr add Translator N0I0C0K/PowerTranslator
