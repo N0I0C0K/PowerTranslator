@@ -27,6 +27,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
+          tag: ${{ github.ref }}
           file: bin/Translator_x64.zip
           asset_name: Translator-${{env.PLUGIN_VERSION}}-x64.zip
 
@@ -34,5 +35,6 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
+          tag: ${{ github.ref }}
           file: bin/Translator_ARM64.zip
           asset_name: Translator-${{env.PLUGIN_VERSION}}-arm64.zip

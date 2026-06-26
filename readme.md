@@ -94,6 +94,12 @@
 
 ## Install
 
+### Cmdpal
+
+通过 MicroStore 安装 - [商店页面](https://apps.microsoft.com/store/detail/9NWN01SZ6KNK?cid=DevShareMCLPCS)
+
+### PowerToys Run 插件
+
 1. 关闭 PowerToys
 2. 下载 [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases)
 3. 解压到`%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`
@@ -103,7 +109,9 @@
 
 (参考官方[第三方插件安装文档](https://github.com/microsoft/PowerToys/blob/main/doc/thirdPartyRunPlugins.md))
 
-### Via [ptr](https://github.com/8LWXpg/ptr)
+---
+
+Via [ptr](https://github.com/8LWXpg/ptr)
 
 ```shell
 ptr add Translator N0I0C0K/PowerTranslator
