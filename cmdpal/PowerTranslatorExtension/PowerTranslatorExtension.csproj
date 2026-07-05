@@ -3,7 +3,7 @@
         <OutputType>WinExe</OutputType>
         <RootNamespace>PowerTranslatorExtension</RootNamespace>
         <ApplicationManifest>app.manifest</ApplicationManifest>
-        <WindowsSdkPackageVersion>10.0.22621.57</WindowsSdkPackageVersion>
+        <WindowsSdkPackageVersion>10.0.26100.68-preview</WindowsSdkPackageVersion>
         <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
         <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
         <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>

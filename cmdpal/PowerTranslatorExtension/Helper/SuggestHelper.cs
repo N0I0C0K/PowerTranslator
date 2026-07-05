@@ -24,10 +24,16 @@ public class SuggestHelper
 
     public SuggestHelper()
     {
-        client = new HttpClient(UtilsFun.httpClientDefaultHandler, disposeHandler: false);
+        client = new HttpClient(UtilsFun.httpClientDefaultHandler, disposeHandler: false)
+        {
+            Timeout = TimeSpan.FromSeconds(5),
+        };
         UtilsFun.onHttpDefaultHandlerChange += () =>
         {
-            client = new HttpClient(UtilsFun.httpClientDefaultHandler, disposeHandler: false);
+            client = new HttpClient(UtilsFun.httpClientDefaultHandler, disposeHandler: false)
+            {
+                Timeout = TimeSpan.FromSeconds(5),
+            };
         };
     }
 

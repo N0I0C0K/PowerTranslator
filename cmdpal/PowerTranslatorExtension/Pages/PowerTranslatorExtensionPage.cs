@@ -2,12 +2,13 @@
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
-using PowerTranslatorExtension;
 using PowerTranslatorExtension.History;
 using PowerTranslatorExtension.Protocol;
 using PowerTranslatorExtension.Suggest;
@@ -15,14 +16,18 @@ using PowerTranslatorExtension.Utils;
 
 namespace PowerTranslatorExtension;
 
-internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
+internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage, IDisposable
 {
-    private readonly object delayLock = new();
-    private long lastQueryTick;
     private readonly TranslateHelper translateHelper;
     private readonly SuggestHelper suggestHelper;
     private readonly HistoryPage historyPage;
     private readonly LanguageListPage languageListPage;
+    private CancellationTokenSource? searchCts;
+
+    // Results computed by the latest background query, returned synchronously by
+    // GetItems(). GetItems() runs on the CmdPal host's COM thread and must never
+    // block, so all network and clipboard work happens off-thread and lands here.
+    private volatile IListItem[] cachedItems = Array.Empty<IListItem>();
 
     public PowerTranslatorExtensionPage(TranslateHelper translateHelper, SuggestHelper suggestHelper)
     {
@@ -39,17 +44,68 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
             Title = PlaceholderText,
             Icon = this.Icon,
         };
+
+        // Show the static menu instantly on open, then refresh in the background
+        // with any translatable clipboard content (without blocking the host).
+        this.cachedItems = BuildStaticEmptyItems();
+        PerformSearch(string.Empty);
     }
 
-    public override IListItem[] GetItems()
+    // Returns the most recently computed results immediately. PerformSearch does
+    // the actual work off-thread; this only ever hands back the cached array.
+    public override IListItem[] GetItems() => cachedItems;
+
+    public override void UpdateSearchText(string oldSearch, string newSearch)
     {
-        var search = this.SearchText ?? string.Empty;
+        if (!string.Equals(oldSearch, newSearch, StringComparison.Ordinal))
+            PerformSearch(newSearch);
+    }
 
-        if (search.Length == 0)
+    private void PerformSearch(string search)
+    {
+        var newCts = new CancellationTokenSource();
+        var oldCts = Interlocked.Exchange(ref searchCts, newCts);
+        oldCts?.Cancel();
+        oldCts?.Dispose();
+
+        var cancellationToken = newCts.Token;
+        IsLoading = true;
+
+        _ = Task.Run(() =>
         {
-            return BuildEmptyQueryItems();
-        }
+            try
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
+                Action? onPublished = null;
+                var items = search.Length == 0
+                    ? BuildEmptyQueryItems(cancellationToken)
+                    : BuildTranslationItems(search, cancellationToken, out onPublished);
+
+                cancellationToken.ThrowIfCancellationRequested();
+                cachedItems = items;
+                RaiseItemsChanged(items.Length);
+                onPublished?.Invoke();
+            }
+            catch (OperationCanceledException)
+            {
+                // A newer search owns the result list now.
+            }
+            catch (Exception ex)
+            {
+                UtilsFun.LogMessage($"Translate query failed: {ex.Message}");
+            }
+            finally
+            {
+                if (ReferenceEquals(Volatile.Read(ref searchCts), newCts))
+                    IsLoading = false;
+            }
+        }, cancellationToken);
+    }
+
+    private IListItem[] BuildTranslationItems(string search, CancellationToken cancellationToken, out Action? onPublished)
+    {
+        onPublished = null;
         var settings = SettingsManager.Instance;
         var res = new List<ResultItem>();
 
@@ -67,10 +123,12 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
         }
 
         res.AddRange(translateHelper.QueryTranslate(search));
+        cancellationToken.ThrowIfCancellationRequested();
 
         if (secondTask != null)
         {
             var secondRes = secondTask.GetAwaiter().GetResult();
+            cancellationToken.ThrowIfCancellationRequested();
             if (secondRes.Count > 0)
             {
                 var first = secondRes[0];
@@ -85,6 +143,7 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
         if (suggestTask != null)
         {
             res.AddRange(suggestTask.GetAwaiter().GetResult());
+            cancellationToken.ThrowIfCancellationRequested();
         }
 
         if (settings.ShowOriginalQuery)
@@ -92,68 +151,76 @@ internal sealed partial class PowerTranslatorExtensionPage : DynamicListPage
             res.Add(new ResultItem { Title = search, SubTitle = Loc.Get("Tag_QueryRaw") });
         }
 
-        if (settings.EnableAutoRead && res.Count > 0)
-        {
-            translateHelper.Read(res[0].Title);
-        }
-
         var firstWithApi = res.FirstOrDefault(r => r.fromApiName != null);
-        if (firstWithApi != null)
+        var autoReadText = settings.EnableAutoRead && res.Count > 0 ? res[0].Title : null;
+        if (autoReadText != null || firstWithApi != null)
         {
-            HistoryHelper.Instance.Push(new ResultItem
+            onPublished = () =>
             {
-                Title = firstWithApi.Title,
-                SubTitle = search,
-            });
+                if (autoReadText != null)
+                    translateHelper.Read(autoReadText);
+
+                if (firstWithApi != null)
+                {
+                    HistoryHelper.Instance.Push(new ResultItem
+                    {
+                        Title = firstWithApi.Title,
+                        SubTitle = search,
+                    });
+                }
+            };
         }
 
         return res.ToResultList(this.Icon, translateHelper).ToArray<IListItem>();
     }
 
-    private IListItem[] BuildEmptyQueryItems()
+    private IListItem[] BuildEmptyQueryItems(CancellationToken cancellationToken)
     {
         var items = new List<IListItem>();
         var clipboard = UtilsFun.GetClipboardText();
         if (UtilsFun.WhetherTranslate(clipboard))
         {
             var clipRes = translateHelper.QueryTranslate(clipboard!);
+            cancellationToken.ThrowIfCancellationRequested();
             items.AddRange(clipRes.ToResultList(this.Icon, translateHelper).Cast<IListItem>());
         }
 
-        items.Add(new ListItem(historyPage)
-        {
-            Title = Loc.Get("Empty_History_Title"),
-            Subtitle = Loc.Get("Empty_History_Subtitle"),
-            Icon = this.Icon,
-        });
-        items.Add(new ListItem(languageListPage)
-        {
-            Title = Loc.Get("Empty_Languages_Title"),
-            Subtitle = Loc.Get("Empty_Languages_Subtitle"),
-            Icon = this.Icon,
-        });
-        items.Add(new ListItem(new OpenUrlCommand("https://github.com/N0I0C0K/PowerTranslator/issues?q="))
-        {
-            Title = Loc.Get("Empty_Help_Title"),
-            Subtitle = Loc.Get("Empty_Help_Subtitle"),
-            Icon = this.Icon,
-        });
+        items.AddRange(BuildStaticEmptyItems());
         return items.ToArray();
     }
 
-    public override void UpdateSearchText(string oldSearch, string newSearch)
+    // The network-free entries shown for an empty query. Used directly as the
+    // instant initial view before the clipboard has been read in the background.
+    private IListItem[] BuildStaticEmptyItems()
     {
-        Task.Factory.StartNew(() =>
+        return new IListItem[]
         {
-            long thisTick;
-            lock (delayLock)
+            new ListItem(historyPage)
             {
-                thisTick = ++lastQueryTick;
-            }
-            Task.Delay(500).GetAwaiter().GetResult();
-            if (thisTick != lastQueryTick)
-                return;
-            RaiseItemsChanged(0);
-        });
+                Title = Loc.Get("Empty_History_Title"),
+                Subtitle = Loc.Get("Empty_History_Subtitle"),
+                Icon = this.Icon,
+            },
+            new ListItem(languageListPage)
+            {
+                Title = Loc.Get("Empty_Languages_Title"),
+                Subtitle = Loc.Get("Empty_Languages_Subtitle"),
+                Icon = this.Icon,
+            },
+            new ListItem(new OpenUrlCommand("https://github.com/N0I0C0K/PowerTranslator/issues?q="))
+            {
+                Title = Loc.Get("Empty_Help_Title"),
+                Subtitle = Loc.Get("Empty_Help_Subtitle"),
+                Icon = this.Icon,
+            },
+        };
+    }
+
+    public void Dispose()
+    {
+        var cts = Interlocked.Exchange(ref searchCts, null);
+        cts?.Cancel();
+        cts?.Dispose();
+        GC.SuppressFinalize(this);
     }
 }

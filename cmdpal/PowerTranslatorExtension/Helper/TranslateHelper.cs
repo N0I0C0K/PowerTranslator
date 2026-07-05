@@ -27,6 +27,7 @@ public class TranslateHelper
     public const string toLanSplit = "->";
     public bool inited => this.translators.Count > 0 && this.translators[0].Inited;
     private object initLock = new Object();
+    private readonly object translateLock = new();
     private long lastInitTime;
     private List<ITranslator> translators;
     private bool isSpeaking;
@@ -78,23 +79,26 @@ public class TranslateHelper
     }
     private ITranslateResult? Translate(string text, string toLan)
     {
-        return translators.Enumerate().FirstNotNoneCast((data) =>
+        lock (translateLock)
         {
-            var (idx, it) = data;
-            try
+            return translators.Enumerate().FirstNotNoneCast((data) =>
             {
-                if (it == null)
+                var (idx, it) = data;
+                try
                 {
-                    throw new Exception($"{it.Name} is null");
+                    if (it == null)
+                    {
+                        throw new InvalidOperationException($"Translator at index {idx} is null");
+                    }
+                    return it?.Translate(text, toLan, "auto");
                 }
-                return it?.Translate(text, toLan, "auto");
-            }
-            catch (Exception err)
-            {
-                UtilsFun.LogMessage(err.Message);
-                return null;
-            }
-        });
+                catch (Exception err)
+                {
+                    UtilsFun.LogMessage(err.Message);
+                    return null;
+                }
+            });
+        }
     }
     public List<ResultItem> QueryTranslate(string raw, string? toLanguage = null)
     {
@@ -211,13 +215,23 @@ public class TranslateHelper
 
     public void Reload()
     {
-        foreach (var translator in translators)
+        Task.Factory.StartNew(() =>
         {
-            Task.Factory.StartNew(() =>
+            lock (translateLock)
             {
-                translator?.Reset();
-            });
-        }
+                foreach (var translator in translators)
+                {
+                    try
+                    {
+                        translator.Reset();
+                    }
+                    catch (Exception ex)
+                    {
+                        UtilsFun.LogMessage($"Reset {translator.Name} failed: {ex.Message}");
+                    }
+                }
+            }
+        });
     }
 
     public void Read(string? txt)

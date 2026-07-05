@@ -6,6 +6,17 @@ registers itself with Command Palette via the
 `com.microsoft.commandpalette` app extension category and shows up as
 commands inside Command Palette after installation.
 
+> ⚠ **IMPORTANT — please read before testing.** This package has **no
+> standalone window, tile, or shortcut**. Launching the packaged executable
+> directly (from the Start menu, app list, or by double-clicking the exe)
+> intentionally prints a message and exits immediately with **no window** —
+> **this is by design and is NOT a crash or a hang.** The extension only does
+> anything when it is loaded by the PowerToys Command Palette host as an
+> out-of-process COM server. To verify the product, you **must** install
+> PowerToys + Command Palette and follow the steps in *"How to verify the
+> extension after install"* below. Testing it as a normal launchable app will
+> incorrectly appear as "closes/crashes at launch."
+
 ## Prerequisites
 
 - Windows 11, or Windows 10 version 2004 (build 19041) or newer
