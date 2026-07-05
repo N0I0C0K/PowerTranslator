@@ -7,7 +7,7 @@
          IgnorableNamespaces="uap uap3 rescap">
     <Identity Name="NickXii.PowerTranslator"
               Publisher="CN=F48B8B01-03F2-4C65-AB37-1212875A0C8C"
-              Version="0.0.1.0" />
+              Version="0.0.3.0" />
     <Properties>
         <DisplayName>PowerTranslator</DisplayName>
         <PublisherDisplayName>NickXii</PublisherDisplayName>
@@ -18,7 +18,7 @@
           Command Palette 只在桌面有，扩展只能在 Windows.Desktop 上运行。
           不要加 Windows.Universal —— 那等于声明可在 Xbox/Mobile/HoloLens/IoT 上
           运行，Partner Center 会因此要求 bundle 里有支持 Xbox 等家族的包。
-          MaxVersionTested 跟着 csproj 里的 WindowsSdkPackageVersion = 22621 走。
+          MaxVersionTested 跟着 csproj 里的 TargetFramework 平台版本 22621 走。
         -->
         <TargetDeviceFamily Name="Windows.Desktop"
                             MinVersion="10.0.19041.0"
