@@ -211,7 +211,10 @@ public class DeepLTranslator : ITranslator, IDisposable
 
     private static HttpClient BuildClient()
     {
-        var c = new HttpClient(UtilsFun.httpClientDefaultHandler, disposeHandler: false);
+        var c = new HttpClient(UtilsFun.httpClientDefaultHandler, disposeHandler: false)
+        {
+            Timeout = TimeSpan.FromSeconds(10),
+        };
         c.DefaultRequestHeaders.Host = "www2.deepl.com";
         c.DefaultRequestHeaders.UserAgent.ParseAdd(userAgent);
         c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("*/*"));

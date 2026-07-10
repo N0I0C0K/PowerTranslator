@@ -132,19 +132,24 @@ public class TranslateHelper
         string src = target.src;
         string toLan = toLanguage ?? target.toLan;
         ITranslateResult? translateResult = Translate(src, toLan);
+        var transformedResults = translateResult?.Transform()?.ToList();
 
-        if (translateResult != null)
+        if (transformedResults is { Count: > 0 })
         {
-            var tres = translateResult!.Transform();
-            if (tres != null)
-                res.AddRange(tres);
+            res.AddRange(transformedResults);
         }
         else
         {
+            var hasExplicitTargetLanguage = !string.Equals(toLan, "auto", StringComparison.OrdinalIgnoreCase);
+
             res.Add(new ResultItem
             {
-                Title = "result is null, some error happen in translate. check out your network!",
-                SubTitle = "Press enter to get help",
+                Title = hasExplicitTargetLanguage
+                    ? "No translation returned"
+                    : "Translation failed. Check your network connection.",
+                SubTitle = hasExplicitTargetLanguage
+                    ? "The input may already be in the target language, or the translation service may be unavailable."
+                    : "Press Enter to get help",
                 Action = (ev) =>
                 {
                     UtilsFun.SetClipboardText("https://github.com/N0I0C0K/PowerTranslator/issues?q=");
