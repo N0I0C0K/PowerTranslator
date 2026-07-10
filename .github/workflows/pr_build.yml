@@ -10,6 +10,37 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  test-cmdpal:
+    name: Test cmdpal extension
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Setup msbuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install Windows 10/11 SDK 22621
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+
+      # Use full MSBuild for compilation because the referenced WinUI/MSIX project
+      # requires Visual Studio's PRI tooling, which `dotnet build` does not include.
+      - name: Restore tests
+        run: msbuild cmdpal\PowerTranslatorExtension.Tests\PowerTranslatorExtension.Tests.csproj /t:Restore /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=false /p:EnableMsixTooling=false
+
+      - name: Build tests
+        run: msbuild cmdpal\PowerTranslatorExtension.Tests\PowerTranslatorExtension.Tests.csproj /t:Build /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=false /p:EnableMsixTooling=false
+
+      - name: Run tests
+        run: dotnet test cmdpal\PowerTranslatorExtension.Tests\PowerTranslatorExtension.Tests.csproj -c Release -p:Platform=x64 --no-build --no-restore --logger "console;verbosity=normal"
+
   build-legacy:
     name: Build legacy plugin (${{ matrix.platform }})
     runs-on: windows-latest
