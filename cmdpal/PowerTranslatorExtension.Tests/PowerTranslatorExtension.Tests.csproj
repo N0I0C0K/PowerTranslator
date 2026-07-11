@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+        <WindowsSdkPackageVersion>10.0.26100.68-preview</WindowsSdkPackageVersion>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <NoWarn>$(NoWarn);CA1707;CA1861</NoWarn>
+        <AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="MSTest" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\PowerTranslatorExtension\PowerTranslatorExtension.csproj"
+                          AdditionalProperties="GenerateAppxPackageOnBuild=false;EnableMsixTooling=false" />
+    </ItemGroup>
+</Project>

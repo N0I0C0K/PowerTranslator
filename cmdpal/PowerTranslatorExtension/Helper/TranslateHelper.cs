@@ -30,6 +30,7 @@ public class TranslateHelper
     private readonly object translateLock = new();
     private long lastInitTime;
     private List<ITranslator> translators;
+    private readonly Func<bool> isCodeModeEnabled;
     private bool isSpeaking;
     private bool isIniting;
     public string defaultLanguageKey = "auto";
@@ -40,17 +41,32 @@ public class TranslateHelper
         }
     );
     public TranslateHelper(string defaultLanguageKey = "auto")
+        : this(
+            [
+                new Service.Youdao.V2.YoudaoTranslator(),
+                new Service.Youdao.Old.YoudaoTranslator(),
+                new Service.DeepL.DeepLTranslator(),
+                new Service.Youdao.Backup.BackUpTranslator(),
+            ],
+            defaultLanguageKey,
+            () => SettingsManager.Instance.EnableCodeMode)
     {
-        this.translators = new List<ITranslator>
-        {
-            new Service.Youdao.V2.YoudaoTranslator(),
-            new Service.Youdao.Old.YoudaoTranslator(),
-            new Service.DeepL.DeepLTranslator(),
-            new Service.Youdao.Backup.BackUpTranslator(),
-        };
-        this.defaultLanguageKey = defaultLanguageKey;
         UtilsFun.onHttpDefaultHandlerChange += this.Reload;
     }
+
+    internal TranslateHelper(
+        IEnumerable<ITranslator> translators,
+        string defaultLanguageKey,
+        Func<bool> isCodeModeEnabled)
+    {
+        ArgumentNullException.ThrowIfNull(translators);
+        ArgumentNullException.ThrowIfNull(isCodeModeEnabled);
+
+        this.translators = translators.ToList();
+        this.defaultLanguageKey = defaultLanguageKey;
+        this.isCodeModeEnabled = isCodeModeEnabled;
+    }
+
     public TranslateTarget ParseRawSrc(string src)
     {
         string _src, _toLan;
@@ -66,7 +82,7 @@ public class TranslateHelper
             _src = src;
             _toLan = this.defaultLanguageKey;
         }
-        if (SettingsManager.Instance.EnableCodeMode)
+        if (isCodeModeEnabled())
         {
             _src = UtilsFun.ConvertSnakeCaseOrCamelCaseToNormalSpace(_src);
         }

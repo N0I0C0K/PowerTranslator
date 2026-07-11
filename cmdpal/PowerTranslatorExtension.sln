@@ -5,6 +5,8 @@ VisualStudioVersion = 17.13.35507.96 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerTranslatorExtension", "PowerTranslatorExtension\PowerTranslatorExtension.csproj", "{79F86DE5-70B1-4EC1-9832-DF428B55E466}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PowerTranslatorExtension.Tests", "PowerTranslatorExtension.Tests\PowerTranslatorExtension.Tests.csproj", "{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
@@ -33,6 +35,18 @@ Global
 		{79F86DE5-70B1-4EC1-9832-DF428B55E466}.Release|x86.ActiveCfg = Release|x86
 		{79F86DE5-70B1-4EC1-9832-DF428B55E466}.Release|x86.Build.0 = Release|x86
 		{79F86DE5-70B1-4EC1-9832-DF428B55E466}.Release|x86.Deploy.0 = Release|x86
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Debug|ARM64.ActiveCfg = Debug|ARM64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Debug|ARM64.Build.0 = Debug|ARM64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Debug|x64.ActiveCfg = Debug|x64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Debug|x64.Build.0 = Debug|x64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Debug|x86.ActiveCfg = Debug|x64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Debug|x86.Build.0 = Debug|x64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Release|ARM64.ActiveCfg = Release|ARM64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Release|ARM64.Build.0 = Release|ARM64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Release|x64.ActiveCfg = Release|x64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Release|x64.Build.0 = Release|x64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Release|x86.ActiveCfg = Release|x64
+		{78176EBC-0E43-4E4D-A5BE-240AD2A8520E}.Release|x86.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
