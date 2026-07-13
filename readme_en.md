@@ -17,10 +17,32 @@ The plugin has been updated to use Youdao translation, which supports translatio
 
 - [how to use](#usage)
   - [cmdpal](#support-cmdpal)
+- [development commands](#development-commands)
 - [how to install](#install)
 - [settings](#setting)
 - [submit issue](#issue)
 - [Contribution](#Contribution)
+
+## Development commands
+
+The root [justfile](./justfile) provides one entry point for development, testing, and packaging. Run `just` or `just help` to list every recipe.
+
+```powershell
+# Legacy PowerToys Run plugin
+just legacy-build-all
+just legacy-pack-all
+
+# Command Palette extension
+just test
+just cmdpal-build-all
+just cmdpal-install-local
+just cmdpal-clean-local
+just cmdpal-store
+```
+
+`cmdpal-install-local` builds, self-signs, and installs the actual local `.msix` for E2E testing. Its temporary certificate is kept in the Git-ignored `cmdpal/.local-cert/` directory, with its password protected by the current user's DPAPI. To satisfy Windows MSIX installation rules, the first run prompts through UAC before importing the public certificate into `LocalMachine\TrustedPeople`. If an older extension is running, it displays its PID and waits for confirmation before stopping it. `cmdpal-clean-local` also prompts through UAC to remove that trust and the certificate directory; it does not uninstall the app.
+
+`cmdpal-store` creates an x64 + ARM64 Microsoft Store `.msixbundle` in `dist/` and retains the existing manifest validation step.
 
 ## Usage
 

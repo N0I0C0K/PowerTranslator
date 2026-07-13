@@ -7,3 +7,4 @@ lib
 src/lib
 
 dist
+cmdpal/.local-cert/
