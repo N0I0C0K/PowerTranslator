@@ -18,7 +18,8 @@ namespace Translator
             { "ar", "Arabic" },
             { "de", "German" },
             { "it", "Italian" },
-            { "he", "Hebrew" }
+            { "he", "Hebrew" },
+            { "id", "Indonesian" }
         };
 
         public static readonly List<ResultItem> languageList = Languages.Select((val) => new ResultItem { Title = val.Key, SubTitle = val.Value }).ToList();
