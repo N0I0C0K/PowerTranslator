@@ -123,7 +123,7 @@ Install via MicroStore - [Store Page](https://apps.microsoft.com/store/detail/9N
 
 1. Close PowerToys.
 2. Download [Translator.zip](https://github.com/N0I0C0K/PowerTranslator/releases).
-3. Extract it to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`.
+3. Extract the archive, then copy the **Translator folder** containing `plugin.json`, `Translator.dll`, and `Images` into `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins`. If your extractor creates an outer folder, open it first. The final manifest path must be `Plugins\Translator\plugin.json`.
    As shown in the figure:
    ![file](Images/file.png)
 4. Start PowerToys.

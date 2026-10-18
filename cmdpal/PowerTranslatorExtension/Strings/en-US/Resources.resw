@@ -130,6 +130,7 @@
   <data name="Language_de" xml:space="preserve"><value>German</value></data>
   <data name="Language_it" xml:space="preserve"><value>Italian</value></data>
   <data name="Language_he" xml:space="preserve"><value>Hebrew</value></data>
+  <data name="Language_id" xml:space="preserve"><value>Indonesian</value></data>
 
   <!-- Dictionary provider display names -->
   <data name="Dictionary_Youdao" xml:space="preserve"><value>Youdao</value></data>

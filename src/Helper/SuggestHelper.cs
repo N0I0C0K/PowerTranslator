@@ -14,24 +14,48 @@ public class SuggestInterface
     public SuggestItem[]? data { get; set; }
 
 }
-public class SuggestHelper
+public class SuggestHelper : IDisposable
 {
-    private IPublicAPI api;
     private HttpClient client;
+    private readonly Func<HttpClient> createClient;
+    private bool disposed;
+
     public SuggestHelper(IPublicAPI api)
+        : this(() => new HttpClient(UtilsFun.httpClientDefaultHandler, disposeHandler: false)
+        {
+            Timeout = TimeSpan.FromSeconds(5),
+        })
     {
-        client = new HttpClient(UtilsFun.httpClientDefaultHandler);
-        this.api = api;
     }
+
+    internal SuggestHelper(Func<HttpClient> createClient)
+    {
+        this.createClient = createClient;
+        client = createClient();
+        UtilsFun.onHttpDefaultHandlerChange += Reload;
+    }
+
+    private void Reload()
+    {
+        Interlocked.Exchange(ref client, createClient()).Dispose();
+    }
+
+    public void Dispose()
+    {
+        if (disposed)
+            return;
+        disposed = true;
+        UtilsFun.onHttpDefaultHandlerChange -= Reload;
+        client.Dispose();
+    }
+
     public List<ResultItem> QuerySuggest(string query)
     {
 
-        var data = new { kw = query };
         try
         {
-            var res = client.PostAsync("https://fanyi.baidu.com/sug",
-                                        new StringContent(data.toFormDataBodyString(),
-                                        new System.Net.Http.Headers.MediaTypeHeaderValue("application/x-www-form-urlencoded")))
+            using var body = new FormUrlEncodedContent(new Dictionary<string, string> { ["kw"] = query });
+            using var res = client.PostAsync("https://fanyi.baidu.com/sug", body)
                                         .GetAwaiter()
                                         .GetResult();
             var sug = UtilsFun.ParseJson<SuggestInterface>(res.Content.ReadAsStringAsync().GetAwaiter().GetResult());

@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+- 为 PowerToys Run 和 CmdPal 添加印度尼西亚语选项。
+
+### Fixed
+- 统一 PowerToys Run 插件清单与 DLL 版本号。
+- 安装包仅包含一个 Translator 顶层目录，避免智能解压后误复制外层目录。
+- Run 搜索建议随代理设置变化重新创建客户端，并正确编码含 `&`、`+`、`=` 的查询。
+- 显式指定目标语言但无翻译结果时，提示输入可能已是目标语言，避免一律报告网络错误（#90，已在 #92 合并，待发布）。
+
 ## [0.12.0] - 2025-06-09
 
 ### Added

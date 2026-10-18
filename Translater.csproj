@@ -39,14 +39,13 @@
             <MySourceFiles Include="./plugin.json" />
             <MySourceFiles Include="$(OutputPath)Translator.dll" />
             <ImagesFile Include="$(OutputPath)Images\*.*" />
-            <InstallBashFiles Include="./install.bat" />
         </ItemGroup>
         <Copy SourceFiles="@(MySourceFiles)"
               DestinationFolder="./bin/output_$(Platform)/Translator" />
         <Copy SourceFiles="@(ImagesFile)"
               DestinationFolder="./bin/output_$(Platform)/Translator/Images" />
-        <Copy SourceFiles="@(InstallBashFiles)"
-              DestinationFolder="./bin/output_$(Platform)" />
+        <!-- Remove the installer staged by older builds so the ZIP has one root folder. -->
+        <Delete Files="./bin/output_$(Platform)/install.bat" />
     </Target>
     <Target Name="ZipOutput"
             AfterTargets="Pack">

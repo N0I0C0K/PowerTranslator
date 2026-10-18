@@ -60,6 +60,9 @@ jobs:
       - name: Pack (build + zip)
         run: dotnet pack Translater.csproj -c Release -p:Platform=${{ matrix.platform }}
 
+      - name: Verify ZIP structure and plugin version
+        run: ./scripts/verify-legacy-package.ps1 -Path bin/Translator_${{ matrix.platform }}.zip
+
       - name: Upload zip artifact
         uses: actions/upload-artifact@v4
         with:
