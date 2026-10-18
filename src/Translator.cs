@@ -177,6 +177,7 @@ namespace Translator
         public void Dispose()
         {
             this.publicAPI!.ThemeChanged -= this.UpdateIconPath;
+            this.suggestHelper?.Dispose();
         }
         public Control CreateSettingPanel()
         {

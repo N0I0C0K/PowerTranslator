@@ -49,7 +49,7 @@ public class TranslateHelper
             typeof(Service.Youdao.Backup.BackUpTranslator),
         };
         // make sure do it before init translator
-        UtilsFun.ChangeDefaultHttpHandlerProxy(SettingHelper.Instance.useSystemProxy, false);
+        UtilsFun.ChangeDefaultHttpHandlerProxy(SettingHelper.Instance.useSystemProxy);
 
         this.InitTranslator();
         this.publicAPI = publicAPI;

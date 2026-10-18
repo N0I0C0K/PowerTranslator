@@ -121,6 +121,7 @@
   <data name="Language_de" xml:space="preserve"><value>德文</value></data>
   <data name="Language_it" xml:space="preserve"><value>義大利文</value></data>
   <data name="Language_he" xml:space="preserve"><value>希伯來文</value></data>
+  <data name="Language_id" xml:space="preserve"><value>印尼文</value></data>
 
   <data name="Dictionary_Youdao" xml:space="preserve"><value>有道</value></data>
   <data name="Dictionary_Oxford" xml:space="preserve"><value>牛津</value></data>

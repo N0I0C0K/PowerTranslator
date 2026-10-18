@@ -13,6 +13,7 @@
         <PackageReference Include="MSTest" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\..\Translater.csproj" />
         <ProjectReference Include="..\PowerTranslatorExtension\PowerTranslatorExtension.csproj"
                           AdditionalProperties="GenerateAppxPackageOnBuild=false;EnableMsixTooling=false" />
     </ItemGroup>

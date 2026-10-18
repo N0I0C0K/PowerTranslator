@@ -23,6 +23,11 @@ jobs:
           dotnet pack -p:Platform=x64
           dotnet pack -p:Platform=ARM64
 
+      - name: Verify ZIP structure and plugin version
+        run: |
+          ./scripts/verify-legacy-package.ps1 -Path bin/Translator_x64.zip
+          ./scripts/verify-legacy-package.ps1 -Path bin/Translator_ARM64.zip
+
       - name: Upload x64 To Release
         uses: svenstaro/upload-release-action@v2
         with:

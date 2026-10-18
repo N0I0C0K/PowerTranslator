@@ -26,6 +26,7 @@ public class SettingsManager : JsonSettingsManager
         { "de", "German" },
         { "it", "Italian" },
         { "he", "Hebrew" },
+        { "id", "Indonesian" },
     };
 
     public static readonly Dictionary<string, string> DictionaryUrlPatterns = new()
