@@ -1,0 +1,97 @@
+name: Translation engine health
+
+on:
+  schedule:
+    # Daily trigger with a UTC-day gate below gives a two-day interval across months.
+    - cron: '23 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: translation-engine-health
+  cancel-in-progress: false
+
+jobs:
+  schedule:
+    name: Check two-day interval
+    runs-on: ubuntu-latest
+    outputs:
+      run: ${{ steps.interval.outputs.run }}
+    steps:
+      - name: Check interval (manual runs always proceed)
+        id: interval
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [[ "$EVENT_NAME" == "workflow_dispatch" ]] || (( ($(date -u +%s) / 86400) % 2 == 0 )); then
+            echo 'run=true' >> "$GITHUB_OUTPUT"
+          fi
+
+  check:
+    name: Check all translation engines
+    needs: schedule
+    if: needs.schedule.outputs.run == 'true'
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      RUN_ENGINE_HEALTH_CHECKS: '1'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Setup msbuild.exe
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Install Windows 10/11 SDK 22621
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+
+      - name: Restore tests
+        run: msbuild cmdpal\PowerTranslatorExtension.Tests\PowerTranslatorExtension.Tests.csproj /t:Restore /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=false /p:EnableMsixTooling=false
+
+      - name: Build tests
+        run: msbuild cmdpal\PowerTranslatorExtension.Tests\PowerTranslatorExtension.Tests.csproj /t:Build /p:Configuration=Release /p:Platform=x64 /p:GenerateAppxPackageOnBuild=false /p:EnableMsixTooling=false
+
+      - name: Translate with each engine independently
+        run: dotnet test cmdpal\PowerTranslatorExtension.Tests\PowerTranslatorExtension.Tests.csproj -c Release -p:Platform=x64 --no-build --no-restore --filter "TestCategory=EngineHealth" --logger "console;verbosity=normal" --logger "trx;LogFileName=engine-health.trx" --results-directory TestResults
+
+      - name: Summarize engine results
+        if: always()
+        shell: pwsh
+        run: |
+          '## Translation engine health' >> $env:GITHUB_STEP_SUMMARY
+          if (Test-Path TestResults/engine-health.trx) {
+            [xml]$report = Get-Content TestResults/engine-health.trx -Raw
+            '| Engine | Result |' >> $env:GITHUB_STEP_SUMMARY
+            '| --- | --- |' >> $env:GITHUB_STEP_SUMMARY
+            foreach ($result in $report.TestRun.Results.UnitTestResult) {
+              $name = $result.testName.Replace('|', '\|')
+              "| $name | $($result.outcome) |" >> $env:GITHUB_STEP_SUMMARY
+            }
+            if ([int]$report.TestRun.ResultSummary.Counters.total -eq 0) {
+              throw 'No translation engines were discovered.'
+            }
+            if ([int]$report.TestRun.ResultSummary.Counters.executed -ne [int]$report.TestRun.ResultSummary.Counters.total) {
+              throw 'Some translation engines were skipped. Check RUN_ENGINE_HEALTH_CHECKS and the test logs.'
+            }
+          } else {
+            'No test report was produced. Check the restore/build/test logs.' >> $env:GITHUB_STEP_SUMMARY
+            throw 'Engine health report is missing.'
+          }
+
+      - name: Upload engine results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: translation-engine-health
+          path: TestResults/
+          if-no-files-found: warn
+          retention-days: 30

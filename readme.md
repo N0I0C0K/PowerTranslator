@@ -44,6 +44,16 @@ just cmdpal-store
 
 `cmdpal-store` 会构建 x64 和 ARM64 的 Microsoft Store `.msixbundle` 到 `dist/`；构建前仍会执行现有脚本中的应用清单检查。
 
+## 翻译引擎巡检
+
+[Translation engine health](../../actions/workflows/engine_health.yml) 每两天在北京时间 09:23 检查一次，也可在 Actions 页面通过 **Run workflow** 手动运行。工作流每天触发后按 UTC 日期奇偶判断是否执行检查，因此跨月也保持两天间隔；GitHub 调度可能延迟。合并到默认分支后定时生效。
+
+巡检直接调用 PowerToys Run 和 Command Palette 两套实现中的所有引擎（目前各有有道 V2、有道旧版、有道备用、DeepL 和阿里翻译），不经过自动回退。每个引擎独立完成初始化、将“苹果”翻译为英文并验证译文，最多尝试三次，每次限时 60 秒。任一引擎失败都会使 CI 失败；Actions 摘要和保留 30 天的 TRX 附件会记录各引擎结果。它反映 GitHub runner 所在网络的可用性，地域限制或服务限流也可能导致失败。
+
+请在 GitHub 的 **Settings → Notifications → Actions** 开启失败通知；按 [GitHub 通知规则](https://docs.github.com/en/actions/concepts/workflows-and-actions/notifications-for-workflow-runs)，通知通常发送给创建工作流或最后修改 cron 的用户，重新启用工作流后则发送给重新启用者。公开仓库连续 60 天没有活动时，GitHub 会自动停用定时工作流，需在 Actions 中重新启用。
+
+普通 PR 和 `just test` 只运行离线测试。需要在本地巡检时，先设置 `$env:RUN_ENGINE_HEALTH_CHECKS = '1'`，再运行 `just test Release 'TestCategory=EngineHealth'`；结束后用 `Remove-Item Env:RUN_ENGINE_HEALTH_CHECKS` 清除该变量。新增实现 `ITranslator` 的具体类会自动加入巡检。
+
 ## Usage
 
 - 默认触发键为`|`.（下方GIF演示采用的自定义触发键`^`）

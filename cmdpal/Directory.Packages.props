@@ -19,6 +19,8 @@
                         Version="1.7.250401001" />
         <PackageVersion Include="MSTest"
                         Version="3.8.3" />
+        <PackageVersion Include="NLog"
+                        Version="5.2.8" />
         <PackageVersion Include="Shmuelie.WinRTServer"
                         Version="2.1.1" />
         <PackageVersion Include="StyleCop.Analyzers"

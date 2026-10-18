@@ -11,8 +11,11 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="MSTest" />
+        <!-- PowerToys supplies this at runtime; standalone engine checks need it too. -->
+        <PackageReference Include="NLog" />
     </ItemGroup>
     <ItemGroup>
+        <ProjectReference Include="..\..\Translater.csproj" />
         <ProjectReference Include="..\PowerTranslatorExtension\PowerTranslatorExtension.csproj"
                           AdditionalProperties="GenerateAppxPackageOnBuild=false;EnableMsixTooling=false" />
     </ItemGroup>

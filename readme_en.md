@@ -44,6 +44,16 @@ just cmdpal-store
 
 `cmdpal-store` creates an x64 + ARM64 Microsoft Store `.msixbundle` in `dist/` and retains the existing manifest validation step.
 
+## Translation engine health checks
+
+[Translation engine health](../../actions/workflows/engine_health.yml) checks engines every two days at 01:23 UTC (09:23 China time), with **Run workflow** available for manual checks. A daily trigger uses UTC day parity to preserve the two-day interval across month boundaries. GitHub may delay scheduled runs; the schedule takes effect on the default branch.
+
+The check directly exercises every engine in both the PowerToys Run and Command Palette implementations (currently Youdao V2, old Youdao, backup Youdao, DeepL, and Alibaba in each). Each engine initializes and translates “苹果” into English, with the translation validated and no fallback to another engine. There are up to three attempts per engine, each limited to 60 seconds. Any engine failure fails CI. Per-engine results appear in the Actions summary and TRX artifacts retained for 30 days. Results reflect connectivity from GitHub runners; regional restrictions and rate limits can also cause failures.
+
+Enable failure notifications under GitHub **Settings → Notifications → Actions**. Under [GitHub's notification rules](https://docs.github.com/en/actions/concepts/workflows-and-actions/notifications-for-workflow-runs), notifications normally go to the workflow creator or the last user to modify its cron configuration; re-enabling a workflow makes that user the recipient instead. GitHub disables scheduled workflows in public repositories after 60 days without activity; re-enable the workflow in Actions if needed.
+
+PR checks and `just test` stay offline. To check live engines locally, set `$env:RUN_ENGINE_HEALTH_CHECKS = '1'`, then run `just test Release 'TestCategory=EngineHealth'`. Afterwards, clear the variable with `Remove-Item Env:RUN_ENGINE_HEALTH_CHECKS`. New concrete `ITranslator` implementations are discovered automatically.
+
 ## Usage
 
 - The default trigger key is `|`.
