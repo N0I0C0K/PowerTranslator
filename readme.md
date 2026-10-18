@@ -17,10 +17,32 @@
 
 - [如何使用](#usage)
   - [cmdpal](#支持-cmdpal)
+- [开发命令](#开发命令)
 - [安装](#install)
 - [设置](#setting)
 - [提交问题](#issue)
 - [贡献](#Contribution)
+
+## 开发命令
+
+项目根目录的 [justfile](./justfile) 统一了开发、测试和打包命令。执行 `just` 或 `just help` 可查看完整列表。
+
+```powershell
+# 传统 PowerToys Run 插件
+just legacy-build-all
+just legacy-pack-all
+
+# Command Palette 扩展
+just test
+just cmdpal-build-all
+just cmdpal-install-local
+just cmdpal-clean-local
+just cmdpal-store
+```
+
+`cmdpal-install-local` 会构建、自签名并安装实际的本地 `.msix`，适合 e2e 验证；其临时证书位于被 Git 忽略的 `cmdpal/.local-cert/`，密码使用当前用户的 DPAPI 加密。为满足 Windows 的 MSIX 安装规则，首次运行会经 UAC 确认把公钥导入 `LocalMachine\TrustedPeople`。若检测到旧扩展正在运行，会先展示 PID 并等待确认后才停止它。`cmdpal-clean-local` 也会经 UAC 删除该信任及证书目录；不会卸载应用。
+
+`cmdpal-store` 会构建 x64 和 ARM64 的 Microsoft Store `.msixbundle` 到 `dist/`；构建前仍会执行现有脚本中的应用清单检查。
 
 ## Usage
 
